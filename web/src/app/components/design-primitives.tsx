@@ -1,0 +1,178 @@
+import { Fragment, type ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { Link } from 'react-router';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from './ui/breadcrumb';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { cn } from './ui/utils';
+
+export function DisabledHint({
+  active,
+  message,
+  children,
+  className,
+}: {
+  active: boolean;
+  message: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  if (!active) return <>{children}</>;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className={cn('inline-flex cursor-not-allowed', className)}>{children}</span>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{message}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+export function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  action,
+  className,
+}: {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        'rounded-card border border-dashed border-neutral-300 bg-white px-6 py-12 text-center shadow-sm dark:border-neutral-700 dark:bg-neutral-900',
+        className,
+      )}
+    >
+      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 dark:bg-brand-950/40 dark:text-brand-100 dark:ring-brand-700/40">
+        <Icon size={30} strokeWidth={1.8} />
+      </div>
+      <h2 className="text-h3 font-bold text-neutral-900 dark:text-neutral-100">{title}</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+        {description}
+      </p>
+      {action && <div className="mt-6 flex justify-center">{action}</div>}
+    </div>
+  );
+}
+
+export function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  detail,
+  tone = 'neutral',
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: number | string;
+  detail?: string;
+  tone?: 'neutral' | 'brand' | 'success' | 'warn' | 'danger';
+}) {
+  const toneClass = {
+    neutral: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300',
+    brand: 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100',
+    success: 'bg-success-50 text-success-700 dark:bg-success-950/40 dark:text-success-100',
+    warn: 'bg-warn-50 text-warn-700 dark:bg-warn-950/40 dark:text-warn-100',
+    danger: 'bg-danger-50 text-danger-700 dark:bg-danger-950/40 dark:text-danger-100',
+  }[tone];
+
+  return (
+    <div className="rounded-card border border-neutral-200 bg-white p-4 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            {label}
+          </div>
+          <div className="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+            {value}
+          </div>
+        </div>
+        <div className={cn('flex h-9 w-9 items-center justify-center rounded-xl', toneClass)}>
+          <Icon size={18} />
+        </div>
+      </div>
+      {detail && <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{detail}</div>}
+    </div>
+  );
+}
+
+export function MiniSparkline({
+  values,
+  className,
+}: {
+  values: number[];
+  className?: string;
+}) {
+  const clean = values.filter((value) => Number.isFinite(value));
+  const width = 120;
+  const height = 34;
+  const pad = 3;
+  if (clean.length < 2) {
+    return (
+      <svg viewBox={`0 0 ${width} ${height}`} className={cn('h-8 w-28 text-neutral-300 dark:text-neutral-700', className)} aria-hidden="true">
+        <path d={`M ${pad} ${height / 2} H ${width - pad}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  const min = Math.min(...clean);
+  const max = Math.max(...clean);
+  const span = Math.max(1, max - min);
+  const points = clean.map((value, index) => {
+    const x = pad + (index * (width - pad * 2)) / Math.max(1, clean.length - 1);
+    const y = height - pad - ((value - min) * (height - pad * 2)) / span;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className={cn('h-8 w-28 text-brand-600 dark:text-brand-300', className)} aria-hidden="true">
+      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function PageBreadcrumb({
+  items,
+}: {
+  items: Array<{ label: string; to?: string }>;
+}) {
+  return (
+    <div className="sticky top-0 z-20 border-b border-neutral-200/80 bg-white/85 backdrop-blur dark:border-neutral-800/80 dark:bg-neutral-950/85">
+      <div className="mx-auto max-w-5xl px-6 py-2">
+        <Breadcrumb>
+          <BreadcrumbList className="text-xs">
+            {items.map((item, index) => {
+              const isLast = index === items.length - 1;
+              return (
+                <Fragment key={`${item.label}-${index}`}>
+                  <BreadcrumbItem>
+                    {isLast || !item.to ? (
+                      <BreadcrumbPage className="max-w-[240px] truncate">{item.label}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink asChild>
+                        <Link to={item.to}>{item.label}</Link>
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                  {!isLast && <BreadcrumbSeparator />}
+                </Fragment>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+    </div>
+  );
+}

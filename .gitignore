@@ -1,0 +1,17 @@
+# Données personnelles (couvertes par le mécanisme de backup zip, pas par git)
+data/
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+web/dist/
+
+# Logs du serveur local
+server.err
+server.out
+
+# Temporaires
+*.tmp
