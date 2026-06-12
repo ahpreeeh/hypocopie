@@ -1,15 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Outlet, Link, useLocation } from 'react-router';
 import {
-  NotebookPen, GraduationCap, Save, Check, Loader2, Menu, X,
-  PanelLeftClose, PanelLeftOpen, AlertTriangle, FileWarning, Sun, Moon, Inbox,
+  AlertTriangle,
+  BookOpen,
+  Check,
+  FileWarning,
+  History,
+  Inbox,
+  LayoutDashboard,
+  Loader2,
+  Menu,
+  Moon,
+  NotebookPen,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Save,
+  ScanText,
+  Sun,
+  X,
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from './components/ui/sheet';
 import { useTheme } from './theme-context';
 import logoImg from '../imports/ChatGPT_Image_11_mai_2026__22_39_20.png';
 
 const BACKUP_AUTO_KEY = 'hypocampus_last_backup_iso';
-const BACKUP_AUTO_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24h
+const BACKUP_AUTO_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const APP_SIDEBAR_KEY = 'hypocampus_app_sidebar_expanded';
 
 export function AppShell() {
@@ -17,14 +32,14 @@ export function AppShell() {
   const [sidebarExpanded, setSidebarExpanded] = useState(() => localStorage.getItem(APP_SIDEBAR_KEY) !== '0');
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const inTraining = pathname.startsWith('/entrainement');
-  const inCaptures = pathname === '/' || pathname.startsWith('/captures');
+  const inDashboard = pathname === '/' || pathname === '/entrainement';
+  const inImport = pathname.startsWith('/entrainement/import');
+  const inHistory = pathname.startsWith('/entrainement/historique');
+  const inExam = pathname.startsWith('/entrainement/') && !inImport && !inHistory;
+  const inCaptures = pathname.startsWith('/captures');
   const inAdminVignettes = pathname.startsWith('/admin/vignettes');
   const inAdminCorrections = pathname.startsWith('/admin/corrections');
 
-  // Badge "corrections en attente" : fetch initial + refresh quand on quitte
-  // /admin/corrections (changement de path). Pas de polling pour ne pas
-  // surcharger inutilement le serveur local.
   const [correctionsTotal, setCorrectionsTotal] = useState<number | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -46,12 +61,10 @@ export function AppShell() {
     setMobileOpen(false);
   }, [pathname]);
 
-  // Auto-backup 1x/jour au montage.
   useEffect(() => {
     const last = localStorage.getItem(BACKUP_AUTO_KEY);
     const lastMs = last ? Date.parse(last) : 0;
-    const elapsed = Date.now() - lastMs;
-    if (elapsed < BACKUP_AUTO_INTERVAL_MS) return;
+    if (Date.now() - lastMs < BACKUP_AUTO_INTERVAL_MS) return;
     fetch('/api/admin/backup', { method: 'POST' })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
@@ -66,10 +79,15 @@ export function AppShell() {
   const nav = (
     <SidebarContent
       expanded={sidebarExpanded}
-      inCaptures={inCaptures}
-      inTraining={inTraining}
-      inAdminVignettes={inAdminVignettes}
-      inAdminCorrections={inAdminCorrections}
+      active={{
+        dashboard: inDashboard,
+        import: inImport,
+        history: inHistory,
+        exam: inExam,
+        captures: inCaptures,
+        corrections: inAdminCorrections,
+        vignettes: inAdminVignettes,
+      }}
       correctionsTotal={correctionsTotal}
       onToggle={() => setSidebarExpanded((value) => !value)}
       onNavigate={() => setMobileOpen(false)}
@@ -77,51 +95,50 @@ export function AppShell() {
   );
 
   return (
-    <div className="h-screen flex bg-neutral-50 dark:bg-neutral-950 overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground">
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed left-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 md:hidden"
+        className="fixed left-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-input border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground md:hidden"
         title="Ouvrir la navigation"
       >
         <Menu size={18} />
       </button>
 
       <aside
-        className={`hidden shrink-0 border-r border-neutral-200 bg-white transition-[width] duration-200 ease-out dark:border-neutral-800 dark:bg-neutral-900 md:flex ${
-          sidebarExpanded ? 'w-56' : 'w-[76px]'
+        className={`hidden shrink-0 border-r border-sidebar-border bg-sidebar transition-[width] duration-200 ease-out md:flex ${
+          sidebarExpanded ? 'w-[230px]' : 'w-[76px]'
         }`}
       >
         {nav}
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="w-[86vw] max-w-xs gap-0 p-0">
+        <SheetContent side="left" className="w-[86vw] max-w-xs gap-0 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground">
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation</SheetTitle>
           </SheetHeader>
-          <div className="flex h-full flex-col border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-              <div className="flex items-center gap-3">
-                <img src={logoImg} alt="Hypocampus" className="h-9 w-9 rounded-lg object-cover shadow-sm" />
-                <div>
-                  <div className="text-sm font-bold text-neutral-900 dark:text-neutral-100">Hypocampus</div>
-                  <div className="text-xs text-neutral-500 dark:text-neutral-400">Navigation</div>
-                </div>
-              </div>
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
+              <Brand expanded />
               <button
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                className="rounded-input p-2 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 title="Fermer"
               >
                 <X size={18} />
               </button>
             </div>
             <SidebarContent
-              expanded={true}
-              inCaptures={inCaptures}
-              inTraining={inTraining}
-              inAdminVignettes={inAdminVignettes}
-              inAdminCorrections={inAdminCorrections}
+              expanded
+              active={{
+                dashboard: inDashboard,
+                import: inImport,
+                history: inHistory,
+                exam: inExam,
+                captures: inCaptures,
+                corrections: inAdminCorrections,
+                vignettes: inAdminVignettes,
+              }}
               correctionsTotal={correctionsTotal}
               onToggle={() => setSidebarExpanded((value) => !value)}
               onNavigate={() => setMobileOpen(false)}
@@ -131,7 +148,7 @@ export function AppShell() {
         </SheetContent>
       </Sheet>
 
-      <div className="flex-1 overflow-hidden">
+      <div className="min-w-0 flex-1 overflow-hidden">
         <Outlet />
       </div>
     </div>
@@ -140,41 +157,35 @@ export function AppShell() {
 
 function SidebarContent({
   expanded,
-  inCaptures,
-  inTraining,
-  inAdminVignettes,
-  inAdminCorrections,
+  active,
   correctionsTotal,
   onToggle,
   onNavigate,
   hideToggle = false,
 }: {
   expanded: boolean;
-  inCaptures: boolean;
-  inTraining: boolean;
-  inAdminVignettes: boolean;
-  inAdminCorrections: boolean;
+  active: {
+    dashboard: boolean;
+    import: boolean;
+    history: boolean;
+    exam: boolean;
+    captures: boolean;
+    corrections: boolean;
+    vignettes: boolean;
+  };
   correctionsTotal: number | null;
   onToggle: () => void;
   onNavigate: () => void;
   hideToggle?: boolean;
 }) {
   return (
-    <nav className="flex h-full w-full flex-col gap-3 px-3 py-4">
+    <nav className="flex h-full w-full flex-col px-3 py-4">
       <div className={`flex items-center ${expanded ? 'justify-between gap-3' : 'justify-center'}`}>
-        <Link to="/captures" onClick={onNavigate} className={`min-w-0 ${expanded ? 'flex items-center gap-3' : ''}`} title="Hypocampus">
-          <img src={logoImg} alt="Hypocampus" className="h-11 w-11 rounded-xl object-cover shadow-sm" />
-          {expanded && (
-            <div className="min-w-0">
-              <div className="truncate text-sm font-bold text-neutral-900 dark:text-neutral-100">Hypocampus</div>
-              <div className="truncate text-xs text-neutral-500 dark:text-neutral-400">Revisions</div>
-            </div>
-          )}
-        </Link>
+        <Brand expanded={expanded} onNavigate={onNavigate} />
         {!hideToggle && expanded && (
           <button
             onClick={onToggle}
-            className="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            className="rounded-input p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             title="Reduire la sidebar"
           >
             <PanelLeftClose size={17} />
@@ -185,62 +196,77 @@ function SidebarContent({
       {!hideToggle && !expanded && (
         <button
           onClick={onToggle}
-          className="mx-auto rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+          className="mx-auto mt-3 rounded-input p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           title="Etendre la sidebar"
         >
           <PanelLeftOpen size={17} />
         </button>
       )}
 
-      <div className="mt-2 space-y-1">
-        <NavTile
-          to="/captures"
-          icon={<NotebookPen size={20} />}
-          label="Cahier d'erreurs"
-          active={inCaptures}
-          expanded={expanded}
-          onNavigate={onNavigate}
-        />
-        <NavTile
-          to="/entrainement"
-          icon={<GraduationCap size={20} />}
-          label="Entrainement"
-          active={inTraining}
-          expanded={expanded}
-          onNavigate={onNavigate}
-        />
-      </div>
+      <SidebarSection label="Reviser" expanded={expanded}>
+        <NavTile to="/entrainement" icon={<LayoutDashboard size={19} />} label="Tableau de bord" active={active.dashboard} expanded={expanded} onNavigate={onNavigate} />
+        <NavTile to="/captures" icon={<NotebookPen size={19} />} label="Cahier d'erreurs" active={active.captures} expanded={expanded} onNavigate={onNavigate} />
+        <NavTile to="/entrainement/historique" icon={<History size={19} />} label="Historique" active={active.history} expanded={expanded} onNavigate={onNavigate} />
+        {active.exam && (
+          <NavTile to="/entrainement" icon={<BookOpen size={19} />} label="Annale en cours" active expanded={expanded} onNavigate={onNavigate} />
+        )}
+      </SidebarSection>
 
-      <div className="flex-1" />
-
-      {expanded && (
-        <div className="px-3 pt-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-          Admin
-        </div>
-      )}
-      <div className="space-y-1">
+      <SidebarSection label="Maintenance" expanded={expanded} className="mt-4">
+        <NavTile to="/entrainement/import" icon={<ScanText size={19} />} label="Importer" active={active.import} expanded={expanded} onNavigate={onNavigate} />
         <NavTile
           to="/admin/corrections"
-          icon={<Inbox size={20} />}
+          icon={<Inbox size={19} />}
           label="Corrections"
-          active={inAdminCorrections}
+          active={active.corrections}
           expanded={expanded}
           onNavigate={onNavigate}
           badge={correctionsTotal && correctionsTotal > 0 ? correctionsTotal : undefined}
         />
-        <NavTile
-          to="/admin/vignettes"
-          icon={<FileWarning size={20} />}
-          label="Vignettes orphelines"
-          active={inAdminVignettes}
-          expanded={expanded}
-          onNavigate={onNavigate}
-        />
+        <NavTile to="/admin/vignettes" icon={<FileWarning size={19} />} label="Vignettes" active={active.vignettes} expanded={expanded} onNavigate={onNavigate} />
         <BackupButton expanded={expanded} />
-      </div>
+      </SidebarSection>
 
+      <div className="flex-1" />
       <ThemeToggle expanded={expanded} />
     </nav>
+  );
+}
+
+function Brand({ expanded, onNavigate }: { expanded: boolean; onNavigate?: () => void }) {
+  return (
+    <Link to="/entrainement" onClick={onNavigate} className={`min-w-0 ${expanded ? 'flex items-center gap-3' : ''}`} title="Hypocampus">
+      <img src={logoImg} alt="Hypocampus" className="h-10 w-10 rounded-[10px] object-cover shadow-sm" />
+      {expanded && (
+        <div className="min-w-0">
+          <div className="truncate text-sm font-[650] tracking-[-0.01em] text-sidebar-foreground">Hypocampus</div>
+          <div className="truncate text-[11px] text-muted-foreground">Revisions</div>
+        </div>
+      )}
+    </Link>
+  );
+}
+
+function SidebarSection({
+  label,
+  expanded,
+  children,
+  className = '',
+}: {
+  label: string;
+  expanded: boolean;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`space-y-1 ${className}`}>
+      {expanded && (
+        <div className="px-3 pb-1 pt-5 text-[10.5px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
+          {label}
+        </div>
+      )}
+      {children}
+    </div>
   );
 }
 
@@ -252,8 +278,8 @@ function ThemeToggle({ expanded }: { expanded: boolean }) {
   return (
     <button
       onClick={toggleTheme}
-      className={`flex items-center rounded-xl text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 ${
-        expanded ? 'w-full gap-3 px-3 py-2.5 text-sm' : 'mx-auto h-11 w-11 justify-center'
+      className={`flex items-center rounded-[10px] text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${
+        expanded ? 'w-full gap-3 px-3 py-2 text-[13.5px]' : 'mx-auto h-11 w-11 justify-center'
       }`}
       title={label}
     >
@@ -289,8 +315,8 @@ function BackupButton({ expanded }: { expanded: boolean }) {
 
   let icon = <Save size={18} />;
   let label = 'Sauvegarder';
-  let titleAttr = 'Creer une sauvegarde maintenant (auto 1x/jour)';
-  let tone = 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100';
+  let titleAttr = 'Creer une sauvegarde maintenant';
+  let tone = 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground';
   if (busy) {
     icon = <Loader2 size={18} className="animate-spin" />;
     label = 'Sauvegarde';
@@ -299,19 +325,20 @@ function BackupButton({ expanded }: { expanded: boolean }) {
     icon = <Check size={18} />;
     label = 'Sauvegardee';
     titleAttr = 'Sauvegarde creee';
-    tone = 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/30';
+    tone = 'bg-success-50 text-success-700 dark:bg-success-950/40 dark:text-success-100';
   } else if (error) {
+    icon = <AlertTriangle size={18} />;
     label = 'Erreur';
     titleAttr = error;
-    tone = 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30';
+    tone = 'bg-danger-50 text-danger-700 dark:bg-danger-950/40 dark:text-danger-100';
   }
 
   return (
     <button
       onClick={handleBackup}
       disabled={busy}
-      className={`flex items-center rounded-xl transition-colors disabled:opacity-60 ${
-        expanded ? 'w-full gap-3 px-3 py-2.5 text-sm' : 'mx-auto h-11 w-11 justify-center'
+      className={`flex items-center rounded-[10px] transition-colors disabled:opacity-60 ${
+        expanded ? 'w-full gap-3 px-3 py-2 text-[13.5px]' : 'mx-auto h-11 w-11 justify-center'
       } ${tone}`}
       title={titleAttr}
     >
@@ -331,7 +358,7 @@ function NavTile({
   badge,
 }: {
   to: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   active: boolean;
   expanded: boolean;
@@ -345,26 +372,26 @@ function NavTile({
     <Link
       to={to}
       onClick={onNavigate}
-      className={`group relative flex items-center rounded-xl transition-colors ${
-        expanded ? 'gap-3 px-3 py-2.5 text-sm' : 'mx-auto h-11 w-11 justify-center'
+      className={`group relative flex items-center rounded-[10px] transition-colors ${
+        expanded ? 'gap-3 px-3 py-2 text-[13.5px]' : 'mx-auto h-11 w-11 justify-center'
       } ${
         active
-          ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
-          : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
+          ? 'bg-brand-50 text-brand-700 ring-1 ring-brand-100 dark:bg-brand-950/40 dark:text-brand-100 dark:ring-brand-700/40'
+          : 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
       }`}
       title={badgeLabel ? `${label} (${badgeLabel} en attente)` : label}
     >
       <span className="relative shrink-0">
         {icon}
         {badgeLabel && !expanded && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-amber-500 px-1 text-[9px] font-bold text-white shadow-sm">
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-warn-500 px-1 text-[9px] font-[650] text-white shadow-sm">
             {badgeLabel}
           </span>
         )}
       </span>
       {expanded && <span className="truncate font-medium">{label}</span>}
       {expanded && badgeLabel && (
-        <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white">
+        <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-warn-500 px-1.5 text-[10px] font-[650] text-white">
           {badgeLabel}
         </span>
       )}

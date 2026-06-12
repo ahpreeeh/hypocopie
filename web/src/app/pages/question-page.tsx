@@ -27,8 +27,8 @@ export function QuestionPage() {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold mb-2">Question introuvable</h2>
-          <Link to="/captures" className="text-indigo-600 hover:underline">Retour à la liste</Link>
+          <h2 className="text-xl font-medium mb-2 text-foreground">Question introuvable</h2>
+          <Link to="/captures" className="text-brand-700 hover:underline dark:text-brand-500">Retour à la liste</Link>
         </div>
       </div>
     );
@@ -56,17 +56,17 @@ export function QuestionPage() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-neutral-50 dark:bg-[#111]">
+    <div className="flex flex-col h-full overflow-hidden bg-background">
       {/* Top Header */}
-      <header className="h-14 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-between px-4 shrink-0 z-20">
+      <header className="h-14 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 z-20">
         <div className="flex items-center gap-4">
-          <Link to="/captures" className="p-2 -ml-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 transition-colors">
+          <Link to="/captures" className="p-2 -ml-2 rounded-input text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
             <ArrowLeft size={20} />
           </Link>
           
           <div className="flex items-center gap-2 text-sm">
-             <span className="font-medium text-neutral-900 dark:text-neutral-100">{question.subject}</span>
-             <span className="text-neutral-400">/</span>
+             <span className="font-medium text-foreground">{question.subject}</span>
+             <span className="text-muted-foreground/60">/</span>
              <EditableChapter 
                chapter={question.chapter} 
                onSave={handleSaveChapter} 
@@ -77,27 +77,27 @@ export function QuestionPage() {
         <div className="flex items-center gap-2">
           <AlertDialog.Root open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <AlertDialog.Trigger asChild>
-              <button className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors" title="Supprimer la question">
+              <button className="p-2 text-muted-foreground hover:text-danger-700 hover:bg-danger-50 dark:hover:bg-danger-950/30 rounded-input transition-colors" title="Supprimer la question">
                 <Trash2 size={18} />
               </button>
             </AlertDialog.Trigger>
             <AlertDialog.Portal>
               <AlertDialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
-              <AlertDialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-neutral-900 rounded-xl p-6 shadow-xl z-50 w-full max-w-md border border-neutral-200 dark:border-neutral-800">
-                <AlertDialog.Title className="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+              <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-card border border-border bg-card p-6 shadow-xl">
+                <AlertDialog.Title className="text-lg font-medium text-foreground mb-2">
                   Supprimer la question
                 </AlertDialog.Title>
-                <AlertDialog.Description className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+                <AlertDialog.Description className="text-sm text-muted-foreground mb-6">
                   Êtes-vous sûr de vouloir supprimer cette question ? Cette action est irréversible et supprimera également les images associées.
                 </AlertDialog.Description>
                 <div className="flex justify-end gap-3">
                   <AlertDialog.Cancel asChild>
-                    <button className="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">
+                    <button className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground rounded-input transition-colors">
                       Annuler
                     </button>
                   </AlertDialog.Cancel>
                   <AlertDialog.Action asChild>
-                    <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors">
+                    <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-white bg-danger-700 hover:bg-danger-500 rounded-input transition-colors">
                       Supprimer
                     </button>
                   </AlertDialog.Action>
@@ -112,7 +112,7 @@ export function QuestionPage() {
       <div className="flex-1 flex overflow-hidden">
         
         {/* Left Side: Navigation (Scrollable independently) */}
-        <div className="w-[280px] shrink-0 border-r border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/50 overflow-y-auto p-5">
+        <div className="w-[280px] shrink-0 border-r border-border bg-card/70 overflow-y-auto p-5">
           <div className="space-y-6">
             
             <EditableTitle 
@@ -123,7 +123,7 @@ export function QuestionPage() {
 
             {/* Series Navigation if applicable */}
             <div className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              <h3 className="text-xs font-[650] uppercase tracking-wider text-muted-foreground">
                 Navigation
               </h3>
               
@@ -135,13 +135,13 @@ export function QuestionPage() {
                       to={`/captures/q/${sq.id}`}
                       className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all ${
                         sq.id === question.id 
-                          ? 'bg-indigo-600 text-white shadow-md' 
-                          : 'bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700'
+                          ? 'bg-brand-600 text-white shadow-md'
+                          : 'bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border'
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
-                          sq.id === question.id ? 'bg-white/20' : 'bg-neutral-100 dark:bg-neutral-700'
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-[650] ${
+                          sq.id === question.id ? 'bg-primary-foreground/20' : 'bg-muted'
                         }`}>
                           {sq.seriesPosition}
                         </div>
@@ -154,7 +154,7 @@ export function QuestionPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-sm text-neutral-500 dark:text-neutral-400 bg-white dark:bg-neutral-800 p-3 rounded-lg border border-neutral-200 dark:border-neutral-700">
+                <div className="text-sm text-muted-foreground bg-card p-3 rounded-input border border-border">
                   Question isolée (QI)
                 </div>
               )}
@@ -164,22 +164,22 @@ export function QuestionPage() {
         </div>
 
         {/* Right Side: Main Content (Vignette + Question & Answers) */}
-        <div className="flex-1 overflow-y-auto bg-white dark:bg-[#111]">
+        <div className="flex-1 overflow-y-auto bg-background">
            <div className="max-w-4xl mx-auto p-8 space-y-8 pb-32">
 
              {/* Unified Clinical Case (Dossier Progressif) */}
              {(question.vignette || (question.seriesId && seriesQuestions.some(sq => sq.addedVignette))) && (
-               <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                 <div className="bg-neutral-50 dark:bg-neutral-900/50 px-5 py-3 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+               <div className="bg-card border border-border rounded-card shadow-sm overflow-hidden flex flex-col">
+                 <div className="bg-muted/50 px-5 py-3 border-b border-border flex items-center justify-between">
                    <div className="flex items-center gap-2">
-                     <BookOpen size={16} className="text-indigo-600 dark:text-indigo-400" />
-                     <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300">
+                     <BookOpen size={16} className="text-brand-700 dark:text-brand-500" />
+                     <h3 className="text-xs font-[650] uppercase tracking-wider text-muted-foreground">
                        Cas clinique {question.seriesId ? "progressif" : ""}
                      </h3>
                    </div>
                  </div>
                  
-                 <div className="p-5 text-[15px] leading-relaxed space-y-0 text-neutral-800 dark:text-neutral-200">
+                 <div className="p-5 text-[15px] leading-relaxed space-y-0 text-foreground">
                    {question.vignette && (
                      <p className="whitespace-pre-wrap">{question.vignette}</p>
                    )}
@@ -192,16 +192,16 @@ export function QuestionPage() {
                      
                      if (isCurrent) {
                        return (
-                         <div key={sq.id} className="relative mt-4 -mx-5 px-5 py-4 bg-indigo-50 dark:bg-indigo-900/20 border-y border-indigo-100 dark:border-indigo-800/50">
-                           <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
-                           <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-2">
+                         <div key={sq.id} className="relative mt-4 -mx-5 px-5 py-4 bg-brand-50 dark:bg-brand-950/30 border-y border-brand-100 dark:border-brand-700/40">
+                           <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-600"></div>
+                           <span className="flex items-center gap-1.5 text-[11px] font-[650] uppercase tracking-wider text-brand-700 dark:text-brand-100 mb-2">
                              <span className="relative flex h-2 w-2">
-                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+                               <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-600"></span>
                              </span>
                              Nouvelle information (Q{sq.seriesPosition})
                            </span>
-                           <p className="whitespace-pre-wrap font-medium text-indigo-950 dark:text-indigo-100">
+                           <p className="whitespace-pre-wrap font-medium text-brand-950 dark:text-brand-100">
                              {sq.addedVignette}
                            </p>
                          </div>
@@ -209,8 +209,8 @@ export function QuestionPage() {
                      }
                      
                      return (
-                       <div key={sq.id} className="mt-4 pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                         <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 block mb-1">
+                       <div key={sq.id} className="mt-4 pt-4 border-t border-border">
+                         <span className="text-[11px] font-[650] uppercase tracking-wider text-muted-foreground block mb-1">
                            Information Q{sq.seriesPosition}
                          </span>
                          <p className="whitespace-pre-wrap opacity-90">
@@ -225,8 +225,8 @@ export function QuestionPage() {
               
               {/* Question Text */}
               <div className="space-y-4 pt-4">
-                <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-                   <span className="px-2 py-1 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 font-medium">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                   <span className="px-2 py-1 rounded bg-muted text-muted-foreground font-medium">
                      {question.format}{question.seriesId ? ` — Q${question.seriesPosition}/${question.seriesTotal}` : ''}
                    </span>
                    <span>•</span>
@@ -234,7 +234,7 @@ export function QuestionPage() {
                    <span>•</span>
                    <span>Capturé le {format(new Date(question.capturedAt), 'dd MMM yyyy à HH:mm', { locale: fr })}</span>
                 </div>
-                <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50 leading-tight">
+                <h1 className="text-2xl font-[650] text-foreground leading-tight">
                   {question.questionText}
                 </h1>
               </div>
@@ -243,8 +243,8 @@ export function QuestionPage() {
               {question.images.length > 0 && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Imagerie & Annexes</h3>
-                    <label className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors cursor-pointer">
+                    <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Imagerie & Annexes</h3>
+                    <label className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-brand-700 dark:text-brand-100 bg-brand-50 dark:bg-brand-950/30 rounded-input hover:bg-brand-100 transition-colors cursor-pointer">
                       <ImageIcon size={14} />
                       Ajouter une image
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => {
@@ -259,13 +259,13 @@ export function QuestionPage() {
                   {question.images.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {question.images.map(img => (
-                        <div key={img.id} className="relative group rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900">
+                        <div key={img.id} className="relative group rounded-input overflow-hidden border border-border bg-muted">
                           <img src={img.url || ''} alt="Illustration de la question" className="w-full h-auto object-contain max-h-[300px]" loading="lazy" />
                           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            <a href={img.url} target="_blank" rel="noreferrer" className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg backdrop-blur" title="Agrandir">
+                            <a href={img.url} target="_blank" rel="noreferrer" className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 text-white rounded-input backdrop-blur" title="Agrandir">
                               <Maximize2 size={20} />
                             </a>
-                            <button onClick={() => handleDeleteImage(img.id)} className="p-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg backdrop-blur" title="Supprimer l'image">
+                            <button onClick={() => handleDeleteImage(img.id)} className="p-2 bg-danger-500/80 hover:bg-danger-700 text-white rounded-input backdrop-blur" title="Supprimer l'image">
                               <Trash2 size={20} />
                             </button>
                           </div>
@@ -273,7 +273,7 @@ export function QuestionPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-sm text-neutral-400 italic">Aucune image associée.</div>
+                    <div className="text-sm text-muted-foreground italic">Aucune image associée.</div>
                   )}
                 </div>
               )}
@@ -287,35 +287,35 @@ export function QuestionPage() {
                     // If option is incorrect but user checked it: red border, red X
                     // If option is correct but user missed it: amber border/text indicating omission.
                     
-                    let bg = "bg-white dark:bg-neutral-900";
-                    let border = "border-neutral-200 dark:border-neutral-700";
+                    let bg = "bg-card";
+                    let border = "border-border";
                     let icon = null;
-                    let textClass = "text-neutral-700 dark:text-neutral-300";
+                    let textClass = "text-muted-foreground";
 
                     if (opt.isCorrect && opt.isChecked) {
-                      bg = "bg-green-50 dark:bg-green-900/20";
-                      border = "border-green-300 dark:border-green-800";
-                      textClass = "text-green-800 dark:text-green-300 font-medium";
-                      icon = <CheckCircle2 size={20} className="text-green-600 dark:text-green-500" />;
+                      bg = "bg-success-50 dark:bg-success-950/30";
+                      border = "border-success-100 dark:border-success-700/50";
+                      textClass = "text-success-950 dark:text-success-100 font-medium";
+                      icon = <CheckCircle2 size={20} className="text-success-700 dark:text-success-500" />;
                     } else if (!opt.isCorrect && opt.isChecked) {
-                      bg = "bg-red-50 dark:bg-red-900/20";
-                      border = "border-red-300 dark:border-red-800";
-                      textClass = "text-red-800 dark:text-red-300 font-medium line-through opacity-80";
-                      icon = <X size={20} className="text-red-600 dark:text-red-500" />;
+                      bg = "bg-danger-50 dark:bg-danger-950/30";
+                      border = "border-danger-100 dark:border-danger-700/50";
+                      textClass = "text-danger-950 dark:text-danger-100 font-medium line-through opacity-80";
+                      icon = <X size={20} className="text-danger-700 dark:text-danger-500" />;
                     } else if (opt.isCorrect && !opt.isChecked) {
-                      bg = "bg-amber-50 dark:bg-amber-900/10";
-                      border = "border-amber-300 border-dashed dark:border-amber-800";
-                      textClass = "text-amber-800 dark:text-amber-300 font-medium";
-                      icon = <CheckCircle2 size={20} className="text-amber-500 opacity-60" />;
+                      bg = "bg-warn-50 dark:bg-warn-950/30";
+                      border = "border-warn-100 border-dashed dark:border-warn-700/50";
+                      textClass = "text-warn-950 dark:text-warn-100 font-medium";
+                      icon = <CheckCircle2 size={20} className="text-warn-500 opacity-70" />;
                     }
 
                     return (
                       <div key={opt.id} className={`flex items-start gap-4 p-4 rounded-xl border ${bg} ${border} transition-colors`}>
                         <div className="mt-0.5 shrink-0 w-6 flex justify-center">
-                          {icon || <div className="w-5 h-5 rounded border border-neutral-300 dark:border-neutral-600" />}
+                          {icon || <div className="w-5 h-5 rounded border border-border" />}
                         </div>
                         <div className={`text-base leading-relaxed ${textClass}`}>
-                          <span className="font-bold mr-2 opacity-50 text-sm uppercase">{String.fromCharCode(65 + i)}.</span>
+                          <span className="font-[650] mr-2 opacity-50 text-sm uppercase">{String.fromCharCode(65 + i)}.</span>
                           {opt.text}
                         </div>
                       </div>
@@ -329,13 +329,13 @@ export function QuestionPage() {
                 <div className="space-y-6">
                   {question.freeAnswers.map((ans, i) => (
                     <div key={i} className="space-y-3">
-                      <div className="p-4 rounded-xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
-                        <div className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400 mb-1">Votre réponse</div>
-                        <div className="text-neutral-800 dark:text-neutral-200">{ans.userText}</div>
+                      <div className="p-4 rounded-input bg-muted/60 border border-border">
+                        <div className="text-xs font-medium uppercase text-muted-foreground mb-1">Votre réponse</div>
+                        <div className="text-foreground">{ans.userText}</div>
                       </div>
-                      <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50">
-                        <div className="text-xs font-medium uppercase text-green-600 dark:text-green-500 mb-1">Réponse attendue</div>
-                        <div className="text-green-900 dark:text-green-300 font-medium">{ans.expectedText}</div>
+                      <div className="p-4 rounded-input bg-success-50 dark:bg-success-950/30 border border-success-100 dark:border-success-700/50">
+                        <div className="text-xs font-medium uppercase text-success-700 dark:text-success-500 mb-1">Réponse attendue</div>
+                        <div className="text-success-950 dark:text-success-100 font-medium">{ans.expectedText}</div>
                       </div>
                     </div>
                   ))}
@@ -348,9 +348,9 @@ export function QuestionPage() {
               )}
 
               {/* Correction */}
-              <div className="mt-12 pt-8 border-t border-neutral-200 dark:border-neutral-800">
-                 <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4 flex items-center gap-2">
-                   <BookOpen size={20} className="text-indigo-600 dark:text-indigo-400" />
+              <div className="mt-12 pt-8 border-t border-border">
+                 <h2 className="text-lg font-medium text-foreground mb-4 flex items-center gap-2">
+                   <BookOpen size={20} className="text-brand-700 dark:text-brand-500" />
                    Correction détaillée
                  </h2>
                  <div className="prose prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:text-[15px]">
@@ -397,11 +397,11 @@ function ReviewHistory({ question }: { question: Question }) {
   };
 
   return (
-    <div className="mt-10 pt-8 border-t border-neutral-200 dark:border-neutral-800">
-      <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4 flex items-center gap-2">
-        <Repeat2 size={20} className="text-indigo-600 dark:text-indigo-400" />
+    <div className="mt-10 pt-8 border-t border-border">
+      <h2 className="text-lg font-medium text-foreground mb-4 flex items-center gap-2">
+        <Repeat2 size={20} className="text-brand-700 dark:text-brand-500" />
         Historique de revue
-        <span className="text-sm font-normal text-neutral-500">
+        <span className="text-sm font-normal text-muted-foreground">
           — vue {allEvents.length} fois
         </span>
       </h2>
@@ -420,23 +420,23 @@ function ReviewHistory({ question }: { question: Question }) {
         {allEvents.map((e, i) => (
           <div
             key={i}
-            className="flex items-start gap-4 p-4 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+            className="flex items-start gap-4 p-4 rounded-input bg-card border border-border"
           >
             <div className="text-2xl shrink-0 mt-0.5">{statusEmoji(e.status)}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className="font-medium text-neutral-900 dark:text-neutral-100">
+                <span className="font-medium text-foreground">
                   {e.label}
                 </span>
-                <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                <span className="text-xs text-muted-foreground">
                   {e.at ? format(new Date(e.at), 'dd MMM yyyy à HH:mm', { locale: fr }) : ''}
                 </span>
                 {e.status && <StatusBadge status={e.status} />}
               </div>
               {e.selectedAnswers && e.selectedAnswers.length > 0 && (
-                <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                <div className="text-sm text-muted-foreground">
                   Réponses cochées :{' '}
-                  <span className="font-medium text-neutral-800 dark:text-neutral-200">
+                  <span className="font-medium text-foreground">
                     {e.selectedAnswers.join(', ')}
                   </span>
                 </div>
@@ -446,7 +446,7 @@ function ReviewHistory({ question }: { question: Question }) {
                   href={e.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 mt-1 text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+                  className="inline-flex items-center gap-1 mt-1 text-xs text-brand-700 dark:text-brand-500 hover:underline"
                 >
                   <ExternalLink size={12} />
                   Session d'origine
@@ -462,10 +462,10 @@ function ReviewHistory({ question }: { question: Question }) {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string, icon: any, color: string, bg: string }> = {
-    wrong: { label: 'Incorrecte', icon: AlertCircle, color: 'text-red-700 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30' },
-    partial: { label: 'Partielle', icon: HelpCircle, color: 'text-amber-700 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
-    unknown: { label: 'Indéterminée', icon: HelpCircle, color: 'text-neutral-700 dark:text-neutral-400', bg: 'bg-neutral-100 dark:bg-neutral-800' },
-    correct: { label: 'Correcte', icon: CheckCircle2, color: 'text-green-700 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30' }
+    wrong: { label: 'Incorrecte', icon: AlertCircle, color: 'text-danger-700 dark:text-danger-500', bg: 'bg-danger-100 dark:bg-danger-950/30' },
+    partial: { label: 'Partielle', icon: HelpCircle, color: 'text-warn-700 dark:text-warn-500', bg: 'bg-warn-100 dark:bg-warn-950/30' },
+    unknown: { label: 'Indéterminée', icon: HelpCircle, color: 'text-muted-foreground', bg: 'bg-muted' },
+    correct: { label: 'Correcte', icon: CheckCircle2, color: 'text-success-700 dark:text-success-500', bg: 'bg-success-100 dark:bg-success-950/30' }
   };
   const { label, icon: Icon, color, bg } = config[status] || config.unknown;
 
@@ -490,7 +490,7 @@ function EditableChapter({ chapter, onSave }: { chapter: string | null, onSave: 
           value={val} 
           onChange={e => setVal(e.target.value)}
           placeholder="Chapitre..."
-          className="w-32 px-2 py-0.5 text-sm rounded border border-indigo-300 dark:border-indigo-700 bg-white dark:bg-neutral-800 outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-neutral-100"
+          className="w-32 px-2 py-0.5 text-sm rounded border border-input bg-input-background outline-none focus:ring-2 focus:ring-ring text-foreground"
           onKeyDown={e => {
             if (e.key === 'Enter') { onSave(val); setIsEditing(false); }
             if (e.key === 'Escape') { setVal(chapter || ''); setIsEditing(false); }
@@ -503,7 +503,7 @@ function EditableChapter({ chapter, onSave }: { chapter: string | null, onSave: 
 
   return (
     <span 
-      className="text-neutral-600 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer flex items-center gap-1 group"
+      className="text-muted-foreground hover:text-brand-700 dark:hover:text-brand-500 cursor-pointer flex items-center gap-1 group"
       onClick={() => setIsEditing(true)}
     >
       {chapter || 'Sans chapitre'}
@@ -519,23 +519,23 @@ function EditableTitle({ title, onSave, label }: { title: string | null, onSave:
   if (isEditing) {
     return (
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{label}</label>
+        <label className="text-xs font-[650] uppercase tracking-wider text-muted-foreground">{label}</label>
         <div className="flex gap-2">
           <input 
             autoFocus
             type="text" 
             value={val} 
             onChange={e => setVal(e.target.value)}
-            className="flex-1 px-3 py-1.5 text-sm rounded border border-indigo-300 dark:border-indigo-700 bg-white dark:bg-neutral-800 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 px-3 py-1.5 text-sm rounded border border-input bg-input-background outline-none focus:ring-2 focus:ring-ring"
             onKeyDown={e => {
               if (e.key === 'Enter') { onSave(val); setIsEditing(false); }
               if (e.key === 'Escape') { setVal(title || ''); setIsEditing(false); }
             }}
           />
-          <button onClick={() => { onSave(val); setIsEditing(false); }} className="p-1.5 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded hover:bg-indigo-200 dark:hover:bg-indigo-800">
+          <button onClick={() => { onSave(val); setIsEditing(false); }} className="p-1.5 bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-100 rounded hover:bg-brand-50">
             <Check size={16} />
           </button>
-          <button onClick={() => { setVal(title || ''); setIsEditing(false); }} className="p-1.5 bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded hover:bg-neutral-300 dark:hover:bg-neutral-700">
+          <button onClick={() => { setVal(title || ''); setIsEditing(false); }} className="p-1.5 bg-muted text-muted-foreground rounded hover:bg-secondary">
             <X size={16} />
           </button>
         </div>
@@ -547,14 +547,14 @@ function EditableTitle({ title, onSave, label }: { title: string | null, onSave:
     <div className="group flex flex-col gap-1 cursor-pointer" onClick={() => setIsEditing(true)}>
       {title ? (
         <>
-          <label className="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{label}</label>
+          <label className="text-xs font-[650] uppercase tracking-wider text-muted-foreground">{label}</label>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-medium text-indigo-700 dark:text-indigo-400">{title}</h2>
-            <Edit2 size={14} className="text-neutral-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <h2 className="text-lg font-medium text-brand-700 dark:text-brand-500">{title}</h2>
+            <Edit2 size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </>
       ) : (
-        <div className="flex items-center gap-2 text-sm text-neutral-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors py-2 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg px-4 bg-white/50 dark:bg-neutral-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-brand-700 dark:hover:text-brand-500 transition-colors py-2 border border-dashed border-border rounded-input px-4 bg-card/60 hover:bg-brand-50 dark:hover:bg-brand-950/30">
           <Edit2 size={14} />
           Ajouter un titre personnalisé
         </div>

@@ -85,18 +85,18 @@ function detailScoreConfig(detail: SessionDetail['details'][number]) {
   const score = typeof detail.scoreValue === 'number' ? detail.scoreValue : null;
   const max = typeof detail.maxScore === 'number' ? detail.maxScore : 0;
   if (max === 0 || detail.result === 'non-comptee') {
-    return { label: 'A revoir', icon: HelpCircle, color: 'text-neutral-600 dark:text-neutral-300', ring: 'ring-neutral-400/30', badge: 'NC', badgeClass: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200' };
+    return { label: 'A revoir', icon: HelpCircle, color: 'text-muted-foreground', ring: 'ring-muted-foreground/20', badge: 'NC', badgeClass: 'bg-muted text-muted-foreground' };
   }
   if (score === 1) {
-    return { label: '1 point', icon: CheckCircle2, color: 'text-green-700 dark:text-green-400', ring: 'ring-green-500/30', badge: '1', badgeClass: 'bg-green-600 text-white' };
+    return { label: '1 point', icon: CheckCircle2, color: 'text-success-700 dark:text-success-500', ring: 'ring-success-500/30', badge: '1', badgeClass: 'bg-success-700 text-white' };
   }
   if (score === 0.5) {
-    return { label: '0.5 point', icon: HelpCircle, color: 'text-amber-700 dark:text-amber-400', ring: 'ring-amber-500/30', badge: '0.5', badgeClass: 'bg-amber-500 text-white' };
+    return { label: '0.5 point', icon: HelpCircle, color: 'text-warn-700 dark:text-warn-500', ring: 'ring-warn-500/30', badge: '0.5', badgeClass: 'bg-warn-500 text-white' };
   }
   if (score === 0.2) {
-    return { label: '0.2 point', icon: HelpCircle, color: 'text-orange-700 dark:text-orange-400', ring: 'ring-orange-500/30', badge: '0.2', badgeClass: 'bg-orange-500 text-white' };
+    return { label: '0.2 point', icon: HelpCircle, color: 'text-warn-700 dark:text-warn-500', ring: 'ring-warn-500/30', badge: '0.2', badgeClass: 'bg-warn-500 text-white' };
   }
-  return { label: '0 point', icon: XCircle, color: 'text-red-700 dark:text-red-400', ring: 'ring-red-500/30', badge: '0', badgeClass: 'bg-red-600 text-white' };
+  return { label: '0 point', icon: XCircle, color: 'text-danger-700 dark:text-danger-500', ring: 'ring-danger-500/30', badge: '0', badgeClass: 'bg-danger-700 text-white' };
 }
 
 // ═════════════════════════════════════════════════════════════════════
@@ -165,21 +165,21 @@ export function HistoriquePage() {
   }, [sessions]);
 
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-900">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="border-b border-border bg-card">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
           <Link
             to="/entrainement"
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 flex items-center gap-1"
+            className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft size={16} /> Annales
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold flex items-center gap-2">
-              <History size={20} className="text-indigo-600" />
+            <h1 className="flex items-center gap-2 text-[22px] font-[650] tracking-[-0.015em] text-foreground">
+              <History size={20} className="text-brand-700" />
               Historique des sessions
             </h1>
-            <p className="text-xs text-neutral-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Retrouve toutes tes copies (mode examen et mode libre).
             </p>
           </div>
@@ -193,7 +193,7 @@ export function HistoriquePage() {
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         {error && (
-          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 mb-6">
+          <div className="p-4 rounded-input bg-danger-50 dark:bg-danger-950/30 text-danger-700 dark:text-danger-500 mb-6">
             Erreur : {error}
           </div>
         )}
@@ -219,7 +219,7 @@ export function HistoriquePage() {
             action={
               <Link
                 to="/entrainement"
-                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
+                className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-[var(--shadow-card)] transition-colors hover:bg-brand-700"
               >
                 <Play size={16} />
                 Demarrer une annale
@@ -232,9 +232,9 @@ export function HistoriquePage() {
           <section key={annaleId} className="mb-8">
             <div className="flex items-center justify-between gap-3 mb-3">
               <div className="min-w-0">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                <h2 className="text-[12px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
                   {list[0].annaleTitle}
-                  <span className="text-neutral-400 font-normal"> ({list.length} session{list.length > 1 ? 's' : ''})</span>
+                  <span className="text-muted-foreground/70 font-normal"> ({list.length} session{list.length > 1 ? 's' : ''})</span>
                 </h2>
                 <MiniSparkline
                   values={[...list]
@@ -246,7 +246,7 @@ export function HistoriquePage() {
               </div>
               <Link
                 to={`/entrainement/${annaleId}`}
-                className="inline-flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 hover:underline"
               >
                 <Play size={12} /> Refaire l'annale
               </Link>
@@ -261,11 +261,11 @@ export function HistoriquePage() {
                 return (
                   <div
                     key={s.id}
-                    className="group relative bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all"
+                    className="group relative rounded-card border border-border bg-card p-4 shadow-[var(--shadow-card)] transition-colors hover:border-brand-100"
                   >
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDelete(s.id); }}
-                      className="absolute top-2 right-2 p-1.5 rounded text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute right-2 top-2 rounded-input p-1.5 text-muted-foreground opacity-0 transition-colors hover:bg-danger-50 hover:text-danger-700 group-hover:opacity-100 dark:hover:bg-danger-950/40"
                       title="Supprimer cette session"
                     >
                       <Trash2 size={14} />
@@ -274,35 +274,35 @@ export function HistoriquePage() {
                       to={`/entrainement/historique/${s.id}`}
                       className="block"
                     >
-                      <div className="flex items-center gap-1.5 mb-2 text-[10px] font-bold uppercase tracking-wider">
+                      <div className="mb-2 flex items-center gap-1.5 text-[10px] font-[650] uppercase tracking-[0.09em]">
                         <span className={`inline-flex items-center px-1.5 py-0.5 rounded ${
                           s.mode === 'exam'
-                            ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300'
-                            : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
+                            ? 'border border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
+                            : 'border border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/40 dark:text-warn-100'
                         }`}>
-                          {s.mode === 'exam' ? '🎯 EXAMEN' : '📚 LIBRE'}
+                          {s.mode === 'exam' ? 'EXAMEN' : 'LIBRE'}
                         </span>
                       </div>
-                      <div className={`text-2xl font-bold ${colorClass}`}>
+                      <div className={`text-2xl font-[650] ${colorClass}`}>
                         {formatScoreNumber(points)} / {formatScoreNumber(maxPoints)}
                         {pct !== null && <span className="text-sm font-medium ml-2 opacity-70">{pct}%</span>}
                       </div>
                       {(s.score.partiel || 0) > 0 && (
-                        <div className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+                        <div className="text-xs text-warn-700 dark:text-warn-500 mt-0.5">
                           {s.score.partiel} partielle{s.score.partiel && s.score.partiel > 1 ? 's' : ''}
                         </div>
                       )}
                       {s.score.nonComptees > 0 && (
-                        <div className="text-xs text-neutral-500 mt-0.5">
+                        <div className="mt-0.5 text-xs text-muted-foreground">
                           + {s.score.nonComptees} à revoir
                         </div>
                       )}
                       {s.scoreWarning && (
-                        <div className="mt-2 rounded-md bg-amber-50 px-2 py-1 text-[11px] text-amber-700 dark:bg-amber-950/30 dark:text-amber-300">
+                        <div className="mt-2 rounded-md bg-warn-50 px-2 py-1 text-[11px] text-warn-700 dark:bg-warn-950/30 dark:text-warn-100">
                           {s.scoreWarning}
                         </div>
                       )}
-                      <div className="text-xs text-neutral-500 mt-3 flex items-center gap-2 flex-wrap">
+                      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <span>{formatDate(s.submittedAt)}</span>
                         {s.durationSec !== undefined && (
                           <>
@@ -336,7 +336,7 @@ function HistoriqueListSkeleton() {
             {[0, 1, 2].map((item) => (
               <div
                 key={item}
-                className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 space-y-3"
+                className="space-y-3 rounded-card border border-border bg-card p-4"
               >
                 <Skeleton className="h-5 w-20" />
                 <Skeleton className="h-8 w-32" />
@@ -352,8 +352,8 @@ function HistoriqueListSkeleton() {
 
 function HistoriqueDetailSkeleton() {
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-900">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 sticky top-0 z-10">
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="sticky top-0 z-10 border-b border-border bg-card">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
           <Skeleton className="h-5 w-24" />
           <div className="flex-1 space-y-2">
@@ -363,10 +363,10 @@ function HistoriqueDetailSkeleton() {
         </div>
       </header>
       <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
-        <Skeleton className="h-56 w-full rounded-3xl" />
+        <Skeleton className="h-56 w-full rounded-card" />
         <Skeleton className="h-6 w-48" />
         {[0, 1, 2].map((item) => (
-          <Skeleton key={item} className="h-40 w-full rounded-2xl" />
+          <Skeleton key={item} className="h-40 w-full rounded-card" />
         ))}
       </main>
     </div>
@@ -417,10 +417,10 @@ export function HistoriqueDetailPage() {
 
   if (error) {
     return (
-      <div className="h-full flex items-center justify-center p-8">
+      <div className="h-full flex items-center justify-center bg-background p-8">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 mb-3">Erreur : {error}</p>
-          <Link to="/entrainement/historique" className="text-indigo-600 hover:underline">Retour à l'historique</Link>
+          <p className="mb-3 text-sm text-danger-700 dark:text-danger-500">Erreur : {error}</p>
+          <Link to="/entrainement/historique" className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-500">Retour à l'historique</Link>
         </div>
       </div>
     );
@@ -435,24 +435,24 @@ export function HistoriqueDetailPage() {
   const maxPoints = scoreMaxPoints(fs);
 
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-900">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 sticky top-0 z-10">
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="sticky top-0 z-10 border-b border-border bg-card">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4 flex-wrap">
           <Link
             to="/entrainement/historique"
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 flex items-center gap-1"
+            className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft size={16} /> Historique
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-base font-bold truncate">{session.annaleTitle}</h1>
-            <p className="text-xs text-neutral-500">
-              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold mr-2 ${
+            <h1 className="truncate text-base font-[650] text-foreground">{session.annaleTitle}</h1>
+            <p className="text-xs text-muted-foreground">
+              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-[650] mr-2 ${
                 session.mode === 'exam'
-                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300'
-                  : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
+                  ? 'border border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
+                  : 'border border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/40 dark:text-warn-100'
               }`}>
-                {session.mode === 'exam' ? '🎯 EXAMEN' : '📚 LIBRE'}
+                {session.mode === 'exam' ? 'EXAMEN' : 'LIBRE'}
               </span>
               {formatDate(session.submittedAt)}
               {session.durationSec !== undefined && (
@@ -462,13 +462,13 @@ export function HistoriqueDetailPage() {
           </div>
           <Link
             to={`/entrainement/${session.annaleId}`}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5"
+            className="flex items-center gap-1.5 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700"
           >
             <RotateCcw size={14} /> Refaire l'annale
           </Link>
           <button
             onClick={handleDelete}
-            className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
+            className="rounded-input p-2 text-muted-foreground transition-colors hover:bg-danger-50 hover:text-danger-700 dark:hover:bg-danger-950/40"
             title="Supprimer cette session"
           >
             <Trash2 size={16} />
@@ -478,9 +478,9 @@ export function HistoriqueDetailPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Score */}
-        <div className={`bg-gradient-to-br ${scoreGradient} text-white rounded-3xl p-10 mb-8 text-center shadow-lg`}>
-          <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Ta copie</div>
-          <div className="text-7xl font-bold mb-2">
+        <div className={`bg-gradient-to-br ${scoreGradient} text-white rounded-card p-10 mb-8 text-center shadow-lg`}>
+          <div className="text-xs font-medium uppercase tracking-wider opacity-80 mb-2">Ta copie</div>
+          <div className="text-7xl font-medium mb-2">
             {formatScoreNumber(points)} / {formatScoreNumber(maxPoints)}
           </div>
           {fs.percentage !== null && (
@@ -494,13 +494,13 @@ export function HistoriqueDetailPage() {
         </div>
 
         {session.scoreWarning && (
-          <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+          <div className="mb-6 rounded-input border border-warn-100 bg-warn-50 px-4 py-3 text-sm text-warn-950 dark:border-warn-700/50 dark:bg-warn-950/30 dark:text-warn-100">
             {session.scoreWarning}
           </div>
         )}
 
         {/* Détail des questions */}
-        <h2 className="text-lg font-bold mb-4 text-neutral-900 dark:text-neutral-100">
+        <h2 className="text-lg font-medium mb-4 text-foreground">
           Détail des questions
         </h2>
         <div className="space-y-4">
@@ -521,38 +521,32 @@ export function HistoriqueDetailPage() {
 function SessionQuestionCard({
   detail: d, index, annaleId,
 }: { detail: SessionDetail['details'][number]; index: number; annaleId: string; }) {
-  const cfg = {
-    juste: { label: 'Juste', icon: CheckCircle2, color: 'text-green-700 dark:text-green-400', ring: 'ring-green-500/30' },
-    faux: { label: 'Faux', icon: XCircle, color: 'text-red-700 dark:text-red-400', ring: 'ring-red-500/30' },
-    partiel: { label: 'Partiel', icon: HelpCircle, color: 'text-amber-700 dark:text-amber-400', ring: 'ring-amber-500/30' },
-    'non-comptee': { label: 'À revoir', icon: HelpCircle, color: 'text-amber-700 dark:text-amber-400', ring: 'ring-amber-500/30' },
-  }[d.result] || detailScoreConfig(d);
-  const Icon = cfg.icon;
   const scoreCfg = detailScoreConfig(d);
+  const Icon = scoreCfg.icon;
   const mistakeLabel = detailMistakeLabel(d);
 
   return (
-    <div className={`rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 ring-2 ${cfg.ring} p-5 shadow-sm`}>
+    <div className={`rounded-card border border-border bg-card ring-2 ${scoreCfg.ring} p-5 shadow-sm`}>
       <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
-        <Icon size={16} className={cfg.color} />
-        <span className={`font-bold uppercase tracking-wider ${cfg.color}`}>{cfg.label}</span>
-        <span className={`rounded-md px-2 py-1 font-mono text-xs font-bold ${scoreCfg.badgeClass}`}>
+        <Icon size={16} className={scoreCfg.color} />
+        <span className={`font-medium uppercase tracking-wider ${scoreCfg.color}`}>{scoreCfg.label}</span>
+        <span className={`rounded-md px-2 py-1 font-mono text-xs font-medium ${scoreCfg.badgeClass}`}>
           {scoreCfg.badge}
         </span>
-        {mistakeLabel && <span className="text-neutral-500 dark:text-neutral-400">{mistakeLabel}</span>}
-        <span className="text-neutral-400">·</span>
-        <span className="font-mono text-neutral-500">Q{index + 1}</span>
-        <span className="text-neutral-400">·</span>
-        <span className="text-neutral-500 uppercase">{d.questionType}</span>
+        {mistakeLabel && <span className="text-muted-foreground">{mistakeLabel}</span>}
+        <span className="text-muted-foreground/60">·</span>
+        <span className="font-mono text-muted-foreground">Q{index + 1}</span>
+        <span className="text-muted-foreground/60">·</span>
+        <span className="text-muted-foreground uppercase">{d.questionType}</span>
         {d.seriesId && (
           <>
-            <span className="text-neutral-400">·</span>
-            <span className="text-neutral-500">{d.seriesFormat || 'DP'} Q{d.seriesPosition}</span>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="text-muted-foreground">{d.seriesFormat || 'DP'} Q{d.seriesPosition}</span>
           </>
         )}
       </div>
 
-      <p className="text-base font-medium mb-3 whitespace-pre-wrap text-neutral-900 dark:text-neutral-100 leading-relaxed">
+      <p className="text-base font-medium mb-3 whitespace-pre-wrap text-foreground leading-relaxed">
         {d.text}
       </p>
 
@@ -560,7 +554,7 @@ function SessionQuestionCard({
         <img
           src={`/api/annales/${annaleId}/img/${d.image}`}
           alt=""
-          className="rounded-lg border border-neutral-200 dark:border-neutral-700 mb-3 max-w-full max-h-[400px] object-contain"
+          className="rounded-input border border-border mb-3 max-w-full max-h-[400px] object-contain"
         />
       )}
 
@@ -571,22 +565,22 @@ function SessionQuestionCard({
             return (
               <div
                 key={o.id}
-                className={`flex items-start gap-2 p-2 rounded text-sm border ${
+                className={`flex items-start gap-2 p-2 rounded-input text-sm border ${
                   o.correct
-                    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 text-green-900 dark:text-green-200'
+                    ? 'bg-success-50 dark:bg-success-950/30 border-success-100 dark:border-success-700/50 text-success-950 dark:text-success-100'
                     : userPicked
-                    ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50 text-red-900 dark:text-red-200'
-                    : 'bg-neutral-50 dark:bg-neutral-800/50 border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-400'
+                    ? 'bg-danger-50 dark:bg-danger-950/30 border-danger-100 dark:border-danger-700/50 text-danger-950 dark:text-danger-100'
+                    : 'border-border bg-muted/50 text-muted-foreground'
                 }`}
               >
-                <span className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
-                  o.correct ? 'bg-green-600 text-white' : userPicked ? 'bg-red-600 text-white' : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
+                <span className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-medium ${
+                  o.correct ? 'bg-success-700 text-white' : userPicked ? 'bg-danger-700 text-white' : 'bg-muted text-muted-foreground'
                 }`}>
                   {o.id}
                 </span>
                 <span className="flex-1 leading-relaxed">{o.text}</span>
-                {o.correct && <CheckCircle2 size={14} className="text-green-700 dark:text-green-400 shrink-0 mt-0.5" />}
-                {userPicked && !o.correct && <XCircle size={14} className="text-red-700 dark:text-red-400 shrink-0 mt-0.5" />}
+                {o.correct && <CheckCircle2 size={14} className="text-success-700 dark:text-success-500 shrink-0 mt-0.5" />}
+                {userPicked && !o.correct && <XCircle size={14} className="text-danger-700 dark:text-danger-500 shrink-0 mt-0.5" />}
               </div>
             );
           })}
@@ -596,17 +590,17 @@ function SessionQuestionCard({
       {(d.questionType === 'QROC' || d.questionType === 'ZONE') && (
         <div className="space-y-2 mb-3">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">Ta réponse</div>
-            <div className="text-sm bg-neutral-50 dark:bg-neutral-800/60 p-2 rounded border border-neutral-200 dark:border-neutral-800 whitespace-pre-wrap">
+            <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1.5">Ta réponse</div>
+            <div className="whitespace-pre-wrap rounded-input border border-border bg-muted/60 p-2 text-sm">
               {typeof d.userAnswer === 'string' && d.userAnswer
                 ? d.userAnswer
-                : <span className="italic text-neutral-400">Pas de réponse</span>}
+                : <span className="italic text-muted-foreground">Pas de réponse</span>}
             </div>
           </div>
           {d.expectedAnswer && (
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-green-700 dark:text-green-400 mb-1.5">Réponse officielle</div>
-              <div className="text-sm bg-green-50 dark:bg-green-950/30 p-2 rounded border border-green-200 dark:border-green-800/50 whitespace-pre-wrap text-green-900 dark:text-green-200">
+              <div className="text-[10px] font-medium uppercase tracking-wider text-success-700 dark:text-success-500 mb-1.5">Réponse officielle</div>
+              <div className="text-sm bg-success-50 dark:bg-success-950/30 p-2 rounded-input border border-success-100 dark:border-success-700/50 whitespace-pre-wrap text-success-950 dark:text-success-100">
                 {d.expectedAnswer}
               </div>
             </div>
@@ -616,16 +610,16 @@ function SessionQuestionCard({
 
       {d.correctionText ? (
         <details className="text-sm group">
-          <summary className="cursor-pointer font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 select-none flex items-center gap-1.5">
+          <summary className="cursor-pointer font-medium text-muted-foreground hover:text-foreground select-none flex items-center gap-1.5">
             <ChevronRight size={14} className="transition-transform group-open:rotate-90" />
             Correction détaillée
           </summary>
-          <div className="mt-2 ml-5 p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-800 whitespace-pre-wrap text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <div className="ml-5 mt-2 whitespace-pre-wrap rounded-input border border-border bg-muted/60 p-3 leading-relaxed text-foreground">
             {d.correctionText}
           </div>
         </details>
       ) : (
-        <div className="mt-2 text-xs italic text-neutral-500 dark:text-neutral-400 px-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/50 border border-dashed border-neutral-300 dark:border-neutral-700">
+        <div className="mt-2 text-xs italic text-muted-foreground px-3 py-2 rounded-input bg-muted/50 border border-dashed border-border">
           Pas de commentaire de correction écrit dans le PDF source. Réfère-toi aux bonnes réponses cochées + un manuel/livre de cours.
         </div>
       )}

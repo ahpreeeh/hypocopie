@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   ArrowLeft,
   CheckCircle2,
+  Clock,
   FileText,
   GitMerge,
   Loader2,
@@ -17,7 +18,9 @@ import {
   Trash2,
   Upload,
   X,
+  XCircle,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageBreadcrumb } from '../components/design-primitives';
 
@@ -170,10 +173,10 @@ type QrocBatchItem = {
 };
 
 const inputClass =
-  'w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent';
+  'w-full px-3 py-2 rounded-input border border-input bg-input-background text-sm text-foreground outline-none focus:ring-2 focus:ring-ring focus:border-transparent';
 
 const textAreaClass =
-  'w-full min-h-[120px] px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent';
+  'w-full min-h-[120px] px-3 py-2 rounded-input border border-input bg-input-background text-sm text-foreground outline-none focus:ring-2 focus:ring-ring focus:border-transparent';
 
 function slugify(value: string): string {
   return value
@@ -340,18 +343,18 @@ export function AnnaleImportPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-950">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link to="/entrainement" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 flex items-center gap-1">
+          <Link to="/entrainement" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
             <ArrowLeft size={16} /> Annales
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold flex items-center gap-2 text-neutral-900 dark:text-neutral-100">
-              <ScanText size={20} className="text-indigo-600 dark:text-indigo-400" />
+            <h1 className="text-lg font-[650] flex items-center gap-2 text-foreground">
+              <ScanText size={20} className="text-brand-700 dark:text-brand-500" />
               Import annale
             </h1>
-            <p className="text-xs text-neutral-500">Import local deterministe ou conversion controlee des anciens QROC.</p>
+            <p className="text-xs text-muted-foreground">Import local deterministe ou conversion controlee des anciens QROC.</p>
           </div>
         </div>
       </header>
@@ -362,7 +365,7 @@ export function AnnaleImportPage() {
       ]} />
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-5">
-        <div className="inline-flex rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1">
+        <div className="inline-flex rounded-input border border-border bg-card p-1">
           <ModeButton active={mode === 'local'} onClick={() => setMode('local')}>Faculté</ModeButton>
           <ModeButton active={mode === 'qroc'} onClick={() => setMode('qroc')}>QROC</ModeButton>
           <ModeButton active={mode === 'autre'} onClick={() => setMode('autre')}>Autre</ModeButton>
@@ -380,7 +383,7 @@ export function AnnaleImportPage() {
             {mode === 'local' ? <LocalExplainer /> : mode === 'qroc' ? <QrocExplainer /> : <AutreExplainer />}
           </section>
 
-          <section className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 space-y-4">
+          <section className="bg-card border border-border rounded-card p-5 space-y-4">
             <MetaFields
               subject={subject}
               setSubject={setSubject}
@@ -418,7 +421,7 @@ export function AnnaleImportPage() {
                 <button
                   onClick={handleLocalSubmit}
                   disabled={loading}
-                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:hover:bg-indigo-600 text-white font-medium shadow-sm transition-all duration-150 hover:shadow-lg active:scale-95"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-input bg-brand-600 px-5 py-3 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:bg-brand-700 hover:shadow-lg active:scale-95 disabled:opacity-60 disabled:hover:bg-brand-600"
                 >
                   {loading ? <Loader2 size={18} className="animate-spin" /> : <ScanText size={18} />}
                   {loading ? 'Import en cours...' : 'Importer localement'}
@@ -1272,12 +1275,12 @@ function QrocConversionWorkspace({
   if (published) {
     return (
       <section className="space-y-4">
-        <div className="rounded-2xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 text-green-800 dark:text-green-200 p-5 space-y-3">
+        <div className="rounded-card bg-success-50 dark:bg-success-950/30 border border-success-100 dark:border-success-700/50 text-success-950 dark:text-success-100 p-5 space-y-3">
           <div className="flex items-center gap-2 font-medium text-base">
             <CheckCircle2 size={20} />
             Annale publiée : {published.title}
           </div>
-          <div className="text-sm text-green-700 dark:text-green-300">
+          <div className="text-sm text-success-700 dark:text-success-500">
             {published.questionsCount} questions ont été ajoutées dans <code>/entrainement</code>.
           </div>
           {published.autoRenamed && published.originalAnnaleId && (
@@ -1290,13 +1293,13 @@ function QrocConversionWorkspace({
           <div className="flex flex-wrap gap-2 pt-1">
             <button
               onClick={() => onOpenPublished(published.redirectTo)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-800 text-white font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-success-700 hover:bg-success-500 text-white font-medium"
             >
               Ouvrir l'annale
             </button>
             <button
               onClick={onResetAll}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-green-300 dark:border-green-800 bg-white/60 dark:bg-neutral-900/40 text-green-800 dark:text-green-200 hover:bg-white dark:hover:bg-neutral-900 font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-success-100 dark:border-success-700/50 bg-card/60 text-success-700 dark:text-success-100 hover:bg-card font-medium"
             >
               Importer une autre annale
             </button>
@@ -1309,22 +1312,22 @@ function QrocConversionWorkspace({
   return (
     <section className="space-y-5">
       {resuming && (
-        <div className="rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 text-indigo-700 dark:text-indigo-300 p-3 text-sm flex items-center gap-2">
+        <div className="rounded-input bg-brand-50 dark:bg-brand-950/30 border border-brand-100 dark:border-brand-700/50 text-brand-700 dark:text-brand-100 p-3 text-sm flex items-center gap-2">
           <Loader2 size={14} className="animate-spin" />
           Reprise du brouillon en cours…
         </div>
       )}
       {draft && !resuming && (
-        <div className="rounded-xl bg-neutral-50 dark:bg-neutral-900/40 border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-xs text-neutral-600 dark:text-neutral-400 flex items-center justify-between gap-2">
-          <span>Brouillon en cours : <code className="text-neutral-900 dark:text-neutral-100">{draft.id}</code>{job ? ` · job ${job.id} · ${job.status}` : ''}</span>
-          <button onClick={resetSession} className="text-red-600 dark:text-red-400 hover:underline font-medium">Nouveau brouillon</button>
+        <div className="rounded-input bg-muted/50 border border-border px-3 py-2 text-xs text-muted-foreground flex items-center justify-between gap-2">
+          <span>Brouillon en cours : <code className="text-foreground">{draft.id}</code>{job ? ` · job ${job.id} · ${job.status}` : ''}</span>
+          <button onClick={resetSession} className="text-danger-700 dark:text-danger-500 hover:underline font-medium">Nouveau brouillon</button>
         </div>
       )}
       <div className="flex flex-wrap gap-3">
         <button
           onClick={extract}
           disabled={busy || batchBusy}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-foreground text-background text-sm font-medium disabled:opacity-60"
         >
           {busy && !draft ? <Loader2 size={16} className="animate-spin" /> : <ScanText size={16} />}
           Extraire les QROC
@@ -1333,31 +1336,31 @@ function QrocConversionWorkspace({
           onClick={startBatch}
           disabled={batchBusy || busy || qrocFiles.length < 2}
           title={qrocFiles.length < 2 ? 'Selectionne au moins 2 PDFs pour lancer un batch.' : undefined}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:hover:bg-indigo-600 text-white text-sm font-medium"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:hover:bg-brand-600 text-white text-sm font-medium"
         >
           {batchBusy ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
           {qrocFiles.length < 2 ? 'Lancer batch' : `Lancer batch (${qrocFiles.length} PDFs)`}
         </button>
         {!draft && (
-          <button onClick={() => openDraftsPicker(false)} disabled={busy || draftsListBusy} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-sm font-medium">
+          <button onClick={() => openDraftsPicker(false)} disabled={busy || draftsListBusy} className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-border text-sm font-medium hover:bg-muted">
             {draftsListBusy ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
             Reprendre un brouillon
           </button>
         )}
         {!draft && (
-          <button onClick={() => openDraftsPicker(true)} disabled={busy || draftsListBusy} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-600 dark:text-neutral-300">
+          <button onClick={() => openDraftsPicker(true)} disabled={busy || draftsListBusy} className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-border text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
             {draftsListBusy ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
             Anciens brouillons
           </button>
         )}
         {draft && (
-          <button onClick={saveBlocks} disabled={busy} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-sm font-medium">
+          <button onClick={saveBlocks} disabled={busy} className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-border text-sm font-medium hover:bg-muted">
             <Save size={16} /> Sauvegarder decoupage
           </button>
         )}
       </div>
       {qrocFiles.length > 0 && (
-        <div className="text-xs text-neutral-500 dark:text-neutral-400">
+        <div className="text-xs text-muted-foreground">
           {qrocFiles.length === 1
             ? '1 PDF selectionne : utilise Extraire les QROC, ou selectionne plusieurs PDFs pour activer le batch.'
             : `${qrocFiles.length} PDFs selectionnes pour le batch.`}
@@ -1376,19 +1379,19 @@ function QrocConversionWorkspace({
       )}
 
       {draftsList && !draft && (
-        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 space-y-3">
+        <div className="bg-card border border-border rounded-card p-4 space-y-3">
           <div className="flex items-center justify-between gap-2">
             <div>
-              <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+              <div className="text-sm font-medium text-foreground">
                 {draftsListArchived ? 'Anciens brouillons' : 'Brouillons en cours'}
               </div>
-              <div className="text-xs text-neutral-500">
+              <div className="text-xs text-muted-foreground">
                 {draftsList.length === 0
                   ? (draftsListArchived ? 'Aucun brouillon publie.' : 'Aucun brouillon actif sur disque.')
                   : draftsListArchived ? `${draftsList.length} brouillon(s) publie(s).` : `${draftsList.length} brouillon(s) actif(s). Clique pour reprendre.`}
               </div>
             </div>
-            <button onClick={closeDraftsPicker} className="text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">
+            <button onClick={closeDraftsPicker} className="text-xs text-muted-foreground hover:text-foreground">
               Fermer
             </button>
           </div>
@@ -1397,35 +1400,35 @@ function QrocConversionWorkspace({
               {draftsList.map((d) => (
                 <div
                   key={d.id}
-                  className="text-left rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 transition-colors"
+                  className="text-left rounded-input border border-border p-3 transition-colors"
                 >
-                  <div className="font-medium text-sm text-neutral-900 dark:text-neutral-100 truncate">{d.title}</div>
-                  <div className="text-xs text-neutral-500 mt-0.5">
+                  <div className="font-medium text-sm text-foreground truncate">{d.title}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
                     {[d.subject, d.year, d.session].filter(Boolean).join(' - ')}
                   </div>
                   <div className="text-xs mt-1 flex gap-2 flex-wrap">
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                       {d.sourceBlocks} bloc(s)
                     </span>
                     <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded ${
                       d.generatedQuestions > 0
-                        ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300'
-                        : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'
+                        ? 'bg-success-100 text-success-700 dark:bg-success-950/40 dark:text-success-500'
+                        : 'bg-muted text-muted-foreground'
                     }`}>
                       {d.generatedQuestions} question(s) generee(s)
                     </span>
                     {d.status && (
                       <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded ${
                         d.status === 'published'
-                          ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300'
-                          : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'
+                          ? 'bg-success-100 text-success-700 dark:bg-success-950/40 dark:text-success-500'
+                          : 'bg-muted text-muted-foreground'
                       }`}>
                         {d.status}
                       </span>
                     )}
                   </div>
-                  {d.publishedAt && <div className="text-[10px] text-neutral-400 mt-1">Publie le {new Date(d.publishedAt).toLocaleString('fr-FR')}</div>}
-                  <div className="text-[10px] text-neutral-400 mt-1 font-mono">{d.id}</div>
+                  {d.publishedAt && <div className="text-[10px] text-muted-foreground mt-1">Publie le {new Date(d.publishedAt).toLocaleString('fr-FR')}</div>}
+                  <div className="text-[10px] text-muted-foreground mt-1 font-mono">{d.id}</div>
                   <div className="mt-2">
                     {draftsListArchived ? (
                       <button
@@ -1434,7 +1437,7 @@ function QrocConversionWorkspace({
                           if (annaleId) onOpenPublished(`/entrainement/${annaleId}`);
                         }}
                         disabled={busy || !publishedDraftAnnaleId(d)}
-                        className="text-xs font-medium text-green-700 dark:text-green-300 hover:underline disabled:opacity-50"
+                        className="text-xs font-medium text-success-700 dark:text-success-500 hover:underline disabled:opacity-50"
                       >
                         Ouvrir l'annale
                       </button>
@@ -1442,7 +1445,7 @@ function QrocConversionWorkspace({
                       <button
                         onClick={() => resumeDraftById(d.id)}
                         disabled={busy}
-                        className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline disabled:opacity-50"
+                        className="text-xs font-medium text-brand-700 dark:text-brand-500 hover:underline disabled:opacity-50"
                       >
                         Reprendre
                       </button>
@@ -1457,15 +1460,15 @@ function QrocConversionWorkspace({
 
       {draft && (
         <div className="grid lg:grid-cols-[340px_1fr] gap-5 items-start">
-          <aside className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 space-y-3">
+          <aside className="bg-card border border-border rounded-card p-4 space-y-3">
             <div>
-              <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Blocs source</div>
-              <div className="text-xs text-neutral-500 flex items-center gap-2 flex-wrap">
+              <div className="text-sm font-medium text-foreground">Blocs source</div>
+              <div className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
                 <span>
                   {draft.sourceBlocks.length} blocs - {blockingWarnings.length} bloquant(s), {nonBlockingWarnings.length} non bloquant(s)
                 </span>
                 {allSourceWarnings.length > 0 && (
-                  <button onClick={jumpToFirstWarning} className="font-medium text-amber-600 dark:text-amber-400 hover:underline">
+                  <button onClick={jumpToFirstWarning} className="font-medium text-warn-700 dark:text-warn-500 hover:underline">
                     Voir warning
                   </button>
                 )}
@@ -1478,19 +1481,19 @@ function QrocConversionWorkspace({
                   onClick={() => setSelectedBlockId(block.id)}
                   className={`w-full text-left rounded-lg border p-3 text-sm ${
                     selectedBlock?.id === block.id
-                      ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
-                      : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
+                      ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/30'
+                      : 'border-border hover:bg-muted'
                   }`}
                 >
                   <div className="font-medium truncate">{block.title || block.id}</div>
-                  <div className="text-xs text-neutral-500">
+                  <div className="text-xs text-muted-foreground">
                     p. {(block.pages || []).join(', ') || '?'} - {block.stats?.chars || block.cleanText.length} car.
                   </div>
                   {block.warnings?.some((warning) => warning.blocking) && (
-                    <div className="mt-1 text-xs text-red-600 dark:text-red-400">A verifier avant generation</div>
+                    <div className="mt-1 text-xs text-danger-700 dark:text-danger-500">A verifier avant generation</div>
                   )}
                   {block.warnings?.length && !block.warnings.some((warning) => warning.blocking) ? (
-                    <div className="mt-1 text-xs text-amber-600 dark:text-amber-400">Warning non bloquant</div>
+                    <div className="mt-1 text-xs text-warn-700 dark:text-warn-500">Warning non bloquant</div>
                   ) : null}
                 </button>
               ))}
@@ -1499,17 +1502,17 @@ function QrocConversionWorkspace({
 
           <div className="space-y-5">
             {selectedBlock && (
-              <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 space-y-3">
+              <div className="bg-card border border-border rounded-card p-4 space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <input
                     value={selectedBlock.title}
                     onChange={(e) => updateBlock(selectedBlock.id, { title: e.target.value })}
                     className={`${inputClass} flex-1 min-w-[220px]`}
                   />
-                  <button onClick={() => splitBlock(selectedBlock.id)} className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-sm">
+                  <button onClick={() => splitBlock(selectedBlock.id)} className="inline-flex items-center gap-1 px-3 py-2 rounded-input border border-border text-sm hover:bg-muted">
                     <Scissors size={14} /> Scinder
                   </button>
-                  <button onClick={() => mergeWithPrevious(selectedBlock.id)} className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-sm">
+                  <button onClick={() => mergeWithPrevious(selectedBlock.id)} className="inline-flex items-center gap-1 px-3 py-2 rounded-input border border-border text-sm hover:bg-muted">
                     <GitMerge size={14} /> Fusionner
                   </button>
                   {selectedBlock.warnings?.some((warning) => warning.blocking) && (
@@ -1518,12 +1521,12 @@ function QrocConversionWorkspace({
                         warningsOverride: 'accepted',
                         warnings: (selectedBlock.warnings || []).map((warning) => ({ ...warning, blocking: false, accepted: true } as SourceWarning)),
                       })}
-                      className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-sm font-medium"
+                      className="inline-flex items-center gap-1 px-3 py-2 rounded-input border border-warn-100 dark:border-warn-700/50 text-warn-700 dark:text-warn-500 text-sm font-medium hover:bg-warn-50 dark:hover:bg-warn-950/30"
                     >
                       Valider le bloc
                     </button>
                   )}
-                  <label className="inline-flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                  <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                     <input type="checkbox" checked={!!selectedBlock.ignored} onChange={(e) => updateBlock(selectedBlock.id, { ignored: e.target.checked })} />
                     Ignorer
                   </label>
@@ -1536,9 +1539,9 @@ function QrocConversionWorkspace({
                 {selectedBlock.images && selectedBlock.images.length > 0 && (
                   <div className="grid sm:grid-cols-2 gap-3">
                     {selectedBlock.images.map((image) => (
-                      <div key={image.id} className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-2 text-xs">
-                        <img src={`/api/annales/drafts/${draft.id}/img/${image.filename}`} alt="" className="max-h-48 w-full object-contain rounded bg-neutral-50 dark:bg-neutral-950" />
-                        <div className="mt-1 text-neutral-500">{image.filename} - p.{image.page} - {image.confidence || '?'}</div>
+                      <div key={image.id} className="rounded-input border border-border p-2 text-xs">
+                        <img src={`/api/annales/drafts/${draft.id}/img/${image.filename}`} alt="" className="max-h-48 w-full object-contain rounded bg-muted" />
+                        <div className="mt-1 text-muted-foreground">{image.filename} - p.{image.page} - {image.confidence || '?'}</div>
                       </div>
                     ))}
                   </div>
@@ -1549,7 +1552,7 @@ function QrocConversionWorkspace({
               </div>
             )}
 
-            <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 space-y-4">
+            <div className="bg-card border border-border rounded-card p-4 space-y-4">
               <div className="grid md:grid-cols-[1fr_180px] gap-3">
                 <Field label="Cle API DeepSeek">
                   <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} className={inputClass} placeholder="sk-..." disabled={mock} />
@@ -1561,11 +1564,11 @@ function QrocConversionWorkspace({
                   </select>
                 </Field>
               </div>
-              <label className="inline-flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+              <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                 <input type="checkbox" checked={mock} onChange={(e) => setMock(e.target.checked)} />
                 Generation test sans appel DeepSeek
               </label>
-              <label className="flex items-start gap-2 text-sm text-neutral-600 dark:text-neutral-400 max-w-2xl">
+              <label className="flex items-start gap-2 text-sm text-muted-foreground max-w-2xl">
                 <input type="checkbox" checked={skipQa} onChange={(e) => setSkipQa(e.target.checked)} className="mt-1" />
                 <span>
                   QA rapide : ignorer la relecture DeepSeek apres generation. Recommande en batch pour eviter les faux positifs ; tu relis le brouillon avant publication.
@@ -1574,7 +1577,7 @@ function QrocConversionWorkspace({
               <button
                 onClick={generate}
                 disabled={busy || blockingWarnings.length > 0}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-input bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white text-sm font-medium"
               >
                 <Sparkles size={16} /> {job?.status === 'interrupted' ? 'Reprendre' : 'Generer le brouillon'}
               </button>
@@ -1582,40 +1585,40 @@ function QrocConversionWorkspace({
                 <button
                   onClick={retryNetworkBlocks}
                   disabled={busy || blockingWarnings.length > 0}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-300 disabled:opacity-50 text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-input border border-warn-100 dark:border-warn-700/50 text-warn-700 dark:text-warn-500 disabled:opacity-50 text-sm font-medium hover:bg-warn-50 dark:hover:bg-warn-950/30"
                 >
                   <Sparkles size={16} /> Retenter blocs reseau ({failedNetworkBlockIds.join(', ')})
                 </button>
               )}
               {blockingWarnings.length > 0 && (
-                <div className="text-sm text-red-600 dark:text-red-400">Generation bloquee tant que le decoupage contient des warnings bloquants.</div>
+                <div className="text-sm text-danger-700 dark:text-danger-500">Generation bloquee tant que le decoupage contient des warnings bloquants.</div>
               )}
               {job && <JobStatus job={job} onCancel={cancelJob} generatedSoFar={(draft?.generatedQuestions || []).length} />}
             </div>
 
             {draft.generatedQuestions.length > 0 && (
-              <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 space-y-4">
+              <div className="bg-card border border-border rounded-card p-4 space-y-4">
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div>
                     <div className="text-sm font-medium">
                       {draft.generatedQuestions.length} questions generees{' '}
-                      <span className="text-xs font-normal text-neutral-500">
+                      <span className="text-xs font-normal text-muted-foreground">
                         ({countByType(draft.generatedQuestions, 'QRU')} QRU · {countByType(draft.generatedQuestions, 'QRM')} QRM · {countByType(draft.generatedQuestions, 'QROC')} QROC)
                       </span>
                     </div>
                     <ReportSeverityBreakdown report={draft.generationReport} />
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={saveDraft} disabled={busy} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-sm font-medium">
+                    <button onClick={saveDraft} disabled={busy} className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-border text-sm font-medium hover:bg-muted">
                       <Save size={15} /> Sauvegarder
                     </button>
-                    <button onClick={publish} disabled={busy || (generationErrors.length > 0 && !forcePublish)} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-800 disabled:opacity-50 text-white text-sm font-medium">
+                    <button onClick={publish} disabled={busy || (generationErrors.length > 0 && !forcePublish)} className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-success-700 hover:bg-success-500 disabled:opacity-50 text-white text-sm font-medium">
                       <CheckCircle2 size={15} /> Publier
                     </button>
                   </div>
                 </div>
                 {generationErrors.length > 0 && (
-                  <label className="inline-flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
+                  <label className="inline-flex items-center gap-2 text-sm text-danger-700 dark:text-danger-500">
                     <input type="checkbox" checked={forcePublish} onChange={(e) => setForcePublish(e.target.checked)} />
                     Forcer la publication malgre les erreurs
                   </label>
@@ -1643,20 +1646,20 @@ function QrocConversionWorkspace({
 
             {/* Sticky bar : apparait dès ≥ 2 QI sélectionnées */}
             {selectedOrderedQuestions.length >= 2 && (
-              <div className="sticky bottom-4 z-30 mt-4 flex items-center gap-3 rounded-xl border border-indigo-300 dark:border-indigo-700 bg-indigo-50/95 dark:bg-indigo-950/80 backdrop-blur px-4 py-3 shadow-lg">
-                <span className="text-sm font-medium text-indigo-900 dark:text-indigo-100">
+              <div className="sticky bottom-4 z-30 mt-4 flex items-center gap-3 rounded-card border border-brand-100 dark:border-brand-700/50 bg-brand-50/95 dark:bg-brand-950/80 backdrop-blur px-4 py-3 shadow-lg">
+                <span className="text-sm font-medium text-brand-950 dark:text-brand-100">
                   {selectedOrderedQuestions.length} question(s) QI sélectionnée(s)
                 </span>
                 <button
                   onClick={openRegroupDialog}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-input bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium"
                 >
                   <GitMerge size={15} />
                   Regrouper en DP
                 </button>
                 <button
                   onClick={clearSelection}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-brand-700 dark:text-brand-100 hover:bg-brand-100 dark:hover:bg-brand-950/40"
                 >
                   <X size={14} />
                   Désélectionner
@@ -1687,23 +1690,23 @@ function technicalBatchErrors(item: QrocBatchItem): string[] {
   return errors.filter((error) => /appel DeepSeek impossible|HTTP|timeout|getaddrinfo|reponse DeepSeek|JSON|options absentes|sourceRefs absent|aucune option correcte/i.test(String(error)));
 }
 
-function batchDisplayStatus(item: QrocBatchItem): { label: string; icon: string; tone: 'green' | 'amber' | 'red' | 'indigo' | 'neutral'; bucket: number; lane: 'failed' | 'inProgress' | 'queued' | 'done' } {
+function batchDisplayStatus(item: QrocBatchItem): { label: string; icon: LucideIcon; spin?: boolean; tone: 'green' | 'amber' | 'red' | 'indigo' | 'neutral'; bucket: number; lane: 'failed' | 'inProgress' | 'queued' | 'done' } {
   const phase = item.job?.progress?.phase;
-  if (item.status === 'blocked') return { label: 'decoupage a corriger', icon: '🔴', tone: 'red', bucket: 0, lane: 'failed' };
-  if (['error', 'cancelled', 'interrupted'].includes(item.status)) return { label: 'echec technique', icon: '🔴', tone: 'red', bucket: 0, lane: 'failed' };
+  if (item.status === 'blocked') return { label: 'decoupage a corriger', icon: XCircle, tone: 'red', bucket: 0, lane: 'failed' };
+  if (['error', 'cancelled', 'interrupted'].includes(item.status)) return { label: 'echec technique', icon: XCircle, tone: 'red', bucket: 0, lane: 'failed' };
   if (item.status === 'done-with-errors') {
     return technicalBatchErrors(item).length > 0
-      ? { label: 'bloc a retenter', icon: '⚠️', tone: 'amber', bucket: 0, lane: 'failed' }
-      : { label: 'pret a relire', icon: '✅', tone: 'green', bucket: 2, lane: 'done' };
+      ? { label: 'bloc a retenter', icon: AlertTriangle, tone: 'amber', bucket: 0, lane: 'failed' }
+      : { label: 'pret a relire', icon: CheckCircle2, tone: 'green', bucket: 2, lane: 'done' };
   }
-  if (item.status === 'done') return { label: 'pret a relire', icon: '✅', tone: 'green', bucket: 2, lane: 'done' };
-  if (item.status === 'extracting') return { label: 'extraction PDF', icon: '⚙️', tone: 'indigo', bucket: 1, lane: 'inProgress' };
+  if (item.status === 'done') return { label: 'pret a relire', icon: CheckCircle2, tone: 'green', bucket: 2, lane: 'done' };
+  if (item.status === 'extracting') return { label: 'extraction PDF', icon: Loader2, spin: true, tone: 'indigo', bucket: 1, lane: 'inProgress' };
   if (item.status === 'running' || item.status === 'generating') {
-    if (phase === 'checking') return { label: 'DeepSeek relit', icon: '🔍', tone: 'indigo', bucket: 1, lane: 'inProgress' };
-    return { label: 'DeepSeek genere', icon: '🤖', tone: 'indigo', bucket: 1, lane: 'inProgress' };
+    if (phase === 'checking') return { label: 'DeepSeek relit', icon: Loader2, spin: true, tone: 'indigo', bucket: 1, lane: 'inProgress' };
+    return { label: 'DeepSeek genere', icon: Loader2, spin: true, tone: 'indigo', bucket: 1, lane: 'inProgress' };
   }
-  if (item.status === 'queued') return { label: 'en file d\'attente', icon: '⏳', tone: 'neutral', bucket: 1, lane: 'queued' };
-  return { label: 'en attente', icon: '⏳', tone: 'neutral', bucket: 1, lane: 'queued' };
+  if (item.status === 'queued') return { label: 'en file d\'attente', icon: Clock, tone: 'neutral', bucket: 1, lane: 'queued' };
+  return { label: 'en attente', icon: Clock, tone: 'neutral', bucket: 1, lane: 'queued' };
 }
 
 function countByType(questions: GeneratedQuestion[], type: GeneratedQuestion['questionType']): number {
@@ -1766,10 +1769,11 @@ function AutoRenamedNotice({
   };
 
   return (
-    <div className="rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 px-3 py-2 text-xs text-amber-800 dark:text-amber-200 space-y-1.5">
+    <div className="rounded-input bg-warn-50 dark:bg-warn-950/40 border border-warn-100 dark:border-warn-700/50 px-3 py-2 text-xs text-warn-700 dark:text-warn-100 space-y-1.5">
       <div className="flex items-start gap-2 flex-wrap">
         <span className="flex-1 min-w-0">
-          ⚠️ Publiée sous <code className="font-mono">{currentId}</code> (original <code className="font-mono">{originalId}</code> déjà pris).
+          <AlertTriangle size={12} className="mr-1 inline -translate-y-px" />
+          Publiée sous <code className="font-mono">{currentId}</code> (original <code className="font-mono">{originalId}</code> déjà pris).
         </span>
         {!editing && (
           <button onClick={startEdit} className="inline-flex items-center gap-1 font-medium hover:underline">
@@ -1782,19 +1786,19 @@ function AutoRenamedNotice({
           <input
             value={draftValue}
             onChange={(e) => setDraftValue(slugify(e.target.value))}
-            className="flex-1 min-w-[200px] px-2 py-1 rounded border border-amber-300 dark:border-amber-700 bg-white dark:bg-neutral-900 text-amber-900 dark:text-amber-100 font-mono text-xs"
+            className="flex-1 min-w-[200px] px-2 py-1 rounded border border-warn-100 dark:border-warn-700/50 bg-input-background text-warn-950 dark:text-warn-100 font-mono text-xs"
             autoFocus
             disabled={busy}
           />
-          <button onClick={submit} disabled={busy} className="px-2 py-1 rounded bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium disabled:opacity-50">
+          <button onClick={submit} disabled={busy} className="px-2 py-1 rounded bg-warn-500 hover:bg-warn-700 text-white text-xs font-medium disabled:opacity-50">
             {busy ? '...' : 'Valider'}
           </button>
-          <button onClick={cancel} disabled={busy} className="px-2 py-1 rounded text-amber-700 dark:text-amber-300 text-xs font-medium hover:underline disabled:opacity-50">
+          <button onClick={cancel} disabled={busy} className="px-2 py-1 rounded text-warn-700 dark:text-warn-500 text-xs font-medium hover:underline disabled:opacity-50">
             Annuler
           </button>
         </div>
       )}
-      {localError && <div className="text-red-600 dark:text-red-400">{localError}</div>}
+      {localError && <div className="text-danger-700 dark:text-danger-500">{localError}</div>}
     </div>
   );
 }
@@ -1808,13 +1812,15 @@ function SourceBlockWarningsList({ warnings }: { warnings: SourceWarning[] }) {
   return (
     <div className="space-y-1">
       {errors.map((warning, i) => (
-        <div key={`e-${i}`} className="text-sm text-red-600 dark:text-red-400">
-          🔴 {warning.message}{warning.accepted ? ' (validé)' : ''}
+        <div key={`e-${i}`} className="flex items-start gap-1.5 text-sm text-danger-700 dark:text-danger-500">
+          <XCircle size={14} className="mt-0.5 shrink-0" />
+          <span>{warning.message}{warning.accepted ? ' (validé)' : ''}</span>
         </div>
       ))}
       {warns.map((warning, i) => (
-        <div key={`w-${i}`} className="text-sm text-amber-600 dark:text-amber-400">
-          ⚠️ {warning.message}{warning.accepted ? ' (validé)' : ''}
+        <div key={`w-${i}`} className="flex items-start gap-1.5 text-sm text-warn-700 dark:text-warn-500">
+          <AlertTriangle size={14} className="mt-0.5 shrink-0" />
+          <span>{warning.message}{warning.accepted ? ' (validé)' : ''}</span>
         </div>
       ))}
       {infos.length > 0 && (
@@ -1822,14 +1828,14 @@ function SourceBlockWarningsList({ warnings }: { warnings: SourceWarning[] }) {
           <button
             type="button"
             onClick={() => setShowInfos((v) => !v)}
-            className="text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 underline"
+            className="text-xs text-muted-foreground hover:text-foreground underline"
           >
             {showInfos ? 'Masquer' : 'Afficher'} {infos.length} info(s) mineure(s)
           </button>
           {showInfos && (
-            <div className="mt-1 space-y-0.5 pl-3 border-l border-neutral-200 dark:border-neutral-700">
+            <div className="mt-1 space-y-0.5 pl-3 border-l border-border">
               {infos.map((warning, i) => (
-                <div key={`i-${i}`} className="text-xs text-neutral-500 dark:text-neutral-400">
+                <div key={`i-${i}`} className="text-xs text-muted-foreground">
                   ℹ️ {warning.message}
                 </div>
               ))}
@@ -1847,13 +1853,13 @@ function ReportSeverityBreakdown({ report }: { report?: { warnings?: string[]; e
   const warns = report?.warnings?.length || 0;
   const infos = report?.infos?.length || 0;
   if (errs + warns + infos === 0) {
-    return <div className="text-xs text-green-600 dark:text-green-400">Aucun probleme detecte.</div>;
+    return <div className="text-xs text-success-700 dark:text-success-500">Aucun probleme detecte.</div>;
   }
   return (
-    <div className="text-xs text-neutral-500 flex flex-wrap gap-2 mt-0.5">
-      {errs > 0 && <span className="text-red-600 dark:text-red-400 font-medium">🔴 {errs} erreur(s)</span>}
-      {warns > 0 && <span className="text-amber-600 dark:text-amber-400 font-medium">⚠️ {warns} warning(s)</span>}
-      {infos > 0 && <span className="text-neutral-500">ℹ️ {infos} info(s) masquee(s)</span>}
+    <div className="text-xs text-muted-foreground flex flex-wrap gap-2 mt-0.5">
+      {errs > 0 && <span className="text-danger-700 dark:text-danger-500 font-medium">{errs} erreur(s)</span>}
+      {warns > 0 && <span className="text-warn-700 dark:text-warn-500 font-medium">{warns} warning(s)</span>}
+      {infos > 0 && <span className="text-muted-foreground">{infos} info(s) masquee(s)</span>}
     </div>
   );
 }
@@ -1866,23 +1872,23 @@ function ReportDetailsList({ report }: { report?: { warnings?: string[]; errors?
   const [showInfos, setShowInfos] = useState(false);
   if (errs.length + warns.length + infos.length === 0) return null;
   return (
-    <div className="space-y-2 rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 bg-neutral-50 dark:bg-neutral-900/40">
+    <div className="space-y-2 rounded-input border border-border p-3 bg-muted/50">
       {errs.length > 0 && (
         <div className="space-y-0.5">
-          <div className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">{errs.length} Erreur(s) bloquante(s)</div>
+          <div className="text-xs font-[650] uppercase tracking-wider text-danger-700 dark:text-danger-500">{errs.length} Erreur(s) bloquante(s)</div>
           {errs.slice(0, 30).map((line, i) => (
-            <div key={`e-${i}`} className="text-xs text-red-600 dark:text-red-400 pl-2 font-mono">· {line}</div>
+            <div key={`e-${i}`} className="text-xs text-danger-700 dark:text-danger-500 pl-2 font-mono">· {line}</div>
           ))}
-          {errs.length > 30 && <div className="text-[10px] text-neutral-500 pl-2">…{errs.length - 30} de plus masquees</div>}
+          {errs.length > 30 && <div className="text-[10px] text-muted-foreground pl-2">…{errs.length - 30} de plus masquees</div>}
         </div>
       )}
       {warns.length > 0 && (
         <div className="space-y-0.5">
-          <div className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">{warns.length} Warning(s) a verifier</div>
+          <div className="text-xs font-[650] uppercase tracking-wider text-warn-700 dark:text-warn-500">{warns.length} Warning(s) a verifier</div>
           {warns.slice(0, 30).map((line, i) => (
-            <div key={`w-${i}`} className="text-xs text-amber-600 dark:text-amber-400 pl-2 font-mono">· {line}</div>
+            <div key={`w-${i}`} className="text-xs text-warn-700 dark:text-warn-500 pl-2 font-mono">· {line}</div>
           ))}
-          {warns.length > 30 && <div className="text-[10px] text-neutral-500 pl-2">…{warns.length - 30} de plus masquees</div>}
+          {warns.length > 30 && <div className="text-[10px] text-muted-foreground pl-2">…{warns.length - 30} de plus masquees</div>}
         </div>
       )}
       {infos.length > 0 && (
@@ -1890,14 +1896,14 @@ function ReportDetailsList({ report }: { report?: { warnings?: string[]; errors?
           <button
             type="button"
             onClick={() => setShowInfos((v) => !v)}
-            className="text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+            className="text-xs font-medium text-muted-foreground hover:text-foreground"
           >
             {showInfos ? '▼' : '▶'} {infos.length} info(s) mineure(s) (variations lexicales, expectedAnswer vide, etc.)
           </button>
           {showInfos && infos.slice(0, 50).map((line, i) => (
-            <div key={`i-${i}`} className="text-xs text-neutral-500 dark:text-neutral-400 pl-2 font-mono">· {line}</div>
+            <div key={`i-${i}`} className="text-xs text-muted-foreground pl-2 font-mono">· {line}</div>
           ))}
-          {showInfos && infos.length > 50 && <div className="text-[10px] text-neutral-500 pl-2">…{infos.length - 50} de plus masquees</div>}
+          {showInfos && infos.length > 50 && <div className="text-[10px] text-muted-foreground pl-2">…{infos.length - 50} de plus masquees</div>}
         </div>
       )}
     </div>
@@ -1930,41 +1936,41 @@ function QrocBatchPanel({
   const finished = done + failed;
   const pctGlobal = total > 0 ? Math.round((finished * 100) / total) : 0;
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 space-y-3">
+    <div className="bg-card border border-border rounded-card p-4 space-y-3">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Batch QROC · {total} PDF(s)</div>
-            <div className="text-xs font-medium text-neutral-500">{finished} / {total} terminés ({pctGlobal}%)</div>
+            <div className="text-sm font-medium text-foreground">Batch QROC · {total} PDF(s)</div>
+            <div className="text-xs font-medium text-muted-foreground">{finished} / {total} terminés ({pctGlobal}%)</div>
           </div>
-          <div className="h-2 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden mb-2">
-            <div className="h-full transition-all bg-gradient-to-r from-indigo-500 to-green-500" style={{ width: `${pctGlobal}%` }} />
+          <div className="h-2 rounded-full bg-muted overflow-hidden mb-2">
+            <div className="h-full transition-all bg-gradient-to-r from-brand-500 to-success-500" style={{ width: `${pctGlobal}%` }} />
           </div>
           <div className="flex flex-wrap gap-3 text-xs">
             {inProgress > 0 && (
-              <span className="inline-flex items-center gap-1 text-indigo-700 dark:text-indigo-300 font-medium">
+              <span className="inline-flex items-center gap-1 text-brand-700 dark:text-brand-500 font-medium">
                 <Loader2 size={12} className="animate-spin" />
                 {inProgress} en cours chez DeepSeek
               </span>
             )}
             {queued > 0 && (
-              <span className="inline-flex items-center gap-1 text-neutral-500">
-                ⏳ {queued} en attente
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
+                <Clock size={12} /> {queued} en attente
               </span>
             )}
             {done > 0 && (
-              <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-300">
-                ✅ {done} prêts à relire
+              <span className="inline-flex items-center gap-1 text-success-700 dark:text-success-500">
+                <CheckCircle2 size={12} /> {done} prêts à relire
               </span>
             )}
             {failed > 0 && (
-              <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
-                🔴 {failed} à corriger
+              <span className="inline-flex items-center gap-1 text-danger-700 dark:text-danger-500 font-medium">
+                <XCircle size={12} /> {failed} à corriger
               </span>
             )}
           </div>
         </div>
-        <button onClick={onClear} disabled={busy} className="text-xs font-medium text-neutral-500 hover:text-red-600 disabled:opacity-50 self-start">
+        <button onClick={onClear} disabled={busy} className="text-xs font-medium text-muted-foreground hover:text-danger-700 disabled:opacity-50 self-start">
           Masquer le suivi
         </button>
       </div>
@@ -1972,14 +1978,14 @@ function QrocBatchPanel({
         const renamable = items.filter((item) => item.draftId && !item.annaleId.endsWith(`-${idSuffix}`));
         if (renamable.length === 0) return null;
         return (
-          <div className="rounded-lg border border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 flex items-center justify-between gap-2 flex-wrap">
-            <div className="text-xs text-amber-800 dark:text-amber-200">
+          <div className="rounded-input border border-warn-100 dark:border-warn-700/50 bg-warn-50 dark:bg-warn-950/30 px-3 py-2 flex items-center justify-between gap-2 flex-wrap">
+            <div className="text-xs text-warn-700 dark:text-warn-100">
               {renamable.length} brouillon(s) sans le suffixe <code className="font-mono">-{idSuffix}</code>. Applique-le pour eviter les collisions au publish.
             </div>
             <button
               onClick={onApplySuffix}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-input bg-warn-500 hover:bg-warn-700 text-white text-xs font-medium disabled:opacity-50"
             >
               Appliquer <code className="font-mono">-{idSuffix}</code> aux {renamable.length} brouillon(s)
             </button>
@@ -1991,44 +1997,44 @@ function QrocBatchPanel({
           const progress = item.job?.progress;
           const pct = progress?.total ? Math.round((progress.current * 100) / progress.total) : 0;
           const statusClass =
-            display.tone === 'green' ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300'
-            : display.tone === 'amber' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'
-            : display.tone === 'red' ? 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300'
-            : display.tone === 'neutral' ? 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'
-            : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300';
+            display.tone === 'green' ? 'bg-success-100 text-success-700 dark:bg-success-950/40 dark:text-success-500'
+            : display.tone === 'amber' ? 'bg-warn-100 text-warn-700 dark:bg-warn-950/40 dark:text-warn-100'
+            : display.tone === 'red' ? 'bg-danger-100 text-danger-700 dark:bg-danger-950/40 dark:text-danger-500'
+            : display.tone === 'neutral' ? 'bg-muted text-muted-foreground'
+            : 'bg-brand-100 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100';
           return (
-            <div key={item.key} className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-3 space-y-2">
+            <div key={item.key} className="rounded-card border border-border p-3 space-y-2">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="font-medium text-sm text-neutral-900 dark:text-neutral-100 truncate">{item.title}</div>
-                  <div className="text-xs text-neutral-500 truncate">
+                  <div className="font-medium text-sm text-foreground truncate">{item.title}</div>
+                  <div className="text-xs text-muted-foreground truncate">
                     {item.fileName} · <code>{item.annaleId}</code>
                   </div>
                 </div>
                 <span className={`shrink-0 px-2 py-1 rounded-md text-[11px] font-medium ${statusClass} inline-flex items-center gap-1`}>
-                  <span>{display.icon}</span>
+                  <display.icon size={12} className={display.spin ? 'animate-spin' : undefined} />
                   {display.label}
                 </span>
               </div>
               {item.jobId && (
                 <div className="space-y-1">
-                  <div className="h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
-                    <div className="h-full bg-indigo-500 transition-all" style={{ width: `${Math.max(pct, item.status === 'queued' || item.status === 'running' ? 4 : 0)}%` }} />
+                  <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full bg-brand-500 transition-all" style={{ width: `${Math.max(pct, item.status === 'queued' || item.status === 'running' ? 4 : 0)}%` }} />
                   </div>
-                  <div className="text-[11px] text-neutral-500">
+                  <div className="text-[11px] text-muted-foreground">
                     Job {item.jobId} · blocs {progress?.current ?? 0}/{progress?.total ?? item.sourceBlocks ?? '?'}
                     {progress?.activeBlockIds?.length ? ` · actifs : ${progress.activeBlockIds.join(', ')}` : ''}
                   </div>
                 </div>
               )}
               <div className="flex items-center justify-between gap-2 flex-wrap">
-                <div className="text-xs text-neutral-500">
+                <div className="text-xs text-muted-foreground">
                   {item.sourceBlocks ?? 0} bloc(s) · {item.generatedQuestions ?? 0} question(s)
-                  {item.error ? <span className="text-red-600 dark:text-red-400"> · {item.error}</span> : null}
-                  {!item.error && technicalErrors.length > 0 ? <span className="text-amber-600 dark:text-amber-400"> · {technicalErrors.length} erreur(s) technique(s)</span> : null}
+                  {item.error ? <span className="text-danger-700 dark:text-danger-500"> · {item.error}</span> : null}
+                  {!item.error && technicalErrors.length > 0 ? <span className="text-warn-700 dark:text-warn-500"> · {technicalErrors.length} erreur(s) technique(s)</span> : null}
                 </div>
                 {item.draftId && (
-                  <button onClick={() => onOpenDraft(item)} className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                  <button onClick={() => onOpenDraft(item)} className="text-xs font-medium text-brand-700 dark:text-brand-500 hover:underline">
                     Ouvrir le brouillon
                   </button>
                 )}
@@ -2076,7 +2082,7 @@ function QuestionEditor({
     updateOption(optionIndex, { correct: checked });
   };
   return (
-    <div className={`rounded-xl border p-4 space-y-3 ${isQiSelected ? 'border-indigo-400 dark:border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30' : 'border-neutral-200 dark:border-neutral-800'}`}>
+    <div className={`rounded-card border p-4 space-y-3 ${isQiSelected ? 'border-brand-500 dark:border-brand-700 bg-brand-50/40 dark:bg-brand-950/30' : 'border-border'}`}>
       <div className="flex items-center gap-2">
         {isQiSelectable && onToggleSelect && (
           <input
@@ -2088,7 +2094,7 @@ function QuestionEditor({
             className="h-4 w-4 cursor-pointer accent-indigo-600"
           />
         )}
-        <span className="font-mono text-xs text-neutral-500">Q{index + 1}</span>
+        <span className="font-mono text-xs text-muted-foreground">Q{index + 1}</span>
         <select value={question.questionType} onChange={(e) => updateQuestion({ questionType: e.target.value as GeneratedQuestion['questionType'] })} className={`${inputClass} w-28`}>
           <option value="QRU">QRU</option>
           <option value="QRM">QRM</option>
@@ -2107,13 +2113,13 @@ function QuestionEditor({
           <button
             type="button"
             onClick={() => updateQuestion({ answerSource: 'source' })}
-            className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-950/40 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50"
+            className="inline-flex items-center gap-1 rounded-full bg-warn-100 dark:bg-warn-950/40 px-2 py-0.5 text-xs font-medium text-warn-700 dark:text-warn-100 hover:bg-warn-50 dark:hover:bg-warn-950/60"
             title="Réponse générée par l'IA (corrigé absent du PDF). Clique pour la marquer comme vérifiée."
           >
             <Sparkles size={12} /> IA — à vérifier
           </button>
         )}
-        <button onClick={deleteQuestion} className="ml-auto p-2 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30" title="Supprimer">
+        <button onClick={deleteQuestion} className="ml-auto p-2 rounded-input text-muted-foreground hover:text-danger-700 hover:bg-danger-50 dark:hover:bg-danger-950/30" title="Supprimer">
           <Trash2 size={16} />
         </button>
       </div>
@@ -2134,16 +2140,16 @@ function QuestionEditor({
             <div key={`${option.id}-${optionIndex}`} className="grid grid-cols-[54px_1fr_80px_36px] gap-2 items-center">
               <input value={option.id} onChange={(e) => updateOption(optionIndex, { id: e.target.value.toUpperCase() })} className={`${inputClass} text-center font-mono`} />
               <input value={option.text} onChange={(e) => updateOption(optionIndex, { text: e.target.value })} className={inputClass} placeholder="Proposition" />
-              <label className="inline-flex items-center gap-1 text-xs text-neutral-600 dark:text-neutral-400">
+              <label className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <input type={question.questionType === 'QRU' ? 'radio' : 'checkbox'} checked={option.correct} onChange={(e) => setOptionCorrect(optionIndex, e.target.checked)} />
                 Vrai
               </label>
-              <button onClick={() => deleteOption(optionIndex)} className="p-2 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">
+              <button onClick={() => deleteOption(optionIndex)} className="p-2 rounded-input text-muted-foreground hover:text-danger-700 hover:bg-danger-50 dark:hover:bg-danger-950/30">
                 <Trash2 size={14} />
               </button>
             </div>
           ))}
-          <button onClick={addOption} disabled={(question.options || []).length >= 15} className="inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 disabled:text-neutral-400">
+          <button onClick={addOption} disabled={(question.options || []).length >= 15} className="inline-flex items-center gap-1 text-sm text-brand-700 dark:text-brand-500 disabled:text-muted-foreground">
             <Plus size={14} /> Ajouter une option
           </button>
         </div>
@@ -2154,7 +2160,7 @@ function QuestionEditor({
       <textarea value={question.correctionText || ''} onChange={(e) => updateQuestion({ correctionText: e.target.value })} className={`${textAreaClass} min-h-[90px]`} placeholder="Correction" />
       <textarea value={(question.sourceRefs || []).join('\n')} onChange={(e) => updateQuestion({ sourceRefs: e.target.value.split('\n').filter(Boolean) })} className={`${textAreaClass} min-h-[70px] font-mono text-xs`} placeholder="Extraits source, un par ligne" />
       {question.warnings && question.warnings.length > 0 && (
-        <div className="text-xs text-amber-600 dark:text-amber-400">{question.warnings.join(' - ')}</div>
+        <div className="text-xs text-warn-700 dark:text-warn-500">{question.warnings.join(' - ')}</div>
       )}
     </div>
   );
@@ -2184,29 +2190,29 @@ function RegroupDialog({
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-lg rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-6 shadow-xl space-y-4"
+        className="w-full max-w-lg rounded-card border border-border bg-card p-6 shadow-xl space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 id="regroup-dialog-title" className="text-base font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
-            <GitMerge size={18} className="text-indigo-600" />
+          <h2 id="regroup-dialog-title" className="text-base font-[650] text-foreground flex items-center gap-2">
+            <GitMerge size={18} className="text-brand-700 dark:text-brand-500" />
             Regrouper {count} questions
           </h2>
           <button
             onClick={onCancel}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+            className="p-1.5 rounded-input text-muted-foreground hover:bg-muted hover:text-foreground"
             aria-label="Fermer"
           >
             <X size={16} />
           </button>
         </div>
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted-foreground">
           Les questions sélectionnées vont être rattachées à un nouveau dossier clinique partagé.
           La vignette ne sera portée que par la première question (ordre du draft).
         </p>
         <div className="space-y-3">
           <label className="block">
-            <span className="text-[11px] uppercase tracking-wider font-medium text-neutral-600 dark:text-neutral-400">
+            <span className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground">
               Format
             </span>
             <select
@@ -2219,7 +2225,7 @@ function RegroupDialog({
             </select>
           </label>
           <label className="block">
-            <span className="text-[11px] uppercase tracking-wider font-medium text-neutral-600 dark:text-neutral-400">
+            <span className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground">
               Titre du dossier
             </span>
             <input
@@ -2231,7 +2237,7 @@ function RegroupDialog({
             />
           </label>
           <label className="block">
-            <span className="text-[11px] uppercase tracking-wider font-medium text-neutral-600 dark:text-neutral-400">
+            <span className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground">
               Vignette clinique (min 20 caractères)
             </span>
             <textarea
@@ -2240,24 +2246,24 @@ function RegroupDialog({
               placeholder="Énoncé clinique partagé par les questions de la série"
               className={`mt-1 ${textAreaClass} min-h-[140px]`}
             />
-            <span className="text-[10px] text-neutral-400 mt-0.5 block">
+            <span className="text-[10px] text-muted-foreground mt-0.5 block">
               {(form.vignette || '').trim().length} / min 20 caractères
             </span>
           </label>
         </div>
         {error && (
-          <div className="text-xs text-red-600 dark:text-red-400">{error}</div>
+          <div className="text-xs text-danger-700 dark:text-danger-500">{error}</div>
         )}
         <div className="flex justify-end gap-2 pt-1">
           <button
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            className="px-4 py-2 rounded-input text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             Annuler
           </button>
           <button
             onClick={onConfirm}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium"
           >
             <GitMerge size={15} />
             Confirmer
@@ -2305,47 +2311,47 @@ function JobStatus({ job, onCancel, generatedSoFar }: { job: QrocJob; onCancel: 
 
   const isFinal = ['done', 'done-with-errors', 'error', 'cancelled', 'interrupted'].includes(job.status);
   const statusColors: Record<string, string> = {
-    done: 'text-green-700 dark:text-green-300',
-    'done-with-errors': 'text-amber-700 dark:text-amber-300',
-    error: 'text-red-600 dark:text-red-400',
-    cancelled: 'text-neutral-500',
-    interrupted: 'text-amber-700 dark:text-amber-300',
+    done: 'text-success-700 dark:text-success-500',
+    'done-with-errors': 'text-warn-700 dark:text-warn-500',
+    error: 'text-danger-700 dark:text-danger-500',
+    cancelled: 'text-muted-foreground',
+    interrupted: 'text-warn-700 dark:text-warn-500',
   };
-  const statusClass = statusColors[job.status] || 'text-indigo-700 dark:text-indigo-300';
+  const statusClass = statusColors[job.status] || 'text-brand-700 dark:text-brand-500';
 
   return (
-    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-4 text-sm space-y-3 bg-white dark:bg-neutral-900">
+    <div className="rounded-card border border-border p-4 text-sm space-y-3 bg-card">
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
-          {isActive ? <Loader2 size={16} className="animate-spin text-indigo-600" /> : <CheckCircle2 size={16} className={statusClass} />}
+          {isActive ? <Loader2 size={16} className="animate-spin text-brand-700 dark:text-brand-500" /> : <CheckCircle2 size={16} className={statusClass} />}
           <span className={`font-medium ${statusClass}`}>
             {isFinal ? `Job ${job.status}` : `Job en cours : ${job.status}`}
           </span>
         </div>
-        <span className="text-xs text-neutral-500">Bloc {current}/{total || '?'} · {pct}%</span>
+        <span className="text-xs text-muted-foreground">Bloc {current}/{total || '?'} · {pct}%</span>
       </div>
 
-      <div className="h-2 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
-        <div className={`h-full transition-all ${isActive ? 'bg-indigo-500 animate-pulse' : 'bg-indigo-600'}`} style={{ width: `${Math.max(pct, isActive ? 4 : 0)}%` }} />
+      <div className="h-2 rounded-full bg-muted overflow-hidden">
+        <div className={`h-full transition-all ${isActive ? 'bg-brand-500 animate-pulse' : 'bg-brand-600'}`} style={{ width: `${Math.max(pct, isActive ? 4 : 0)}%` }} />
       </div>
 
       {isActive && (
-        <div className="rounded-lg bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 p-3 text-xs space-y-1.5">
-          <div className="font-medium text-indigo-800 dark:text-indigo-200 flex items-center gap-1.5">
+        <div className="rounded-input bg-brand-50 dark:bg-brand-950/30 border border-brand-100 dark:border-brand-700/50 p-3 text-xs space-y-1.5">
+          <div className="font-medium text-brand-950 dark:text-brand-100 flex items-center gap-1.5">
             <Loader2 size={12} className="animate-spin" />
             {phaseLabel[phase] || phase}
             {activeBlockIds.length > 0
               ? ` · blocs actifs : ${activeBlockIds.join(', ')}`
               : progress?.currentBlockId ? ` · ${progress.currentBlockId}` : ''}
           </div>
-          <div className="text-indigo-700 dark:text-indigo-300">
+          <div className="text-brand-700 dark:text-brand-100">
             DeepSeek travaille depuis <strong>{fmt(since)}</strong> sur l'etape courante — total écoulé : {fmt(elapsedTotal)}.
           </div>
-          <div className="text-indigo-600/80 dark:text-indigo-400/80">
+          <div className="text-brand-700/80 dark:text-brand-500/80">
             Le serveur peut traiter plusieurs blocs en parallele, avec une limite globale pour eviter de taper trop fort sur DeepSeek.
           </div>
           {generatedSoFar > 0 && (
-            <div className="text-indigo-700 dark:text-indigo-300">
+            <div className="text-brand-700 dark:text-brand-100">
               <strong>{generatedSoFar}</strong> question(s) déjà écrites dans le brouillon.
             </div>
           )}
@@ -2353,24 +2359,24 @@ function JobStatus({ job, onCancel, generatedSoFar }: { job: QrocJob; onCancel: 
       )}
 
       {isFinal && (
-        <div className="text-xs text-neutral-600 dark:text-neutral-400">
+        <div className="text-xs text-muted-foreground">
           Phase finale : {phase} · durée totale : {fmt(elapsedTotal)}
         </div>
       )}
 
       {job.errors && job.errors.length > 0 && (
-        <div className="text-xs text-red-600 dark:text-red-400 space-y-0.5">
+        <div className="text-xs text-danger-700 dark:text-danger-500 space-y-0.5">
           {job.errors.slice(0, 5).map((e, i) => <div key={i}>· {e}</div>)}
         </div>
       )}
       {job.warnings && job.warnings.length > 0 && (
-        <div className="text-xs text-amber-600 dark:text-amber-400 space-y-0.5">
+        <div className="text-xs text-warn-700 dark:text-warn-500 space-y-0.5">
           {job.warnings.slice(0, 3).map((e, i) => <div key={i}>· {e}</div>)}
         </div>
       )}
 
       {canCancel && (
-        <button onClick={onCancel} className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline">
+        <button onClick={onCancel} className="text-xs font-medium text-danger-700 dark:text-danger-500 hover:underline">
           Annuler le job
         </button>
       )}
@@ -2403,20 +2409,20 @@ function PdfDropZone({
         setIsDragging(false);
         handleFiles(Array.from(e.dataTransfer.files || []));
       }}
-      className={`border-2 border-dashed rounded-2xl bg-white dark:bg-neutral-900 p-8 transition-colors ${
-        isDragging ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30' : 'border-neutral-300 dark:border-neutral-700'
+      className={`border-2 border-dashed rounded-card bg-card p-8 transition-colors ${
+        isDragging ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/30' : 'border-border'
       }`}
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+        <div className="w-12 h-12 rounded-card bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-100 flex items-center justify-center shrink-0">
           <Upload size={22} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-neutral-900 dark:text-neutral-100 mb-1">{fileLabel}</div>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-4">
+          <div className="font-medium text-foreground mb-1">{fileLabel}</div>
+          <p className="text-sm text-muted-foreground mb-4">
             {allowMultiple ? 'Depose un ou plusieurs PDFs, ou selectionne-les depuis Windows.' : 'Depose le PDF ou selectionne-le depuis Windows.'}
           </p>
-          <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium cursor-pointer hover:opacity-90">
+          <label className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-foreground text-background text-sm font-medium cursor-pointer hover:opacity-90">
             <FileText size={16} />
             {allowMultiple ? 'Choisir des PDFs' : 'Choisir un PDF'}
             <input
@@ -2478,14 +2484,14 @@ function MetaFields(props: {
             placeholder="v2, bis, newprompt..."
           />
           {props.idSuffix && (
-            <div className="text-[11px] text-neutral-500 mt-1">
+            <div className="text-[11px] text-muted-foreground mt-1">
               Tous les IDs deviendront : <code>{`<auto>-${props.idSuffix}`}</code>
             </div>
           )}
         </Field>
       )}
-      <label className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
-        <input type="checkbox" checked={props.overwrite} onChange={(e) => props.setOverwrite(e.target.checked)} className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500" />
+      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+        <input type="checkbox" checked={props.overwrite} onChange={(e) => props.setOverwrite(e.target.checked)} className="rounded border-input text-brand-600 focus:ring-ring" />
         Remplacer si l'annale existe deja
       </label>
     </>
@@ -2762,12 +2768,12 @@ function AutreImportPanel({
 
   if (published) {
     return (
-      <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-5">
-        <div className="rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 text-green-800 dark:text-green-200 p-4 text-sm space-y-3">
+      <div className="rounded-card bg-card border border-border p-5">
+        <div className="rounded-card bg-success-50 dark:bg-success-950/30 border border-success-100 dark:border-success-700/50 text-success-950 dark:text-success-100 p-4 text-sm space-y-3">
           <div className="flex gap-2 font-medium"><CheckCircle2 size={18} />{published.questionsCount} questions publiées · {published.title}</div>
           <div className="flex flex-wrap gap-2 pt-1">
-            <button onClick={() => onOpenPublished(published.redirectTo)} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-800 text-white font-medium">Ouvrir l'annale</button>
-            <button onClick={() => { setPublished(null); onResetAll(); }} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-green-300 dark:border-green-800 bg-white/60 dark:bg-neutral-900/40 text-green-800 dark:text-green-200 font-medium">Importer un autre PDF</button>
+            <button onClick={() => onOpenPublished(published.redirectTo)} className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-success-700 hover:bg-success-500 text-white font-medium">Ouvrir l'annale</button>
+            <button onClick={() => { setPublished(null); onResetAll(); }} className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-success-100 bg-card/60 text-success-700 dark:border-success-700/50 dark:text-success-100 font-medium">Importer un autre PDF</button>
           </div>
         </div>
       </div>
@@ -2775,21 +2781,21 @@ function AutreImportPanel({
   }
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-5 space-y-4">
+    <div className="rounded-card bg-card border border-border p-5 space-y-4">
       <div className="grid sm:grid-cols-2 gap-3">
         <label className="block space-y-1.5">
-          <span className="text-xs font-medium text-neutral-500">Clé API DeepSeek</span>
+          <span className="text-xs font-medium text-muted-foreground">Clé API DeepSeek</span>
           <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} className={inputClass} placeholder="sk-..." />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-xs font-medium text-neutral-500">Modèle</span>
+          <span className="text-xs font-medium text-muted-foreground">Modèle</span>
           <select value={model} onChange={(e) => setModel(e.target.value)} className={inputClass}>
             <option value="deepseek-v4-flash">deepseek-v4-flash</option>
             <option value="deepseek-v4-pro">deepseek-v4-pro</option>
           </select>
         </label>
       </div>
-      <label className="inline-flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+      <label className="inline-flex items-center gap-2 text-xs text-muted-foreground">
         <input type="checkbox" checked={mock} onChange={(e) => setMock(e.target.checked)} />
         Mode mock (sans appel API, pour tester)
       </label>
@@ -2797,7 +2803,7 @@ function AutreImportPanel({
         <button
           onClick={runImport}
           disabled={busy}
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-medium shadow-sm transition-all duration-150 active:scale-95"
+          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-input bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-medium shadow-sm transition-all duration-150 active:scale-95"
         >
           {busy ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
           {busy ? 'Traitement…' : 'Importer (Autre)'}
@@ -2807,7 +2813,7 @@ function AutreImportPanel({
           onClick={cancelImport}
           disabled={busy}
           title="Annuler cet import et supprimer le brouillon"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 disabled:opacity-60 text-sm font-medium"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-danger-100 text-danger-700 hover:bg-danger-50 dark:border-danger-700/50 dark:text-danger-500 dark:hover:bg-danger-950/30 disabled:opacity-60 text-sm font-medium"
         >
           <X size={16} /> {generating ? 'Annuler la génération' : "Annuler l'import"}
         </button>
@@ -2815,19 +2821,19 @@ function AutreImportPanel({
 
       {!draft && !job && drafts.length > 0 && (
         <div className="space-y-2">
-          <div className="text-xs font-medium text-neutral-500">Brouillons d'import en cours ({drafts.length})</div>
+          <div className="text-xs font-medium text-muted-foreground">Brouillons d'import en cours ({drafts.length})</div>
           {drafts.map((d) => (
-            <div key={d.id} className="flex items-center justify-between gap-2 rounded-lg border border-neutral-200 dark:border-neutral-800 px-3 py-2">
+            <div key={d.id} className="flex items-center justify-between gap-2 rounded-input border border-border px-3 py-2">
               <div className="min-w-0">
-                <div className="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate">{d.title}</div>
-                <div className="text-xs text-neutral-500">
+                <div className="text-sm font-medium text-foreground truncate">{d.title}</div>
+                <div className="text-xs text-muted-foreground">
                   {d.generatedQuestions} question(s) · {d.sourceBlocks} bloc(s)
                   {d.updatedAt ? ` · ${new Date(d.updatedAt).toLocaleString('fr-FR')}` : ''}
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <button onClick={() => openDraft(d.id)} disabled={busy} className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-xs font-medium">Reprendre</button>
-                <button onClick={() => deleteDraft(d.id)} disabled={busy} title="Supprimer ce brouillon" className="p-1.5 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"><Trash2 size={14} /></button>
+                <button onClick={() => openDraft(d.id)} disabled={busy} className="px-3 py-1.5 rounded-input bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white text-xs font-medium">Reprendre</button>
+                <button onClick={() => deleteDraft(d.id)} disabled={busy} title="Supprimer ce brouillon" className="p-1.5 rounded-input text-muted-foreground hover:text-danger-700 hover:bg-danger-50 dark:hover:bg-danger-950/30"><Trash2 size={14} /></button>
               </div>
             </div>
           ))}
@@ -2839,7 +2845,7 @@ function AutreImportPanel({
       )}
 
       {job && isTerminalJobStatus(job.status) && questions.length === 0 && (
-        <div className="text-sm text-amber-600 dark:text-amber-400">
+        <div className="text-sm text-warn-700 dark:text-warn-500">
           Aucune question générée. {(job.errors || []).slice(0, 2).join(' · ')}
         </div>
       )}
@@ -2847,21 +2853,21 @@ function AutreImportPanel({
       {questions.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            <div className="text-sm font-medium text-muted-foreground">
               {questions.length} questions détectées
-              {aiCount > 0 && <span className="ml-2 text-amber-600 dark:text-amber-400">· {aiCount} corrigé(s) IA à vérifier</span>}
+              {aiCount > 0 && <span className="ml-2 text-warn-700 dark:text-warn-500">· {aiCount} corrigé(s) IA à vérifier</span>}
             </div>
             <button
               onClick={publish}
               disabled={busy || questionIssues.length > 0}
               title={questionIssues.length > 0 ? 'Coche la bonne réponse des questions signalées avant de publier' : undefined}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-success-700 hover:bg-success-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium"
             >
               <Save size={15} /> Publier
             </button>
           </div>
           {questionIssues.length > 0 && (
-            <div className="rounded-lg border border-amber-300 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
+            <div className="rounded-input border border-warn-100 dark:border-warn-700/60 bg-warn-50 dark:bg-warn-950/30 px-3 py-2 text-xs text-warn-700 dark:text-warn-100">
               <strong>{questionIssues.length} question(s) à compléter</strong> avant publication — coche la bonne réponse dans la carte :
               <div className="mt-1 font-medium">{questionIssues.map((x) => `Q${x.n} (${x.msg})`).join(' · ')}</div>
             </div>
@@ -2870,7 +2876,7 @@ function AutreImportPanel({
             {questions.map((question, questionIndex) => {
               const hasIssue = questionIssues.some((x) => x.n === questionIndex + 1);
               return (
-                <div key={`${question.id}-${questionIndex}`} className={hasIssue ? 'rounded-xl ring-2 ring-amber-400 dark:ring-amber-600' : ''}>
+                <div key={`${question.id}-${questionIndex}`} className={hasIssue ? 'rounded-card ring-2 ring-warn-500' : ''}>
                   <QuestionEditor
                     question={question}
                     index={questionIndex}
@@ -2892,12 +2898,12 @@ function AutreImportPanel({
 
 function LocalExplainer() {
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 space-y-3">
-      <div className="flex items-center gap-2 text-sm font-medium text-neutral-900 dark:text-neutral-100">
-        <ScanText size={16} className="text-indigo-600 dark:text-indigo-400" />
+    <div className="bg-card border border-border rounded-card p-5 space-y-3">
+      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <ScanText size={16} className="text-brand-700 dark:text-brand-500" />
         Faculté
       </div>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+      <p className="text-sm text-muted-foreground leading-relaxed">
         Pour les PDF au format correction UNESS avec cases cochees. Aucun appel API : le document determine les questions, les bonnes reponses et les images.
       </p>
     </div>
@@ -2906,12 +2912,12 @@ function LocalExplainer() {
 
 function AutreExplainer() {
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 space-y-3">
-      <div className="flex items-center gap-2 text-sm font-medium text-neutral-900 dark:text-neutral-100">
-        <Sparkles size={16} className="text-indigo-600 dark:text-indigo-400" />
+    <div className="bg-card border border-border rounded-card p-5 space-y-3">
+      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <Sparkles size={16} className="text-brand-700 dark:text-brand-500" />
         Autre PDF
       </div>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+      <p className="text-sm text-muted-foreground leading-relaxed">
         Pour les PDF varies (hors format UNESS/QROC). Decoupage local, puis DeepSeek transcrit fidelement chaque question en detectant son type, sans melanger les questions. Si le PDF n'a pas de corrige, il est genere par IA (a verifier). Tu relis avant publication.
       </p>
     </div>
@@ -2920,12 +2926,12 @@ function AutreExplainer() {
 
 function QrocExplainer() {
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 space-y-3">
-      <div className="flex items-center gap-2 text-sm font-medium text-neutral-900 dark:text-neutral-100">
-        <Sparkles size={16} className="text-indigo-600 dark:text-indigo-400" />
+    <div className="bg-card border border-border rounded-card p-5 space-y-3">
+      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <Sparkles size={16} className="text-brand-700 dark:text-brand-500" />
         Conversion QROC
       </div>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+      <p className="text-sm text-muted-foreground leading-relaxed">
         Le PDF corrige est decoupe localement en blocs QROC. Tu peux corriger le decoupage, puis DeepSeek genere un brouillon DP/QI/KFP que tu relis et modifies avant publication.
       </p>
     </div>
@@ -2934,26 +2940,26 @@ function QrocExplainer() {
 
 function ImportSuccess({ result, onOpen, onReset, onRenamed }: { result: ImportResult; onOpen: () => void; onReset: () => void; onRenamed?: (newId: string) => void }) {
   return (
-    <div className="rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 text-green-800 dark:text-green-200 p-4 text-sm space-y-3">
+    <div className="rounded-card bg-success-50 dark:bg-success-950/30 border border-success-100 dark:border-success-700/50 text-success-950 dark:text-success-100 p-4 text-sm space-y-3">
       <div className="flex gap-2 font-medium">
         <CheckCircle2 size={18} />
         {result.annale.questionsCount} questions importees · {result.annale.title}
       </div>
-      <div className="text-green-700 dark:text-green-300">
+      <div className="text-success-700 dark:text-success-500">
         {result.pages} pages, {result.textChars.toLocaleString('fr-FR')} caracteres extraits.
       </div>
       {result.report && (
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded-lg bg-white/60 dark:bg-neutral-900/40 p-2">
+          <div className="rounded-input bg-card/60 p-2">
             DP/KFP : {result.report.series.map((s) => `${s.id}=${s.total}`).join(', ') || 'aucun'}
           </div>
-          <div className="rounded-lg bg-white/60 dark:bg-neutral-900/40 p-2">
+          <div className="rounded-input bg-card/60 p-2">
             QI : {result.report.qiCount} - Images : {result.report.imagesWritten ?? result.report.imagesAttached}
           </div>
         </div>
       )}
       {result.warnings && result.warnings.length > 0 && (
-        <div className="text-amber-700 dark:text-amber-300">{result.warnings.slice(0, 3).join(' - ')}</div>
+        <div className="text-warn-700 dark:text-warn-500">{result.warnings.slice(0, 3).join(' - ')}</div>
       )}
       {result.autoRenamed && result.originalAnnaleId && onRenamed && (
         <AutoRenamedNotice
@@ -2963,10 +2969,10 @@ function ImportSuccess({ result, onOpen, onReset, onRenamed }: { result: ImportR
         />
       )}
       <div className="flex flex-wrap gap-2 pt-1">
-        <button onClick={onOpen} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-800 text-white font-medium">
+        <button onClick={onOpen} className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-success-700 hover:bg-success-500 text-white font-medium">
           Ouvrir l'annale
         </button>
-        <button onClick={onReset} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-green-300 dark:border-green-800 bg-white/60 dark:bg-neutral-900/40 text-green-800 dark:text-green-200 hover:bg-white dark:hover:bg-neutral-900 font-medium">
+        <button onClick={onReset} className="inline-flex items-center gap-2 px-4 py-2 rounded-input border border-success-100 dark:border-success-700/50 bg-card/60 text-success-700 dark:text-success-100 hover:bg-card font-medium">
           Importer une autre annale
         </button>
       </div>
@@ -2976,7 +2982,7 @@ function ImportSuccess({ result, onOpen, onReset, onRenamed }: { result: ImportR
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 p-3 text-sm flex gap-2">
+    <div className="rounded-card bg-danger-50 dark:bg-danger-950/30 border border-danger-100 dark:border-danger-700/50 text-danger-700 dark:text-danger-500 p-3 text-sm flex gap-2">
       <AlertTriangle size={17} className="shrink-0 mt-0.5" />
       <span>{message}</span>
     </div>
@@ -2988,7 +2994,7 @@ function ModeButton({ active, onClick, children }: { active: boolean; onClick: (
     <button
       onClick={onClick}
       className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-        active ? 'bg-indigo-600 text-white' : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+        active ? 'bg-brand-600 text-white' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
       }`}
     >
       {children}
@@ -2999,7 +3005,7 @@ function ModeButton({ active, onClick, children }: { active: boolean; onClick: (
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block space-y-1.5">
-      <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{label}</span>
+      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
       {children}
     </label>
   );

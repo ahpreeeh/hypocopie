@@ -72,7 +72,9 @@ from urllib import error as urlerror
 from urllib import request as urlrequest
 
 HOST = "127.0.0.1"
-PORT = 8765
+# Port surchargeable par env (instance secondaire de test) ; le bind reste
+# strictement loopback quoi qu'il arrive.
+PORT = int(os.environ.get("PORT") or 8765)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 WEB_DIR = os.path.join(ROOT, "web", "dist")

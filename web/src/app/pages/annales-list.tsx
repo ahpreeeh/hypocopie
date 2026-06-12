@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowLeft, BookOpen, Play, FileText, ScanText, History, Pencil, Save, X, CheckCircle2, Clock, Target, GitMerge, Loader2 } from 'lucide-react';
+import { BookOpen, Play, FileText, ScanText, History, Pencil, Save, X, CheckCircle2, Clock, Target, GitMerge, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Skeleton } from '../components/ui/skeleton';
-import { EmptyState, KpiCard, PageBreadcrumb } from '../components/design-primitives';
+import { EmptyState, KpiCard } from '../components/design-primitives';
+import { SegmentedControl } from '../components/ui/segmented-control';
 import { humanizeError } from '../ui-feedback';
 
 interface AnnaleDetailQuestion {
@@ -91,8 +92,7 @@ export function AnnalesList() {
     }
   };
 
-  const toggleExamMode = () => {
-    const next: ExamMode = examMode === 'exam' ? 'libre' : 'exam';
+  const selectExamMode = (next: ExamMode) => {
     setExamMode(next);
     setStoredExamMode(next);
   };
@@ -273,102 +273,173 @@ export function AnnalesList() {
     };
   }, [annales, sessions]);
 
+  const latestSession = useMemo(() => {
+    if (!sessions || sessions.length === 0) return null;
+    const latest = [...sessions].sort((a, b) => b.submittedAt.localeCompare(a.submittedAt))[0];
+    const annale = annales?.find((item) => item.id === latest.annaleId) || null;
+    return { session: latest, annale };
+  }, [annales, sessions]);
+
+  // Copies en cours : drafts exam_* (version 2) du localStorage, restaurées
+  // automatiquement par exam-page à l'ouverture de l'annale.
+  const inProgressDrafts = useMemo(() => {
+    if (!annales) return [];
+    const byId = new Map(annales.map((a) => [a.id, a]));
+    const drafts: Array<{
+      annaleId: string;
+      title: string;
+      questionsCount: number;
+      currentIndex: number;
+      elapsedSec: number;
+      examMode: string;
+      updatedAt: string;
+    }> = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith('exam_') || key.startsWith('exam_marks_')) continue;
+      const annaleId = key.slice('exam_'.length);
+      const annale = byId.get(annaleId);
+      if (!annale) continue;
+      try {
+        const draft = JSON.parse(localStorage.getItem(key) || '');
+        if (!draft || draft.version !== 2) continue;
+        drafts.push({
+          annaleId,
+          title: annale.title,
+          questionsCount: annale.questionsCount || 0,
+          currentIndex: Number(draft.currentIndex) || 0,
+          elapsedSec: Number(draft.elapsedSec) || 0,
+          examMode: draft.examMode === 'libre' ? 'libre' : 'exam',
+          updatedAt: typeof draft.updatedAt === 'string' ? draft.updatedAt : '',
+        });
+      } catch {
+        // draft illisible : ignoré, exam-page le réinitialisera
+      }
+    }
+    return drafts.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }, [annales]);
+
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-900">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link
-            to="/captures"
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 flex items-center gap-1"
-          >
-            <ArrowLeft size={16} /> Cahier d'erreurs
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold flex items-center gap-2">
-              <BookOpen size={20} className="text-indigo-600" />
-              Annales — entraînement examen
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-6 py-5">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-[22px] font-[650] tracking-[-0.015em] text-foreground">
+              Tableau de bord
             </h1>
-            <p className="text-xs text-neutral-500">
-              Mode UNESS. Sélectionne une annale pour démarrer.
+            <p className="mt-1 text-sm text-muted-foreground">
+              {examMode === 'exam'
+                ? 'Mode examen — correction à la fin, note finale.'
+                : 'Mode libre — correction après chaque question validée.'}
             </p>
           </div>
-          {/* Toggle Mode examen */}
-          <button
-            onClick={toggleExamMode}
-            className="flex items-center gap-2 text-sm select-none group"
-            title={
-              examMode === 'exam'
-                ? "Mode examen ACTIF : correction à la fin uniquement"
-                : "Mode entraînement libre : correction après chaque question"
-            }
-          >
-            <span className={`font-medium ${examMode === 'exam' ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-500'}`}>
-              Mode examen
-            </span>
-            <span
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
-                examMode === 'exam'
-                  ? 'bg-indigo-600'
-                  : 'bg-neutral-300 dark:bg-neutral-700'
-              }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform mt-0.5 ${
-                  examMode === 'exam' ? 'translate-x-5' : 'translate-x-0.5'
-                }`}
-              />
-            </span>
-          </button>
 
-          <Link
-            to="/entrainement/historique"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm font-medium text-neutral-700 dark:text-neutral-300"
-            title="Historique des sessions"
-          >
-            <History size={16} />
-            Historique
-          </Link>
+          <SegmentedControl
+            ariaLabel="Mode de correction"
+            value={examMode}
+            onChange={selectExamMode}
+            options={[
+              { value: 'exam', label: 'Examen', title: 'Correction à la fin uniquement, comme à l\'EDN' },
+              { value: 'libre', label: 'Libre', title: 'Correction après chaque question validée' },
+            ]}
+          />
 
           <Link
             to="/entrainement/import"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm"
+            className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-[var(--shadow-card)] transition-colors hover:bg-brand-700"
           >
             <ScanText size={16} />
-            Import local
+            Importer
           </Link>
-        </div>
-
-        {/* Sous-bandeau qui rappelle le mode actif */}
-        <div className="max-w-5xl mx-auto px-6 pb-3">
-          {examMode === 'exam' ? (
-            <p className="text-xs text-neutral-500">
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-medium mr-2">
-                🎯 EXAMEN
-              </span>
-              Mode UNESS. Correction à la fin uniquement. Note finale.
-            </p>
-          ) : (
-            <p className="text-xs text-neutral-500">
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-medium mr-2">
-                📚 LIBRE
-              </span>
-              Mode entraînement. Correction directe après chaque "Valider".
-            </p>
-          )}
         </div>
       </header>
 
-      <PageBreadcrumb items={[{ label: 'Entrainement', to: '/entrainement' }, { label: 'Annales' }]} />
-
       <main className="max-w-5xl mx-auto px-6 py-8">
         {error && (
-          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 mb-6">
+          <div className="p-4 rounded-input bg-danger-50 dark:bg-danger-950/30 text-danger-700 dark:text-danger-500 mb-6">
             Erreur de chargement : {error}
           </div>
         )}
 
         {!annales && !error && (
           <AnnalesListSkeleton />
+        )}
+
+        {inProgressDrafts.length > 0 && (
+          <section className="mb-6 rounded-card border border-brand-100 bg-brand-50/60 p-5 shadow-[var(--shadow-card)] dark:border-brand-700/40 dark:bg-brand-950/30">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+              <div className="min-w-0 flex-1">
+                <div className="text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
+                  Copie en cours
+                </div>
+                <h2 className="mt-1 truncate text-base font-[650] text-foreground">
+                  {inProgressDrafts[0].title}
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Question {inProgressDrafts[0].currentIndex + 1}
+                  {inProgressDrafts[0].questionsCount ? ` / ${inProgressDrafts[0].questionsCount}` : ''}
+                  {inProgressDrafts[0].elapsedSec > 0 ? ` · ${formatShortDuration(inProgressDrafts[0].elapsedSec)} écoulées` : ''}
+                  {` · mode ${inProgressDrafts[0].examMode === 'libre' ? 'libre' : 'examen'}`}
+                </p>
+                {inProgressDrafts.length > 1 && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Également en cours :{' '}
+                    {inProgressDrafts.slice(1, 4).map((draft, index) => (
+                      <span key={draft.annaleId}>
+                        {index > 0 && ', '}
+                        <Link to={`/entrainement/${draft.annaleId}`} className="underline decoration-border underline-offset-2 transition-colors hover:text-foreground">
+                          {draft.title}
+                        </Link>
+                      </span>
+                    ))}
+                  </p>
+                )}
+              </div>
+              <Link
+                to={`/entrainement/${inProgressDrafts[0].annaleId}`}
+                className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700"
+              >
+                <Play size={15} />
+                Reprendre
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {!inProgressDrafts.length && latestSession && (
+          <section className="mb-6 rounded-card border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+              <div className="min-w-0 flex-1">
+                <div className="text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
+                  Dernière copie
+                </div>
+                <h2 className="mt-1 truncate text-base font-[650] text-foreground">
+                  {latestSession.annale?.title || latestSession.session.annaleId}
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {new Date(latestSession.session.submittedAt).toLocaleDateString('fr-FR')}
+                  {latestSession.session.durationSec ? ` - ${formatShortDuration(latestSession.session.durationSec)}` : ''}
+                  {typeof latestSession.session.score?.percentage === 'number' ? ` - ${latestSession.session.score.percentage}%` : ''}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  to="/entrainement/historique"
+                  className="inline-flex items-center gap-2 rounded-input border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                >
+                  <History size={15} />
+                  Voir l'historique
+                </Link>
+                <Link
+                  to={`/entrainement/${latestSession.session.annaleId}`}
+                  className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700"
+                >
+                  <Play size={15} />
+                  Refaire
+                </Link>
+              </div>
+            </div>
+          </section>
         )}
 
         {annaleStats && (
@@ -388,7 +459,7 @@ export function AnnalesList() {
             action={
               <Link
                 to="/entrainement/import"
-                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
+                className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-[var(--shadow-card)] transition-colors hover:bg-brand-700"
               >
                 <ScanText size={16} />
                 Importer une annale
@@ -409,87 +480,87 @@ export function AnnalesList() {
         )}
         {grouped.map(([subject, list]) => (
           <section key={subject} className="mb-10">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">
-              {subject} <span className="text-neutral-400 font-normal">({list.length})</span>
+            <h2 className="mb-3 text-[12px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
+              {subject} <span className="text-muted-foreground/70 font-normal">({list.length})</span>
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {list.map((a) => (
                 editingId === a.id ? (
                   <div
                     key={a.id}
-                    className="bg-white dark:bg-neutral-800 border-2 border-indigo-400 dark:border-indigo-600 rounded-2xl p-4 space-y-2.5 shadow-md"
+                    className="space-y-2.5 rounded-card border-2 border-brand-500 bg-card p-4 shadow-[var(--shadow-card)]"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Édition</span>
-                      <button onClick={cancelEdit} className="text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100" aria-label="Annuler">
+                      <span className="text-xs font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">Édition</span>
+                      <button onClick={cancelEdit} className="text-muted-foreground transition-colors hover:text-foreground" aria-label="Annuler">
                         <X size={16} />
                       </button>
                     </div>
                     <label className="block">
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-500 font-medium">Titre</span>
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Titre</span>
                       <input
                         value={editFields.title}
                         onChange={(e) => setEditFields((f) => ({ ...f, title: e.target.value }))}
                         autoFocus
-                        className="mt-0.5 w-full px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="mt-0.5 w-full rounded-input border border-input bg-input-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                       />
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                       <label className="block col-span-1">
-                        <span className="text-[10px] uppercase tracking-wider text-neutral-500 font-medium">Année</span>
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Année</span>
                         <input
                           value={editFields.year}
                           onChange={(e) => setEditFields((f) => ({ ...f, year: e.target.value }))}
                           inputMode="numeric"
-                          className="mt-0.5 w-full px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="mt-0.5 w-full rounded-input border border-input bg-input-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                         />
                       </label>
                       <label className="block col-span-1">
-                        <span className="text-[10px] uppercase tracking-wider text-neutral-500 font-medium">Session</span>
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Session</span>
                         <input
                           value={editFields.session}
                           onChange={(e) => setEditFields((f) => ({ ...f, session: e.target.value }))}
                           placeholder="S1, S2…"
-                          className="mt-0.5 w-full px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="mt-0.5 w-full rounded-input border border-input bg-input-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                         />
                       </label>
                       <label className="block col-span-1">
-                        <span className="text-[10px] uppercase tracking-wider text-neutral-500 font-medium">Matière</span>
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Matière</span>
                         <input
                           value={editFields.subject}
                           onChange={(e) => setEditFields((f) => ({ ...f, subject: e.target.value }))}
-                          className="mt-0.5 w-full px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="mt-0.5 w-full rounded-input border border-input bg-input-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                         />
                       </label>
                     </div>
                     <label className="block">
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-500 font-medium flex items-center gap-1">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1">
                         Identifiant
                         {editFields.newId !== editingId && editFields.newId && (
-                          <span className="text-amber-600 dark:text-amber-400 font-normal">⚠️ rename programmé</span>
+                          <span className="text-warn-700 dark:text-warn-500 font-normal">rename programmé</span>
                         )}
                       </span>
                       <input
                         value={editFields.newId}
                         onChange={(e) => setEditFields((f) => ({ ...f, newId: slugifyId(e.target.value) }))}
-                        className="mt-0.5 w-full px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-mono outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="mt-0.5 w-full rounded-input border border-input bg-input-background px-2.5 py-1.5 font-mono text-sm outline-none focus:ring-2 focus:ring-ring"
                       />
-                      <div className="text-[10px] text-neutral-400 mt-0.5">
+                      <div className="text-[10px] text-muted-foreground mt-0.5">
                         Modifier l'ID renomme le fichier sur disque et met à jour l'historique des sessions.
                       </div>
                     </label>
-                    {editError && <div className="text-xs text-red-600 dark:text-red-400">{editError}</div>}
+                    {editError && <div className="text-xs text-danger-700 dark:text-danger-500">{editError}</div>}
                     <div className="flex justify-end gap-2 pt-1">
                       <button
                         onClick={cancelEdit}
-                        className="px-3 py-1.5 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                        className="rounded-input px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                       >
                         Annuler
                       </button>
                       <button
                         onClick={saveEdit}
                         disabled={editBusy}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium disabled:opacity-60"
+                        className="inline-flex items-center gap-1.5 rounded-input bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-60"
                       >
                         <Save size={13} />
                         {editBusy ? 'Enregistrement…' : 'Enregistrer'}
@@ -510,7 +581,7 @@ export function AnnalesList() {
                       <div className="absolute top-3 right-3 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setRegroupAnnaleId(a.id); }}
-                          className="p-1.5 rounded-lg bg-white/80 dark:bg-neutral-900/80 backdrop-blur border border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:text-indigo-600 dark:hover:text-indigo-400"
+                          className="rounded-input border border-border bg-card/80 p-1.5 text-muted-foreground backdrop-blur transition-colors hover:text-brand-700"
                           title="Regrouper des questions QI en DP"
                           aria-label="Regrouper des questions QI en DP"
                         >
@@ -518,7 +589,7 @@ export function AnnalesList() {
                         </button>
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); startEdit(a); }}
-                          className="p-1.5 rounded-lg bg-white/80 dark:bg-neutral-900/80 backdrop-blur border border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:text-indigo-600 dark:hover:text-indigo-400"
+                          className="rounded-input border border-border bg-card/80 p-1.5 text-muted-foreground backdrop-blur transition-colors hover:text-brand-700"
                           title="Renommer l'annale"
                           aria-label="Renommer"
                         >
@@ -528,33 +599,33 @@ export function AnnalesList() {
                       <Link
                         to={`/entrainement/${a.id}`}
                         title={attemptLabel}
-                        className={`relative block bg-white dark:bg-neutral-800 border rounded-2xl p-5 hover:shadow-md transition-all
+                        className={`relative block rounded-card border bg-card p-5 shadow-[var(--shadow-card)] transition-colors
                           ${done
-                            ? 'border-emerald-200 dark:border-emerald-900/60 hover:border-emerald-400 dark:hover:border-emerald-700'
-                            : 'border-neutral-200 dark:border-neutral-700 hover:border-indigo-300 dark:hover:border-indigo-700'}`}
+                            ? 'border-success-100 hover:border-success-500'
+                            : 'border-border hover:border-brand-100'}`}
                       >
                         {done && (
                           <span
                             aria-hidden="true"
-                            className="absolute top-0 left-0 h-full w-1 rounded-l-2xl bg-emerald-400/80 dark:bg-emerald-500/70"
+                            className="absolute top-0 left-0 h-full w-1 rounded-l-card bg-success-500/80"
                           />
                         )}
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1 min-w-0 pr-7">
-                            <h3 className="font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <h3 className="flex items-center gap-2 font-[650] text-foreground transition-colors group-hover:text-brand-700">
                               {done && (
                                 <span
                                   aria-hidden="true"
-                                  className="inline-block h-2 w-2 rounded-full bg-emerald-500 shrink-0"
+                                  className="inline-block h-2 w-2 shrink-0 rounded-full bg-success-700"
                                 />
                               )}
                               <span className="truncate">{a.title}</span>
                             </h3>
-                            <div className="text-xs text-neutral-500 mt-1">
+                            <div className="mt-1 text-xs text-muted-foreground">
                               {a.year && <span>{a.year}</span>}
                               {a.session && <span> · {a.session}</span>}
                               {done && (
-                                <span className="ml-2 text-emerald-600 dark:text-emerald-400 font-medium">
+                                <span className="ml-2 font-medium text-success-700">
                                   · fait {attempt.count}×
                                 </span>
                               )}
@@ -562,8 +633,8 @@ export function AnnalesList() {
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-neutral-500">{a.questionsCount} questions</span>
-                          <span className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span className="text-muted-foreground">{a.questionsCount} questions</span>
+                          <span className="flex items-center gap-1 font-medium text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">
                             <Play size={14} /> {done ? 'Refaire' : 'Démarrer'}
                           </span>
                         </div>
@@ -695,19 +766,19 @@ function RegroupAnnaleModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-xl"
+        className="w-full max-w-2xl max-h-[85vh] flex flex-col rounded-card border border-border bg-card shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-5 border-b border-neutral-200 dark:border-neutral-800">
-          <h2 id="regroup-annale-title" className="text-base font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
-            <GitMerge size={18} className="text-indigo-600" />
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 id="regroup-annale-title" className="text-base font-medium text-foreground flex items-center gap-2">
+            <GitMerge size={18} className="text-brand-700" />
             {step === 'select'
               ? `Regrouper des questions QI · ${annale?.title || annaleId}`
               : `Définir le dossier · ${orderedSelected.length} questions`}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+            className="p-1.5 rounded-input text-muted-foreground hover:bg-muted hover:text-foreground"
             aria-label="Fermer"
           >
             <X size={16} />
@@ -717,24 +788,24 @@ function RegroupAnnaleModal({
         {step === 'select' && (
           <div className="flex-1 overflow-y-auto p-5 space-y-3">
             {loadingDetail && (
-              <div className="flex items-center gap-2 text-sm text-neutral-500">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 size={14} className="animate-spin" />
                 Chargement des questions…
               </div>
             )}
             {fetchError && (
-              <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm">
+              <div className="p-3 rounded-input bg-danger-50 dark:bg-danger-950/30 text-danger-700 dark:text-danger-500 text-sm">
                 {fetchError}
               </div>
             )}
             {!loadingDetail && !fetchError && qiQuestions.length === 0 && (
-              <div className="text-sm text-neutral-500">
+              <div className="text-sm text-muted-foreground">
                 Aucune question QI (hors série) à regrouper dans cette annale.
               </div>
             )}
             {qiQuestions.length > 0 && (
               <>
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-muted-foreground">
                   Sélectionne au moins 2 questions QI à regrouper en série DP/KFP.
                   L'ordre de cochage suit l'ordre des questions dans l'annale.
                 </p>
@@ -744,24 +815,24 @@ function RegroupAnnaleModal({
                     return (
                       <li
                         key={q.id}
-                        className={`flex items-start gap-3 p-3 rounded-lg border ${checked ? 'border-indigo-400 dark:border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30' : 'border-neutral-200 dark:border-neutral-800'}`}
+                        className={`flex items-start gap-3 rounded-input border p-3 ${checked ? 'border-brand-100 bg-brand-50/60 dark:border-brand-700/40 dark:bg-brand-950/30' : 'border-border'}`}
                       >
                         <input
                           type="checkbox"
                           checked={checked}
                           onChange={() => toggle(q.id)}
-                          className="mt-1 h-4 w-4 cursor-pointer accent-indigo-600"
+                          className="mt-1 h-4 w-4 cursor-pointer accent-brand-600"
                           aria-label={`Sélectionner ${q.id}`}
                         />
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 text-xs text-neutral-500 mb-1">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                             <span className="font-mono">Q{idx + 1}</span>
-                            <span className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 font-medium">
+                            <span className="px-1.5 py-0.5 rounded bg-muted font-medium">
                               {q.questionType}
                             </span>
-                            <span className="text-neutral-400 font-mono">{q.id}</span>
+                            <span className="text-muted-foreground/70 font-mono">{q.id}</span>
                           </div>
-                          <div className="text-sm text-neutral-800 dark:text-neutral-200 line-clamp-3">
+                          <div className="text-sm text-foreground line-clamp-3">
                             {q.text}
                           </div>
                         </div>
@@ -776,26 +847,26 @@ function RegroupAnnaleModal({
 
         {step === 'form' && (
           <div className="flex-1 overflow-y-auto p-5 space-y-3">
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-muted-foreground">
               Les {orderedSelected.length} questions sélectionnées vont être rattachées
               à un nouveau dossier clinique partagé. La vignette ne sera portée
               que par la première question.
             </p>
             <label className="block">
-              <span className="text-[11px] uppercase tracking-wider font-medium text-neutral-600 dark:text-neutral-400">
+              <span className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground">
                 Format
               </span>
               <select
                 value={form.format}
                 onChange={(e) => setForm({ ...form, format: e.target.value as 'DP' | 'KFP' })}
-                className="mt-1 w-32 px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-32 px-2.5 py-1.5 rounded-input border border-input bg-input-background text-sm outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="DP">DP</option>
                 <option value="KFP">KFP</option>
               </select>
             </label>
             <label className="block">
-              <span className="text-[11px] uppercase tracking-wider font-medium text-neutral-600 dark:text-neutral-400">
+              <span className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground">
                 Titre du dossier
               </span>
               <input
@@ -803,46 +874,46 @@ function RegroupAnnaleModal({
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="Ex : Insuffisance cardiaque chez Mme X"
                 autoFocus
-                className="mt-1 w-full px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full px-2.5 py-1.5 rounded-input border border-input bg-input-background text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </label>
             <label className="block">
-              <span className="text-[11px] uppercase tracking-wider font-medium text-neutral-600 dark:text-neutral-400">
+              <span className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground">
                 Vignette clinique (min 20 caractères)
               </span>
               <textarea
                 value={form.vignette}
                 onChange={(e) => setForm({ ...form, vignette: e.target.value })}
                 placeholder="Énoncé clinique partagé par toutes les questions de la série"
-                className="mt-1 w-full min-h-[160px] px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full min-h-[160px] px-2.5 py-1.5 rounded-input border border-input bg-input-background text-sm outline-none focus:ring-2 focus:ring-ring"
               />
-              <span className="text-[10px] text-neutral-400 mt-0.5 block">
+              <span className="text-[10px] text-muted-foreground mt-0.5 block">
                 {(form.vignette || '').trim().length} / min 20 caractères
               </span>
             </label>
             {formError && (
-              <div className="text-xs text-red-600 dark:text-red-400">{formError}</div>
+              <div className="text-xs text-danger-700 dark:text-danger-500">{formError}</div>
             )}
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-2 p-4 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="flex items-center justify-between gap-2 p-4 border-t border-border">
           {step === 'select' ? (
             <>
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-muted-foreground">
                 {orderedSelected.length} sélectionnée(s)
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  className="px-4 py-2 rounded-input text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={goToForm}
                   disabled={orderedSelected.length < 2}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium disabled:opacity-50 disabled:hover:bg-indigo-600"
+                  className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-50 disabled:hover:bg-brand-600"
                 >
                   <GitMerge size={15} />
                   Suivant
@@ -853,21 +924,21 @@ function RegroupAnnaleModal({
             <>
               <button
                 onClick={() => { setStep('select'); setFormError(null); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="px-4 py-2 rounded-input text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Retour
               </button>
               <div className="flex gap-2">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  className="px-4 py-2 rounded-input text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={submit}
                   disabled={busy}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-60"
                 >
                   {busy ? <Loader2 size={15} className="animate-spin" /> : <GitMerge size={15} />}
                   {busy ? 'Regroupement…' : 'Confirmer'}
@@ -891,7 +962,7 @@ function AnnalesListSkeleton() {
             {[0, 1, 2].map((item) => (
               <div
                 key={item}
-                className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl p-5 space-y-4"
+                className="bg-card border border-border rounded-card p-5 space-y-4"
               >
                 <div className="space-y-2">
                   <Skeleton className="h-5 w-4/5" />

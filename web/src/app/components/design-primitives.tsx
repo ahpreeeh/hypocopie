@@ -52,15 +52,15 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'rounded-card border border-dashed border-neutral-300 bg-white px-6 py-12 text-center shadow-sm dark:border-neutral-700 dark:bg-neutral-900',
+        'rounded-card border border-dashed border-border bg-card px-6 py-12 text-center shadow-[var(--shadow-card)]',
         className,
       )}
     >
-      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 dark:bg-brand-950/40 dark:text-brand-100 dark:ring-brand-700/40">
+      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-card bg-brand-50 text-brand-700 ring-1 ring-brand-100 dark:bg-brand-950/40 dark:text-brand-100 dark:ring-brand-700/40">
         <Icon size={30} strokeWidth={1.8} />
       </div>
-      <h2 className="text-h3 font-bold text-neutral-900 dark:text-neutral-100">{title}</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+      <h2 className="text-h3 font-[650] text-foreground">{title}</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
         {description}
       </p>
       {action && <div className="mt-6 flex justify-center">{action}</div>}
@@ -82,7 +82,7 @@ export function KpiCard({
   tone?: 'neutral' | 'brand' | 'success' | 'warn' | 'danger';
 }) {
   const toneClass = {
-    neutral: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300',
+    neutral: 'bg-muted text-muted-foreground',
     brand: 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100',
     success: 'bg-success-50 text-success-700 dark:bg-success-950/40 dark:text-success-100',
     warn: 'bg-warn-50 text-warn-700 dark:bg-warn-950/40 dark:text-warn-100',
@@ -90,21 +90,21 @@ export function KpiCard({
   }[tone];
 
   return (
-    <div className="rounded-card border border-neutral-200 bg-white p-4 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950">
+    <div className="rounded-card border border-border bg-card p-4 shadow-[var(--shadow-card)] transition-colors duration-150 hover:bg-muted/40">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+          <div className="text-[11px] font-[650] uppercase tracking-[0.07em] text-muted-foreground">
             {label}
           </div>
-          <div className="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div className="mt-1 text-2xl font-[650] tracking-[-0.02em] text-foreground tabular-nums">
             {value}
           </div>
         </div>
-        <div className={cn('flex h-9 w-9 items-center justify-center rounded-xl', toneClass)}>
+        <div className={cn('flex h-9 w-9 items-center justify-center rounded-[10px]', toneClass)}>
           <Icon size={18} />
         </div>
       </div>
-      {detail && <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{detail}</div>}
+      {detail && <div className="mt-2 text-xs text-muted-foreground">{detail}</div>}
     </div>
   );
 }
@@ -122,7 +122,7 @@ export function MiniSparkline({
   const pad = 3;
   if (clean.length < 2) {
     return (
-      <svg viewBox={`0 0 ${width} ${height}`} className={cn('h-8 w-28 text-neutral-300 dark:text-neutral-700', className)} aria-hidden="true">
+      <svg viewBox={`0 0 ${width} ${height}`} className={cn('h-8 w-28 text-muted-foreground/40', className)} aria-hidden="true">
         <path d={`M ${pad} ${height / 2} H ${width - pad}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       </svg>
     );
@@ -137,7 +137,7 @@ export function MiniSparkline({
   }).join(' ');
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className={cn('h-8 w-28 text-brand-600 dark:text-brand-300', className)} aria-hidden="true">
+    <svg viewBox={`0 0 ${width} ${height}`} className={cn('h-8 w-28 text-brand-600 dark:text-brand-100', className)} aria-hidden="true">
       <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -149,7 +149,7 @@ export function PageBreadcrumb({
   items: Array<{ label: string; to?: string }>;
 }) {
   return (
-    <div className="sticky top-0 z-20 border-b border-neutral-200/80 bg-white/85 backdrop-blur dark:border-neutral-800/80 dark:bg-neutral-950/85">
+    <div className="sticky top-0 z-20 border-b border-border/80 bg-card/85 backdrop-blur">
       <div className="mx-auto max-w-5xl px-6 py-2">
         <Breadcrumb>
           <BreadcrumbList className="text-xs">
@@ -173,6 +173,33 @@ export function PageBreadcrumb({
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+    </div>
+  );
+}
+
+export function PageHeader({
+  title,
+  description,
+  eyebrow,
+  actions,
+}: {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  actions?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-4 border-b border-border bg-card px-6 py-5 md:flex-row md:items-start">
+      <div className="min-w-0 flex-1">
+        {eyebrow && (
+          <div className="mb-1 text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
+            {eyebrow}
+          </div>
+        )}
+        <h1 className="text-[22px] font-[650] tracking-[-0.015em] text-foreground">{title}</h1>
+        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2 md:justify-end">{actions}</div>}
     </div>
   );
 }

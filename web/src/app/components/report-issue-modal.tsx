@@ -75,28 +75,28 @@ export function ReportIssueModal({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full max-w-md gap-0 overflow-y-auto p-0">
-        <SheetHeader className="border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
+        <SheetHeader className="border-b border-border px-5 py-4">
           <SheetTitle className="flex items-center gap-2 text-base">
-            <AlertTriangle size={18} className="text-amber-500" />
+            <AlertTriangle size={18} className="text-warn-500" />
             Signaler une coquille
           </SheetTitle>
         </SheetHeader>
 
         <div className="space-y-5 px-5 py-5">
           {questionLabel && (
-            <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
+            <div className="rounded-input border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
               {questionLabel}
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="block text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+            <label className="block text-xs font-[650] uppercase tracking-wide text-muted-foreground">
               Catégorie
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ReportCategory)}
-              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+              className="w-full rounded-input border border-input bg-input-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {REPORT_CATEGORIES.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -105,7 +105,7 @@ export function ReportIssueModal({
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+            <label className="block text-xs font-[650] uppercase tracking-wide text-muted-foreground">
               Note (optionnel)
             </label>
             <textarea
@@ -114,9 +114,9 @@ export function ReportIssueModal({
               placeholder="ex : la bio manque les valeurs d'hémoglobine, on a juste « hémoglobine » sans le nombre"
               rows={4}
               maxLength={600}
-              className="w-full resize-none rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-600"
+              className="w-full resize-none rounded-input border border-input bg-input-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
-            <div className={`text-right text-[11px] ${noteOver ? 'text-red-500' : 'text-neutral-400'}`}>
+            <div className={`text-right text-[11px] ${noteOver ? 'text-danger-700 dark:text-danger-500' : 'text-muted-foreground'}`}>
               {noteLen}/500
             </div>
           </div>
@@ -126,7 +126,7 @@ export function ReportIssueModal({
               type="button"
               onClick={() => onOpenChange(false)}
               disabled={submitting}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
+              className="inline-flex items-center gap-1.5 rounded-input border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
             >
               <X size={14} /> Annuler
             </button>
@@ -134,7 +134,7 @@ export function ReportIssueModal({
               type="button"
               onClick={handleSubmit}
               disabled={submitting || noteOver}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-input bg-brand-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? <Loader2 size={14} className="animate-spin" /> : <AlertTriangle size={14} />}
               Envoyer

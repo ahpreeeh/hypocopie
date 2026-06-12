@@ -145,17 +145,17 @@ export function ListPage() {
   }, [groupedQuestions]);
 
   return (
-    <div className="flex h-full overflow-hidden">
+    <div className="flex h-full overflow-hidden bg-background">
       {/* Sidebar Navigation & Filters */}
-      <aside className={`${sidebarOpen ? 'w-[280px]' : 'w-16'} hidden md:flex border-r border-neutral-200 dark:border-neutral-800 flex-col bg-white dark:bg-[#111] z-10 flex-shrink-0 transition-[width] duration-200 ease-out`}>
-        <div className={`${sidebarOpen ? 'px-4 justify-between' : 'px-2 justify-center'} h-16 border-b border-neutral-200 dark:border-neutral-800 flex items-center gap-2 shrink-0`}>
-          <div className={`${sidebarOpen ? 'flex' : 'hidden'} items-center gap-2 font-medium text-sm tracking-tight text-neutral-900 dark:text-white`}>
-            <NotebookPen size={16} className="text-indigo-600 dark:text-indigo-400" />
+      <aside className={`${sidebarOpen ? 'w-[280px]' : 'w-16'} hidden md:flex flex-col border-r border-border bg-card z-10 flex-shrink-0 transition-[width] duration-200 ease-out`}>
+        <div className={`${sidebarOpen ? 'px-4 justify-between' : 'px-2 justify-center'} h-16 border-b border-border flex items-center gap-2 shrink-0`}>
+          <div className={`${sidebarOpen ? 'flex' : 'hidden'} items-center gap-2 font-medium text-sm tracking-tight text-foreground`}>
+            <NotebookPen size={16} className="text-brand-700" />
             Cahier d'erreurs
           </div>
           <button
             onClick={() => setSidebarOpen((value) => !value)}
-            className="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
+            className="rounded-input p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             title={sidebarOpen ? 'Reduire les filtres' : 'Afficher les filtres'}
           >
             {sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
@@ -166,23 +166,23 @@ export function ListPage() {
           
           {/* Navigation Views */}
           <div className="space-y-1">
-            {sidebarOpen && <h3 className="px-3 text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">Bibliothèque</h3>}
+            {sidebarOpen && <h3 className="px-3 text-xs font-[650] uppercase tracking-wider text-muted-foreground mb-2">Bibliothèque</h3>}
             <NavItem icon={Calendar} label="Récents (Jours)" active={viewMode === 'history'} onClick={() => setViewMode('history')} compact={!sidebarOpen} />
             <NavItem icon={Library} label="Par Matière" active={viewMode === 'subjects'} onClick={() => setViewMode('subjects')} compact={!sidebarOpen} />
             <NavItem icon={Layers} label="Annales & Séries" active={viewMode === 'series'} onClick={() => setViewMode('series')} compact={!sidebarOpen} />
           </div>
 
-          <div className={`${sidebarOpen ? '' : 'hidden'} h-px bg-neutral-200 dark:bg-neutral-800 w-full`} />
+          <div className={`${sidebarOpen ? '' : 'hidden'} h-px bg-border w-full`} />
 
           {/* Filters Section (Collapsible or just clean) */}
           <div className={`${sidebarOpen ? 'space-y-3' : 'hidden'}`}>
             <button 
               onClick={() => setFiltersOpen(!filtersOpen)}
-              className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors"
+              className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground rounded-input transition-colors"
             >
               <div className="flex items-center gap-2">
-                <Filter size={16} className={hasActiveFilters ? "text-indigo-600 dark:text-indigo-400" : "text-neutral-500"} />
-                Filtres {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-indigo-600"></span>}
+                <Filter size={16} className={hasActiveFilters ? "text-brand-700" : "text-muted-foreground"} />
+                Filtres {hasActiveFilters && <span className="h-2 w-2 rounded-full bg-brand-600"></span>}
               </div>
               {filtersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
@@ -190,7 +190,7 @@ export function ListPage() {
             {filtersOpen && (
               <div className="px-3 space-y-4 pt-2">
                 {hasActiveFilters && (
-                  <button onClick={resetFilters} className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                  <button onClick={resetFilters} className="text-xs font-medium text-brand-700 hover:underline">
                     Réinitialiser les filtres
                   </button>
                 )}
@@ -230,7 +230,7 @@ export function ListPage() {
                   <option value="false">Sans image</option>
                 </SelectField>
 
-                <div className="h-px bg-neutral-200 dark:bg-neutral-800 w-full my-4" />
+                <div className="h-px bg-border w-full my-4" />
                 
                 <SelectField label="Trier par" value={sortBy} onChange={e => setSortBy(e.target.value as any)}>
                   <option value="newest">Plus récentes d'abord</option>
@@ -242,7 +242,7 @@ export function ListPage() {
           </div>
         </div>
         
-        <div className={`${sidebarOpen ? 'p-4' : 'p-2 text-center'} border-t border-neutral-200 dark:border-neutral-800 text-xs font-medium text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900/50`}>
+        <div className={`${sidebarOpen ? 'p-4' : 'p-2 text-center'} border-t border-border bg-muted/60 text-xs font-medium text-muted-foreground`}>
           {sidebarOpen
             ? `${filteredQuestions.length} question${filteredQuestions.length !== 1 ? 's' : ''} au total`
             : filteredQuestions.length}
@@ -251,33 +251,33 @@ export function ListPage() {
 
       <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
         <SheetContent side="left" className="w-[86vw] max-w-sm gap-0 p-0">
-          <SheetHeader className="border-b border-neutral-200 dark:border-neutral-800">
+          <SheetHeader className="border-b border-border">
             <SheetTitle className="text-left text-base">Cahier d'erreurs</SheetTitle>
           </SheetHeader>
-          <div className="h-full overflow-y-auto bg-white p-4 dark:bg-neutral-900">
+          <div className="h-full overflow-y-auto bg-card p-4">
             <div className="mb-5 flex items-center justify-between">
-              <div className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+              <div className="text-xs font-medium text-muted-foreground">
                 {filteredQuestions.length} question{filteredQuestions.length !== 1 ? 's' : ''}
               </div>
             </div>
 
             <div className="space-y-1">
-              <h3 className="mb-2 px-3 text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Bibliothèque</h3>
+              <h3 className="mb-2 px-3 text-xs font-[650] uppercase tracking-wider text-muted-foreground">Bibliothèque</h3>
               <NavItem icon={Calendar} label="Récents (Jours)" active={viewMode === 'history'} onClick={() => { setViewMode('history'); setMobileSidebarOpen(false); }} />
               <NavItem icon={Library} label="Par Matière" active={viewMode === 'subjects'} onClick={() => { setViewMode('subjects'); setMobileSidebarOpen(false); }} />
               <NavItem icon={Layers} label="Annales & Séries" active={viewMode === 'series'} onClick={() => { setViewMode('series'); setMobileSidebarOpen(false); }} />
             </div>
 
-            <div className="my-5 h-px bg-neutral-200 dark:bg-neutral-800" />
+            <div className="my-5 h-px bg-border" />
 
             <div className="space-y-4">
               <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  <Filter size={16} className={hasActiveFilters ? "text-indigo-600 dark:text-indigo-400" : "text-neutral-500"} />
+                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <Filter size={16} className={hasActiveFilters ? "text-brand-700" : "text-muted-foreground"} />
                   Filtres
                 </div>
                 {hasActiveFilters && (
-                  <button onClick={resetFilters} className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                  <button onClick={resetFilters} className="text-xs font-medium text-brand-700">
                     Réinitialiser
                   </button>
                 )}
@@ -323,27 +323,27 @@ export function ListPage() {
       </Sheet>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full bg-neutral-50 dark:bg-[#111] overflow-hidden">
+      <main className="flex h-full flex-1 flex-col overflow-hidden bg-background">
         {/* Top Search Bar */}
-        <div className="h-16 px-6 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-between shrink-0">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-6">
            <button
              onClick={() => setMobileSidebarOpen(true)}
-             className="mr-3 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-200 text-neutral-600 shadow-sm hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-800 md:hidden"
+             className="mr-3 inline-flex h-10 w-10 items-center justify-center rounded-input border border-border text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:bg-muted hover:text-foreground md:hidden"
              title="Ouvrir les filtres"
            >
              <Menu size={18} />
            </button>
            <div className="relative max-w-xl w-full">
-             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
+             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
              <input 
                type="text" 
                value={search}
                onChange={e => setSearch(e.target.value)}
                placeholder="Rechercher dans les questions, vignettes, options..."
-               className="w-full pl-10 pr-10 py-2.5 rounded-full border-none bg-neutral-100 dark:bg-neutral-800 text-sm focus:ring-2 focus:ring-indigo-500 outline-none dark:text-neutral-200 transition-shadow"
+               className="w-full rounded-pill border border-border bg-muted py-2.5 pl-10 pr-10 text-sm text-foreground outline-none transition-shadow focus:ring-2 focus:ring-ring"
              />
              {search && (
-               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 p-1">
+               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground">
                  <X size={14} />
                </button>
              )}
@@ -365,7 +365,7 @@ export function ListPage() {
                 action={hasActiveFilters ? (
                   <button
                     onClick={resetFilters}
-                    className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 transition-all duration-150 hover:bg-indigo-100 active:scale-95 dark:bg-indigo-900/20 dark:text-indigo-400 dark:hover:bg-indigo-900/40"
+                    className="rounded-input bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 transition-colors hover:bg-brand-100 dark:bg-brand-950/40 dark:text-brand-100"
                   >
                     Reinitialiser les filtres
                   </button>
@@ -376,29 +376,29 @@ export function ListPage() {
                 {Object.entries(groupedQuestions).map(([groupName, qs]) => {
                   const isExpanded = expandedGroups.has(groupName);
                   return (
-                    <div key={groupName} className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-sm">
+                    <div key={groupName} className="overflow-hidden rounded-card border border-border bg-card shadow-[var(--shadow-card)]">
                       <button 
                         onClick={() => toggleGroup(groupName)}
-                        className="w-full flex items-center justify-between p-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
+                        className="flex w-full items-center justify-between p-4 transition-colors hover:bg-muted/60"
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`p-1.5 rounded-md ${isExpanded ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400' : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400'}`}>
+                          <div className={`rounded-input p-1.5 ${isExpanded ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100' : 'bg-muted text-muted-foreground'}`}>
                             {viewMode === 'history' ? <Calendar size={18} /> : viewMode === 'subjects' ? <Library size={18} /> : <Layers size={18} />}
                           </div>
-                          <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                          <h2 className="text-lg font-medium text-foreground">
                             {groupName}
                           </h2>
-                          <span className="px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                          <span className="px-2 py-0.5 rounded-full bg-muted text-xs font-medium text-muted-foreground">
                             {qs.length} question{qs.length > 1 ? 's' : ''}
                           </span>
                         </div>
-                        <div className="text-neutral-400">
+                        <div className="text-muted-foreground">
                           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                         </div>
                       </button>
                       
                       {isExpanded && (
-                        <div className="p-4 pt-0 border-t border-neutral-100 dark:border-neutral-800/50">
+                        <div className="border-t border-border p-4 pt-0">
                           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
                             {qs.map(q => (
                               <QuestionCard key={q.id} question={q} />
@@ -423,13 +423,13 @@ function NavItem({ icon: Icon, label, active, onClick, compact = false }: { icon
     <button 
       onClick={onClick}
       title={label}
-      className={`w-full flex items-center ${compact ? 'justify-center px-2' : 'gap-3 px-3'} py-2.5 rounded-lg text-sm font-medium transition-colors ${
+      className={`flex w-full items-center ${compact ? 'justify-center px-2' : 'gap-3 px-3'} rounded-input py-2.5 text-sm font-medium transition-colors ${
         active 
-          ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400' 
-          : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+          ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
       }`}
     >
-      <Icon size={18} className={active ? 'text-indigo-600 dark:text-indigo-400' : 'text-neutral-400'} />
+      <Icon size={18} className={active ? 'text-brand-700 dark:text-brand-100' : 'text-muted-foreground'} />
       {!compact && label}
     </button>
   )
@@ -438,11 +438,11 @@ function NavItem({ icon: Icon, label, active, onClick, compact = false }: { icon
 function SelectField({ label, value, onChange, children }: { label: string, value: string, onChange: (e: any) => void, children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm text-neutral-600 dark:text-neutral-400">{label}</label>
+      <label className="text-sm text-muted-foreground">{label}</label>
       <select 
         value={value} 
         onChange={onChange}
-        className="w-full px-3 py-2 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none appearance-none dark:text-neutral-200 cursor-pointer"
+        className="w-full cursor-pointer appearance-none rounded-input border border-input bg-input-background px-3 py-2 text-sm text-foreground outline-none focus:border-transparent focus:ring-2 focus:ring-ring"
       >
         {children}
       </select>
@@ -452,32 +452,32 @@ function SelectField({ label, value, onChange, children }: { label: string, valu
 
 function QuestionCard({ question: q }: { question: Question }) {
   const statusConfig = {
-    wrong: { icon: AlertCircle, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30' },
-    partial: { icon: HelpCircle, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
-    unknown: { icon: HelpCircle, color: 'text-neutral-600 dark:text-neutral-400', bg: 'bg-neutral-100 dark:bg-neutral-800' },
-    correct: { icon: CheckCircle2, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30' }
+    wrong: { icon: AlertCircle, color: 'text-danger-700 dark:text-danger-100', bg: 'bg-danger-50 dark:bg-danger-950/40' },
+    partial: { icon: HelpCircle, color: 'text-warn-700 dark:text-warn-100', bg: 'bg-warn-50 dark:bg-warn-950/40' },
+    unknown: { icon: HelpCircle, color: 'text-muted-foreground', bg: 'bg-muted' },
+    correct: { icon: CheckCircle2, color: 'text-success-700 dark:text-success-100', bg: 'bg-success-50 dark:bg-success-950/40' }
   };
 
   const StatusIcon = statusConfig[q.status].icon;
 
   return (
     <Link to={`/captures/q/${q.id}`} className="block group">
-      <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 transition-all hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md dark:hover:shadow-indigo-900/20">
+      <div className="rounded-card border border-border bg-card p-4 shadow-[var(--shadow-card)] transition-colors hover:border-brand-100">
         
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${statusConfig[q.status].bg} ${statusConfig[q.status].color}`}>
+            <span className={`inline-flex items-center gap-1.5 rounded-input px-2.5 py-1 text-xs font-medium ${statusConfig[q.status].bg} ${statusConfig[q.status].color}`}>
               <StatusIcon size={14} />
               {q.status === 'wrong' ? 'Incorrecte' : q.status === 'partial' ? 'Partielle' : q.status === 'correct' ? 'Correcte' : 'Indéterminée'}
             </span>
             
-            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+            <span className="inline-flex items-center rounded-input bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
               {q.format}
               {q.seriesId && q.seriesTotal ? ` (${q.seriesPosition}/${q.seriesTotal})` : ''}
             </span>
 
-            <div className="flex items-center text-xs text-neutral-500 dark:text-neutral-400 gap-1.5 ml-2">
-              <span className="font-medium text-neutral-700 dark:text-neutral-300">{q.subject}</span>
+            <div className="ml-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">{q.subject}</span>
               {q.chapter && (
                 <>
                   <ChevronRight size={12} className="opacity-50" />
@@ -487,22 +487,22 @@ function QuestionCard({ question: q }: { question: Question }) {
             </div>
           </div>
           
-          <div className="text-xs text-neutral-400 whitespace-nowrap">
+          <div className="whitespace-nowrap text-xs text-muted-foreground">
             {format(new Date(q.capturedAt), 'dd MMM yyyy', { locale: fr })}
           </div>
         </div>
 
         {q.customTitle && (
-          <div className="text-sm font-medium text-indigo-600 dark:text-indigo-400 mb-1">
+          <div className="mb-1 text-sm font-medium text-brand-700">
             {q.customTitle}
           </div>
         )}
 
-        <h3 className="text-base text-neutral-900 dark:text-neutral-100 font-medium leading-snug line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+        <h3 className="line-clamp-2 text-base font-medium leading-snug text-foreground transition-colors group-hover:text-brand-700">
           {q.questionText}
         </h3>
 
-        <div className="mt-3 flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
+        <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
           {q.images.length > 0 && (
             <div className="flex items-center gap-1">
               <ImageIcon size={14} />
@@ -510,7 +510,7 @@ function QuestionCard({ question: q }: { question: Question }) {
             </div>
           )}
           {q.seenAgain && q.seenAgain.length > 0 && (
-            <div className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-medium">
+            <div className="flex items-center gap-1 font-medium text-brand-700">
               <Repeat2 size={14} />
               <span>Revue {q.seenAgain.length}x</span>
             </div>

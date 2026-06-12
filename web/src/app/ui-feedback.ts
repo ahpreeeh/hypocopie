@@ -13,17 +13,17 @@ export function humanizeError(error: unknown): string {
 }
 
 export function scoreGradientClass(percentage: number | null | undefined): string {
-  if (percentage === null || percentage === undefined) return "from-neutral-500 to-neutral-700";
-  if (percentage >= 70) return "from-green-500 to-green-700";
-  if (percentage >= 50) return "from-amber-500 to-amber-700";
-  return "from-red-500 to-red-700";
+  if (percentage === null || percentage === undefined) return "from-muted-foreground to-foreground";
+  if (percentage >= 70) return "from-success-500 to-success-700";
+  if (percentage >= 50) return "from-warn-500 to-warn-700";
+  return "from-danger-500 to-danger-700";
 }
 
 export function scoreTextClass(percentage: number | null | undefined): string {
-  if (percentage === null || percentage === undefined) return "text-neutral-500";
-  if (percentage >= 70) return "text-green-600 dark:text-green-400";
-  if (percentage >= 50) return "text-amber-600 dark:text-amber-400";
-  return "text-red-600 dark:text-red-400";
+  if (percentage === null || percentage === undefined) return "text-muted-foreground";
+  if (percentage >= 70) return "text-success-700 dark:text-success-500";
+  if (percentage >= 50) return "text-warn-700 dark:text-warn-500";
+  return "text-danger-700 dark:text-danger-500";
 }
 
 export function formatScoreNumber(value: number | null | undefined): string {

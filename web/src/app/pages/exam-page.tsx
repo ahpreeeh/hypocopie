@@ -145,10 +145,10 @@ function scoreVisual(detail: GradeDetail) {
       label: 'A comparer',
       badge: 'NC',
       icon: HelpCircle,
-      ring: 'ring-neutral-400/30',
-      accent: 'text-neutral-600 dark:text-neutral-300',
-      badgeClass: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200',
-      bg: 'bg-white dark:bg-neutral-900',
+      ring: 'ring-muted-foreground/20',
+      accent: 'text-muted-foreground',
+      badgeClass: 'bg-muted text-muted-foreground',
+      bg: 'bg-card',
     };
   }
   if (score === 1) {
@@ -156,10 +156,10 @@ function scoreVisual(detail: GradeDetail) {
       label: '1 point',
       badge: '1',
       icon: CheckCircle2,
-      ring: 'ring-green-500/30',
-      accent: 'text-green-700 dark:text-green-400',
-      badgeClass: 'bg-green-600 text-white',
-      bg: 'bg-white dark:bg-neutral-900',
+      ring: 'ring-success-500/30',
+      accent: 'text-success-700 dark:text-success-100',
+      badgeClass: 'bg-success-700 text-white',
+      bg: 'bg-card',
     };
   }
   if (score === 0.5) {
@@ -167,10 +167,10 @@ function scoreVisual(detail: GradeDetail) {
       label: '0.5 point',
       badge: '0.5',
       icon: HelpCircle,
-      ring: 'ring-amber-500/30',
-      accent: 'text-amber-700 dark:text-amber-400',
-      badgeClass: 'bg-amber-500 text-white',
-      bg: 'bg-white dark:bg-neutral-900',
+      ring: 'ring-warn-500/30',
+      accent: 'text-warn-700 dark:text-warn-100',
+      badgeClass: 'bg-warn-500 text-white',
+      bg: 'bg-card',
     };
   }
   if (score === 0.2) {
@@ -178,20 +178,20 @@ function scoreVisual(detail: GradeDetail) {
       label: '0.2 point',
       badge: '0.2',
       icon: AlertTriangle,
-      ring: 'ring-orange-500/30',
-      accent: 'text-orange-700 dark:text-orange-400',
-      badgeClass: 'bg-orange-500 text-white',
-      bg: 'bg-white dark:bg-neutral-900',
+      ring: 'ring-warn-500/30',
+      accent: 'text-warn-700 dark:text-warn-100',
+      badgeClass: 'bg-warn-500 text-white',
+      bg: 'bg-card',
     };
   }
   return {
     label: '0 point',
     badge: '0',
     icon: XCircle,
-    ring: 'ring-red-500/30',
-    accent: 'text-red-700 dark:text-red-400',
-    badgeClass: 'bg-red-600 text-white',
-    bg: 'bg-white dark:bg-neutral-900',
+    ring: 'ring-danger-500/30',
+    accent: 'text-danger-700 dark:text-danger-100',
+    badgeClass: 'bg-danger-700 text-white',
+    bg: 'bg-card',
   };
 }
 
@@ -251,44 +251,44 @@ function ClinicalCase({
   isSubmitted: boolean; customTitle?: string | null;
 }) {
   return (
-    <div className="mb-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden shadow-sm">
-      <div className="px-5 py-3 bg-neutral-50 dark:bg-neutral-900/60 border-b border-neutral-200 dark:border-neutral-800 flex items-center gap-2">
-        <BookOpen size={15} className="text-indigo-600 dark:text-indigo-400" />
-        <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300">
+    <div className="mb-6 overflow-hidden rounded-card border border-border border-l-[3px] border-l-brand-600 bg-card shadow-[var(--shadow-card)]">
+      <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-5 py-3">
+        <BookOpen size={15} className="text-brand-700 dark:text-brand-100" />
+        <span className="text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
           Cas clinique
         </span>
         {customTitle && (
-          <span className="text-sm text-neutral-700 dark:text-neutral-300 truncate">
+          <span className="truncate text-sm text-muted-foreground">
             — {customTitle}
           </span>
         )}
       </div>
-      <div className="p-5 text-[15px] leading-relaxed text-neutral-800 dark:text-neutral-200">
+      <div className="p-5 text-[15px] leading-relaxed text-foreground">
         <p className="whitespace-pre-wrap">{info.baseVignette}</p>
         {info.additions.map((add) => {
           if (!isSubmitted && add.position > currentPosition) return null;
           const isCurrent = add.qid === currentQid;
           if (isCurrent && !isSubmitted) {
             return (
-              <div key={add.qid} className="relative mt-4 -mx-5 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/40 border-y border-indigo-200 dark:border-indigo-800/50">
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
-                <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-2">
+              <div key={add.qid} className="relative -mx-5 mt-4 border-y border-brand-100 bg-brand-50/70 px-5 py-4 dark:border-brand-700/40 dark:bg-brand-950/30">
+                <div className="absolute bottom-0 left-0 top-0 w-1 bg-brand-600"></div>
+                <span className="mb-2 flex items-center gap-1.5 text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600"></span>
                   </span>
                   Nouvelle information (Q{add.position})
                 </span>
-                <p className="whitespace-pre-wrap font-medium text-indigo-950 dark:text-indigo-100">{add.addition}</p>
+                <p className="whitespace-pre-wrap font-medium text-foreground">{add.addition}</p>
               </div>
             );
           }
           return (
-            <div key={add.qid} className="mt-4 pt-4 border-t border-neutral-100 dark:border-neutral-800">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 block mb-1">
+            <div key={add.qid} className="mt-4 border-t border-border pt-4">
+              <span className="mb-1 block text-[11px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
                 Information Q{add.position}
               </span>
-              <p className="whitespace-pre-wrap text-neutral-700 dark:text-neutral-300">{add.addition}</p>
+              <p className="whitespace-pre-wrap text-foreground">{add.addition}</p>
             </div>
           );
         })}
@@ -783,10 +783,10 @@ export function ExamPage() {
 
   if (loadError) {
     return (
-      <div className="min-h-full flex items-center justify-center p-8">
+      <div className="min-h-full flex items-center justify-center bg-background p-8">
         <div className="max-w-md text-center">
-          <p className="text-red-600 dark:text-red-400 mb-3">Erreur de chargement : {loadError}</p>
-          <Link to="/entrainement" className="text-indigo-600 hover:underline">Retour à la liste des annales</Link>
+          <p className="mb-3 text-sm text-danger-700 dark:text-danger-500">Erreur de chargement : {loadError}</p>
+          <Link to="/entrainement" className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-500">Retour à la liste des annales</Link>
         </div>
       </div>
     );
@@ -805,7 +805,7 @@ export function ExamPage() {
     ? 'bg-danger-100 text-danger-700 ring-1 ring-danger-500/30 dark:bg-danger-950/40 dark:text-danger-100 animate-pulse'
     : estimatedRemainingSec <= 5 * 60
     ? 'bg-warn-100 text-warn-700 ring-1 ring-warn-500/30 dark:bg-warn-950/40 dark:text-warn-100 animate-pulse'
-    : 'text-neutral-700 dark:text-neutral-300';
+    : 'text-muted-foreground';
   const timerTextClass = estimatedRemainingSec <= 60 ? 'text-2xl' : estimatedRemainingSec <= 5 * 60 ? 'text-lg' : 'text-sm';
   const liveDetails = Object.values(perQuestionDetails);
   const livePoints = liveDetails.reduce((sum, detail) => sum + (typeof detail.scoreValue === 'number' ? detail.scoreValue : 0), 0);
@@ -860,11 +860,11 @@ export function ExamPage() {
 
   // ── Layout 2 colonnes : sidebar navigation à gauche + contenu centré à droite ─────────
   return (
-    <div className="h-full relative flex bg-neutral-50 dark:bg-neutral-950 overflow-hidden">
+    <div className="relative flex h-full overflow-hidden bg-background">
       {focusMode && (
         <button
           onClick={toggleFocusMode}
-          className="absolute left-3 top-3 z-20 inline-flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white/95 dark:bg-neutral-900/95 px-3 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-200 shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-800"
+          className="absolute left-3 top-3 z-20 inline-flex items-center gap-2 rounded-input border border-border bg-card/95 px-3 py-2 text-xs font-medium text-foreground shadow-[var(--shadow-card)] backdrop-blur transition-colors hover:bg-muted"
           title="Afficher la navigation"
         >
           <Minimize2 size={14} />
@@ -873,12 +873,12 @@ export function ExamPage() {
       )}
       {/* Sidebar navigation */}
       {!focusMode && (
-      <aside className={`hidden shrink-0 border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 sm:flex flex-col overflow-hidden transition-[width] duration-200 ease-out ${examSidebarCompact ? 'w-20' : 'w-64'}`}>
-        <div className={`${examSidebarCompact ? 'p-2' : 'p-4'} border-b border-neutral-200 dark:border-neutral-800`}>
+      <aside className={`hidden shrink-0 flex-col overflow-hidden border-r border-border bg-card transition-[width] duration-200 ease-out sm:flex ${examSidebarCompact ? 'w-20' : 'w-64'}`}>
+        <div className={`${examSidebarCompact ? 'p-2' : 'p-4'} border-b border-border`}>
           <div className={`mb-3 flex items-center gap-2 ${examSidebarCompact ? 'flex-col items-stretch' : 'justify-between'}`}>
             <button
               onClick={toggleExamSidebarCompact}
-              className={`${examSidebarCompact ? 'mx-auto rounded-md p-2 text-indigo-600 dark:text-indigo-400 ring-1 ring-indigo-200 dark:ring-indigo-800 bg-indigo-50/60 dark:bg-indigo-950/30 hover:ring-indigo-400' : 'rounded-md p-1.5 text-neutral-400'} hover:bg-neutral-100 hover:text-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-neutral-100`}
+              className={`${examSidebarCompact ? 'mx-auto rounded-input p-2 text-brand-700 ring-1 ring-brand-100 bg-brand-50/60 hover:ring-brand-500 dark:text-brand-100 dark:ring-brand-700/40 dark:bg-brand-950/30' : 'rounded-input p-1.5 text-muted-foreground'} transition-colors hover:bg-muted hover:text-foreground`}
               title={examSidebarCompact ? 'Etendre la navigation' : 'Reduire la navigation'}
               aria-label={examSidebarCompact ? 'Etendre la navigation' : 'Reduire la navigation'}
             >
@@ -886,7 +886,7 @@ export function ExamPage() {
             </button>
             <button
               onClick={() => navigate('/entrainement')}
-              className={`${examSidebarCompact ? 'mx-auto rounded-md p-1.5' : 'flex items-center gap-1 text-xs'} text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100`}
+              className={`${examSidebarCompact ? 'mx-auto rounded-input p-1.5' : 'flex items-center gap-1 text-xs'} text-muted-foreground transition-colors hover:text-foreground`}
               title="Quitter"
               aria-label="Quitter"
             >
@@ -894,7 +894,7 @@ export function ExamPage() {
             </button>
             <button
               onClick={toggleFocusMode}
-              className={`${examSidebarCompact ? 'mx-auto' : ''} rounded-md p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-neutral-100`}
+              className={`${examSidebarCompact ? 'mx-auto' : ''} rounded-input p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground`}
               title="Mode focus"
               aria-label="Mode focus"
             >
@@ -902,33 +902,33 @@ export function ExamPage() {
             </button>
             {!examSidebarCompact && <button
               onClick={() => setShortcutsOpen(true)}
-              className="rounded-md p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              className="rounded-input p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Raccourcis clavier"
             >
               <Keyboard size={14} />
             </button>}
           </div>
-          <h1 className={`${examSidebarCompact ? 'sr-only' : ''} text-base font-bold text-neutral-900 dark:text-neutral-100 leading-snug line-clamp-2`}>
+          <h1 className={`${examSidebarCompact ? 'sr-only' : ''} line-clamp-2 text-base font-[650] leading-snug text-foreground`}>
             {annale.title}
           </h1>
-          <p className={`${examSidebarCompact ? 'hidden' : ''} text-xs text-neutral-500 mt-1`}>
+          <p className={`${examSidebarCompact ? 'hidden' : ''} mt-1 text-xs text-muted-foreground`}>
             {annale.subject}{annale.year ? ` · ${annale.year}` : ''}
           </p>
           {/* Badge mode actif */}
           <span
-            className={`${examSidebarCompact ? 'hidden' : 'inline-flex'} items-center gap-1 mt-2 px-1.5 py-0.5 rounded text-[10px] font-bold ${
+            className={`${examSidebarCompact ? 'hidden' : 'inline-flex'} mt-2 items-center gap-1 rounded-pill border px-2 py-0.5 text-[10px] font-[650] ${
               examMode === 'exam'
-                ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300'
-                : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
+                ? 'border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
+                : 'border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/40 dark:text-warn-100'
             }`}
             title={examMode === 'exam' ? 'Note à la fin' : 'Correction directe par question'}
           >
-            {examMode === 'exam' ? '🎯 EXAMEN' : '📚 LIBRE'}
+            {examMode === 'exam' ? 'EXAMEN' : 'LIBRE'}
           </span>
           {!examSidebarCompact && (hasRestoredDraft || lastSavedAt) && (
-            <div className="mt-1.5 flex items-center gap-1.5 text-[10px] leading-tight text-neutral-500 dark:text-neutral-400">
+            <div className="mt-1.5 flex items-center gap-1.5 text-[10px] leading-tight text-muted-foreground">
               {hasRestoredDraft && (
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" title="Reprise en cours" />
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-warn-500 shrink-0" title="Reprise en cours" />
               )}
               {formatSavedAt(lastSavedAt) && (
                 <span className="truncate">Sauvé · {formatSavedAt(lastSavedAt)}</span>
@@ -938,34 +938,34 @@ export function ExamPage() {
         </div>
 
         {/* Chrono — compact */}
-        <div className={`mx-3 mt-2 mb-1 rounded-md px-2.5 py-1 border border-neutral-200 dark:border-neutral-800 flex items-center ${examSidebarCompact ? 'justify-center' : 'justify-between'} font-mono transition-colors ${timerToneClass}`}>
-          <span className={`${examSidebarCompact ? 'hidden' : 'flex'} items-center gap-1 text-[11px] text-neutral-500`}>
+        <div className={`mx-3 mb-1 mt-2 flex items-center rounded-input border border-border px-2.5 py-1 font-mono transition-colors ${examSidebarCompact ? 'justify-center' : 'justify-between'} ${timerToneClass}`}>
+          <span className={`${examSidebarCompact ? 'hidden' : 'flex'} items-center gap-1 text-[11px] text-muted-foreground`}>
             <Clock size={12} />
             <span>Chrono</span>
           </span>
-          <span className={`text-sm font-bold ${timerTextClass}`}>{formatElapsed(elapsedSec)}</span>
+          <span className={`text-sm font-[650] ${timerTextClass}`}>{formatElapsed(elapsedSec)}</span>
         </div>
 
         {/* Progression */}
-        <div className={`${examSidebarCompact ? 'hidden' : ''} px-4 py-3 border-b border-neutral-200 dark:border-neutral-800`}>
-          <div className="flex items-center justify-between text-xs text-neutral-500 mb-1.5">
+        <div className={`${examSidebarCompact ? 'hidden' : ''} border-b border-border px-4 py-3`}>
+          <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
             <span>Progression</span>
-            <span className="font-medium text-neutral-700 dark:text-neutral-300">{answeredCount} / {total}</span>
+            <span className="font-medium text-foreground">{answeredCount} / {total}</span>
           </div>
-          <div className="h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+          <div className="h-1.5 overflow-hidden rounded-pill bg-muted">
             <div
-              className="h-full bg-indigo-500 transition-all duration-300"
+              className="h-full bg-brand-600 transition-all duration-300"
               style={{ width: `${total ? (answeredCount * 100) / total : 0}%` }}
             />
           </div>
           {markedForReview.size > 0 && (
-            <div className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+            <div className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-warn-700 dark:text-warn-500">
               <Flag size={12} />
               {markedForReview.size} a revoir
             </div>
           )}
           {examMode === 'libre' && liveMaxPoints > 0 && (
-            <div className="mt-2 text-[11px] font-medium text-neutral-600 dark:text-neutral-300">
+            <div className="mt-2 text-[11px] font-medium text-foreground">
               Score valide : {formatScoreNumber(livePoints)} / {formatScoreNumber(liveMaxPoints)}
             </div>
           )}
@@ -983,26 +983,26 @@ export function ExamPage() {
             return (
               <div key={q.id}>
                 {isSeriesStart && (
-                  <div className={`${examSidebarCompact ? 'hidden' : ''} mt-3 mb-1 px-2 text-[10px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500`}>
+                  <div className={`${examSidebarCompact ? 'hidden' : ''} mb-1 mt-3 px-2 text-[10px] font-[650] uppercase tracking-[0.09em] text-muted-foreground`}>
                     {q.seriesFormat || 'DP'}
                     {q.customTitle ? ` — ${q.customTitle}` : ` — ${q.seriesId}`}
                   </div>
                 )}
                 <button
                   onClick={() => setCurrentIndex(i)}
-                  className={`w-full flex items-center ${examSidebarCompact ? 'justify-center px-1.5 py-1.5' : 'gap-2.5 px-2.5 py-1.5'} rounded-md text-sm transition-colors ${
+                  className={`flex w-full items-center ${examSidebarCompact ? 'justify-center px-1.5 py-1.5' : 'gap-2.5 px-2.5 py-1.5'} rounded-input text-sm transition-colors ${
                     isCurrent
-                      ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-900 dark:text-indigo-100 font-medium'
-                      : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300'
+                      ? 'bg-brand-50 text-brand-700 font-medium dark:bg-brand-950/40 dark:text-brand-100'
+                      : 'text-foreground hover:bg-muted'
                   }`}
                 >
                   <span
-                    className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-input text-xs font-[650] ${
                       isCurrent
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-brand-600 text-white'
                         : hasAnswer
-                        ? 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300'
-                        : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500'
+                        ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100'
+                        : 'bg-muted text-muted-foreground'
                     }`}
                   >
                     {hasAnswer && !isCurrent ? <Check size={12} /> : i + 1}
@@ -1011,7 +1011,7 @@ export function ExamPage() {
                     {q.questionType}
                     {q.seriesId ? ` Q${q.seriesPosition}` : ''}
                   </span>
-                  {isMarked && <Flag size={12} className="shrink-0 text-amber-500" />}
+                  {isMarked && <Flag size={12} className="shrink-0 text-warn-500" />}
                 </button>
               </div>
             );
@@ -1019,17 +1019,17 @@ export function ExamPage() {
         </div>
 
         {/* Soumettre */}
-        <div className="p-3 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="border-t border-border p-3">
           <button
             onClick={handleRetry}
-            className="w-full mb-2 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+            className="mb-2 flex w-full items-center justify-center gap-2 rounded-input border border-border py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             title="Recommencer"
           >
             <RotateCcw size={14} /> {!examSidebarCompact && 'Recommencer'}
           </button>
           <button
             onClick={() => setConfirmingSubmit(true)}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-sm transition-colors"
+            className="flex w-full items-center justify-center gap-2 rounded-input bg-brand-600 py-2.5 text-sm font-medium text-white shadow-[var(--shadow-card)] transition-colors hover:bg-brand-700"
             title="Soumettre l'annale"
           >
             <Send size={14} /> {!examSidebarCompact && "Soumettre l'annale"}
@@ -1041,24 +1041,24 @@ export function ExamPage() {
       {/* Zone centrale */}
       <main ref={mainScrollRef} className="flex-1 overflow-y-auto scroll-smooth">
         {!focusMode && (
-          <div className="sticky top-0 z-20 flex items-center justify-between border-b border-neutral-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95 sm:hidden">
+          <div className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-card/95 px-4 py-3 backdrop-blur sm:hidden">
             <button
               onClick={() => setMobileNavOpen(true)}
-              className="inline-flex items-center gap-2 rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-700 shadow-sm dark:border-neutral-800 dark:text-neutral-200"
+              className="inline-flex items-center gap-2 rounded-input border border-border px-3 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-card)]"
             >
               <Menu size={16} />
               Questions
             </button>
-            <div className={`rounded-lg px-2.5 py-1 font-mono text-sm font-bold ${timerToneClass}`}>
+            <div className={`rounded-input px-2.5 py-1 font-mono text-sm font-[650] ${timerToneClass}`}>
               {formatElapsed(elapsedSec)}
             </div>
           </div>
         )}
         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <SheetContent side="left" className="w-[86vw] max-w-sm gap-0 p-0">
-            <SheetHeader className="border-b border-neutral-200 dark:border-neutral-800">
+            <SheetHeader className="border-b border-border">
               <SheetTitle className="pr-8 text-left text-base">{annale.title}</SheetTitle>
-              <div className="text-left text-xs text-neutral-500">
+              <div className="text-left text-xs text-muted-foreground">
                 {answeredCount} / {total} repondues
               </div>
             </SheetHeader>
@@ -1075,24 +1075,24 @@ export function ExamPage() {
                         setCurrentIndex(i);
                         setMobileNavOpen(false);
                       }}
-                      className={`relative flex h-11 items-center justify-center rounded-lg border text-sm font-bold ${
+                      className={`relative flex h-11 items-center justify-center rounded-input border text-sm font-[650] ${
                         isCurrent
-                          ? 'border-indigo-600 bg-indigo-600 text-white'
+                          ? 'border-brand-600 bg-brand-600 text-white'
                           : hasAnswer
-                          ? 'border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-200'
-                          : 'border-neutral-200 bg-white text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300'
+                          ? 'border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
+                          : 'border-border bg-card text-muted-foreground'
                       }`}
                     >
                       {i + 1}
-                      {isMarked && <Flag size={10} className="absolute right-1 top-1 text-amber-500" />}
+                      {isMarked && <Flag size={10} className="absolute right-1 top-1 text-warn-500" />}
                     </button>
                   );
                 })}
               </div>
-              <div className="mt-5 space-y-2 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+              <div className="mt-5 space-y-2 border-t border-border pt-4">
                 <button
                   onClick={handleRetry}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-neutral-200 py-2 text-sm font-medium text-neutral-700 dark:border-neutral-800 dark:text-neutral-200"
+                  className="flex w-full items-center justify-center gap-2 rounded-input border border-border py-2 text-sm font-medium text-foreground"
                 >
                   <RotateCcw size={14} /> Recommencer
                 </button>
@@ -1101,7 +1101,7 @@ export function ExamPage() {
                     setMobileNavOpen(false);
                     setConfirmingSubmit(true);
                   }}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white shadow-sm"
+                  className="flex w-full items-center justify-center gap-2 rounded-input bg-brand-600 py-2.5 text-sm font-medium text-white shadow-[var(--shadow-card)]"
                 >
                   <Send size={14} /> Soumettre l'annale
                 </button>
@@ -1122,22 +1122,22 @@ export function ExamPage() {
           )}
 
           {/* Bandeau type + position */}
-          <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
-            <span className="px-2 py-1 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium uppercase tracking-wider">
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+            <span className="rounded-pill bg-muted px-2 py-1 font-medium uppercase tracking-wider text-muted-foreground">
               {currentQ.questionType}
             </span>
             {currentQ.seriesId && (
-              <span className="px-2 py-1 rounded bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-medium">
+              <span className="rounded-pill border border-brand-100 bg-brand-50 px-2 py-1 font-medium text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100">
                 {currentQ.seriesFormat || 'DP'} · Q{currentQ.seriesPosition}/{currentQ.seriesTotal}
               </span>
             )}
-            <span className="text-neutral-400">Question {currentIndex + 1} / {total}</span>
+            <span className="text-muted-foreground">Question {currentIndex + 1} / {total}</span>
             <button
               onClick={() => toggleMarkedForReview(currentQ.id)}
               className={`ml-auto inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-medium transition-colors ${
                 currentMarked
-                  ? 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-300'
-                  : 'border-neutral-200 bg-white text-neutral-500 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100'
+                  ? 'border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/50 dark:bg-warn-950/30 dark:text-warn-100'
+                  : 'border-border bg-card text-muted-foreground hover:text-foreground'
               }`}
               title={currentMarked ? 'Retirer le marqueur' : 'Marquer pour y revenir'}
             >
@@ -1146,7 +1146,7 @@ export function ExamPage() {
             </button>
             <button
               onClick={() => handleCopyQuestion(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1 font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:bg-indigo-950/30 dark:text-indigo-300 dark:hover:bg-indigo-900/40 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-input border border-brand-100 bg-brand-50 px-2.5 py-1 font-medium text-brand-700 transition-colors hover:bg-brand-100 dark:border-brand-700/40 dark:bg-brand-950/30 dark:text-brand-100"
               title={currentQ.seriesId ? 'Copier (cas clinique + énoncé + propositions)' : 'Copier (énoncé + propositions)'}
               aria-label="Copier la question complète"
             >
@@ -1155,7 +1155,7 @@ export function ExamPage() {
             </button>
             <button
               onClick={() => setReportOpen(true)}
-              className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-amber-300 bg-amber-50 text-[11px] font-bold text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-900/40 transition-colors"
+              className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-warn-100 bg-warn-50 text-[11px] font-[650] text-warn-700 transition-colors hover:bg-warn-100 dark:border-warn-700/40 dark:bg-warn-950/30 dark:text-warn-100"
               title="Signaler une coquille (vignette manquante, énoncé tronqué, etc)"
               aria-label="Signaler une coquille sur cette question"
             >
@@ -1163,7 +1163,7 @@ export function ExamPage() {
             </button>
             <button
               onClick={handleEditCurrentQuestion}
-              className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-indigo-300 bg-indigo-50 text-[10px] font-bold text-indigo-700 hover:bg-indigo-100 dark:border-indigo-700 dark:bg-indigo-950/30 dark:text-indigo-300 dark:hover:bg-indigo-900/40 transition-colors"
+              className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[10px] font-[650] text-brand-700 transition-colors hover:bg-brand-100 dark:border-brand-700/40 dark:bg-brand-950/30 dark:text-brand-100"
               title="Corriger directement cette question (admin)"
               aria-label="Corriger cette question"
             >
@@ -1172,7 +1172,7 @@ export function ExamPage() {
           </div>
 
           {/* Énoncé */}
-          <h2 className="text-lg leading-relaxed font-medium text-neutral-900 dark:text-neutral-100 mb-6 whitespace-pre-wrap">
+          <h2 className="mb-6 whitespace-pre-wrap text-[17px] font-medium leading-relaxed text-foreground">
             {currentQ.text}
           </h2>
 
@@ -1182,7 +1182,7 @@ export function ExamPage() {
               <img
                 src={`/api/annales/${annale.id}/img/${currentQ.image}`}
                 alt=""
-                className="rounded-lg border border-neutral-200 dark:border-neutral-700 max-w-full max-h-[600px] object-contain"
+                className="max-h-[600px] max-w-full rounded-card border border-border object-contain"
               />
             </div>
           )}
@@ -1209,7 +1209,7 @@ export function ExamPage() {
                   <div className="mt-3 flex justify-end">
                     <button
                       onClick={() => handleCopyQuestion(false)}
-                      className="inline-flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 transition-colors"
+                      className="inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
                       title="Copier juste l'énoncé + propositions (sans le cas clinique)"
                       aria-label="Copier sans la vignette"
                     >
@@ -1229,7 +1229,7 @@ export function ExamPage() {
                       <button
                         onClick={() => handleValidateOne(currentQ.id)}
                         disabled={validateDisabled}
-                        className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white text-sm font-medium shadow-sm transition-all duration-150 hover:shadow-lg active:scale-95"
+                        className="flex items-center gap-1.5 rounded-input bg-warn-500 px-5 py-2 text-sm font-medium text-white shadow-[var(--shadow-card)] transition-colors hover:bg-warn-700 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
                       >
                         <Sparkles size={14} />
                         {validatingQid === currentQ.id ? 'Validation…' : 'Valider la réponse'}
@@ -1246,18 +1246,18 @@ export function ExamPage() {
           })()}
 
           {/* Navigation prev/next */}
-          <div className="mt-10 flex items-center justify-between pt-6 border-t border-neutral-200 dark:border-neutral-800">
+          <div className="mt-10 flex items-center justify-between border-t border-border pt-6">
             <button
               onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
               disabled={currentIndex === 0}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 rounded-input px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-30"
             >
               <ChevronLeft size={16} /> Précédente
             </button>
             <button
               onClick={() => setCurrentIndex((i) => Math.min(total - 1, i + 1))}
               disabled={currentIndex === total - 1}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 rounded-input bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
             >
               Suivante <ChevronRight size={16} />
             </button>
@@ -1294,7 +1294,7 @@ export function ExamPage() {
       {/* Loader pendant chargement du raw admin */}
       {editorOpen && editorLoading && (
         <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center">
-          <div className="rounded-lg bg-neutral-900/90 px-4 py-3 text-sm text-white">
+          <div className="rounded-input bg-foreground px-4 py-3 text-sm text-background shadow-lg">
             <Loader2 size={16} className="mr-2 inline-block animate-spin" /> Chargement…
           </div>
         </div>
@@ -1317,8 +1317,8 @@ export function ExamPage() {
 
 function ExamLoadingSkeleton() {
   return (
-    <div className="h-full flex bg-neutral-50 dark:bg-neutral-950 overflow-hidden">
-      <aside className="w-64 shrink-0 border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-5">
+    <div className="h-full flex bg-background overflow-hidden">
+      <aside className="w-64 shrink-0 border-r border-border bg-card p-4 space-y-5">
         <div className="space-y-3">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-5 w-44" />
@@ -1418,16 +1418,16 @@ function AnswerInput({
               ? 'Réponse libre…'
               : 'Décris ce que tu observes sur l\'image (zones, repères, diagnostic)…'
           }
-          className="w-full min-h-[140px] p-4 border border-neutral-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-[15px] text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent leading-relaxed resize-y read-only:opacity-90"
+          className="min-h-[140px] w-full resize-y rounded-card border border-input bg-input-background p-4 text-[15px] leading-relaxed text-foreground outline-none focus:border-transparent focus:ring-2 focus:ring-ring read-only:opacity-90"
         />
-        <p className="mt-1.5 text-xs text-neutral-400">
+        <p className="mt-1.5 text-xs text-muted-foreground">
           Ta réponse ne sera pas notée automatiquement. La correction officielle s'affichera après soumission.
         </p>
       </div>
     );
   }
 
-  return <div className="text-neutral-500 italic">Type de question inconnu</div>;
+  return <div className="italic text-muted-foreground">Type de question inconnu</div>;
 }
 
 function OptionCard({
@@ -1455,24 +1455,24 @@ function OptionCard({
       tabIndex={disabled ? -1 : 0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className={`w-full text-left flex items-start ${compact ? 'gap-3 p-3 rounded-lg' : 'gap-4 p-4 rounded-xl'} border-2 transition-all select-text ${
-        disabled ? 'cursor-text' : 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-950'
+      className={`flex w-full items-start text-left ${compact ? 'gap-3 rounded-input p-3' : 'gap-4 rounded-card p-4'} select-text border-2 transition-all ${
+        disabled ? 'cursor-text' : 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background'
       } ${
         selected
-          ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40'
-          : 'border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-300 dark:hover:border-neutral-700'
+          ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/40'
+          : 'border-border bg-card hover:border-brand-100'
       }`}
     >
       <span
-        className={`shrink-0 ${compact ? 'w-8 h-8 text-xs' : 'w-9 h-9 text-sm'} ${type === 'radio' ? 'rounded-full' : 'rounded-lg'} flex items-center justify-center font-bold transition-colors ${
+        className={`shrink-0 ${compact ? 'h-8 w-8 text-xs' : 'h-9 w-9 text-sm'} ${type === 'radio' ? 'rounded-full' : 'rounded-input'} flex items-center justify-center font-[650] transition-colors ${
           selected
-            ? 'bg-indigo-600 text-white'
-            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
+            ? 'bg-brand-600 text-white'
+            : 'bg-muted text-muted-foreground'
         }`}
       >
         {selected ? <Check size={compact ? 14 : 16} /> : id}
       </span>
-      <span className={`flex-1 ${compact ? 'pt-0.5 text-sm leading-snug' : 'pt-1 text-[15px] leading-relaxed'} text-neutral-900 dark:text-neutral-100 whitespace-pre-wrap break-words`}>
+      <span className={`flex-1 ${compact ? 'pt-0.5 text-sm leading-snug' : 'pt-1 text-[15px] leading-relaxed'} whitespace-pre-wrap break-words text-foreground`}>
         {text}
       </span>
     </div>
@@ -1489,14 +1489,14 @@ function InlineCorrection({ detail: d, annaleId }: { detail: GradeDetail; annale
   const mistakeLabel = scoreMistakeLabel(d);
 
   return (
-    <div className={`mt-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 ring-2 ${cfg.ring} p-5 shadow-sm`}>
+    <div className={`mt-5 rounded-card border border-border bg-card ring-2 ${cfg.ring} p-5 shadow-[var(--shadow-card)]`}>
       <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
         <Icon size={16} className={cfg.accent} />
-        <span className={`font-bold uppercase tracking-wider ${cfg.accent}`}>{cfg.label}</span>
-        <span className={`rounded-md px-2 py-1 font-mono text-xs font-bold ${cfg.badgeClass}`}>
+        <span className={`font-[650] uppercase tracking-[0.09em] ${cfg.accent}`}>{cfg.label}</span>
+        <span className={`rounded-input px-2 py-1 font-mono text-xs font-[650] ${cfg.badgeClass}`}>
           {cfg.badge}
         </span>
-        {mistakeLabel && <span className="text-neutral-500 dark:text-neutral-400">{mistakeLabel}</span>}
+        {mistakeLabel && <span className="text-muted-foreground">{mistakeLabel}</span>}
       </div>
 
       {/* Options corrigées */}
@@ -1509,20 +1509,20 @@ function InlineCorrection({ detail: d, annaleId }: { detail: GradeDetail; annale
                 key={o.id}
                 className={`flex items-start gap-3 p-2.5 rounded-lg text-sm border ${
                   o.correct
-                    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 text-green-900 dark:text-green-200'
+                    ? 'border-success-100 bg-success-50 text-success-700 dark:border-success-700/40 dark:bg-success-950/30 dark:text-success-100'
                     : userPicked
-                    ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50 text-red-900 dark:text-red-200'
-                    : 'bg-neutral-50 dark:bg-neutral-800/50 border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-400'
+                    ? 'border-danger-100 bg-danger-50 text-danger-700 dark:border-danger-700/40 dark:bg-danger-950/30 dark:text-danger-100'
+                    : 'border-border bg-muted/50 text-muted-foreground'
                 }`}
               >
-                <span className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
-                  o.correct ? 'bg-green-600 text-white' : userPicked ? 'bg-red-600 text-white' : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-input text-xs font-[650] ${
+                  o.correct ? 'bg-success-700 text-white' : userPicked ? 'bg-danger-700 text-white' : 'bg-muted text-muted-foreground'
                 }`}>
                   {o.id}
                 </span>
                 <span className="flex-1 leading-relaxed">{o.text}</span>
-                {o.correct && <CheckCircle2 size={16} className="text-green-700 dark:text-green-400 shrink-0 mt-0.5" />}
-                {userPicked && !o.correct && <XCircle size={16} className="text-red-700 dark:text-red-400 shrink-0 mt-0.5" />}
+                {o.correct && <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-success-700 dark:text-success-100" />}
+                {userPicked && !o.correct && <XCircle size={16} className="mt-0.5 shrink-0 text-danger-700 dark:text-danger-100" />}
               </div>
             );
           })}
@@ -1530,7 +1530,7 @@ function InlineCorrection({ detail: d, annaleId }: { detail: GradeDetail; annale
       )}
 
       {d.answerSource === 'ai' && (
-        <div className="mb-3 flex items-start gap-2 rounded-lg border border-amber-300 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
+        <div className="mb-3 flex items-start gap-2 rounded-input border border-warn-100 bg-warn-50 px-3 py-2 text-xs text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/30 dark:text-warn-100">
           <Sparkles size={14} className="mt-0.5 shrink-0" />
           <span>Corrigé <strong>généré par IA</strong> (absent du PDF source) — à vérifier avec un référentiel/cours avant de le mémoriser.</span>
         </div>
@@ -1539,10 +1539,10 @@ function InlineCorrection({ detail: d, annaleId }: { detail: GradeDetail; annale
       {/* QROC/Zone */}
       {(d.questionType === 'QROC' || d.questionType === 'ZONE') && d.expectedAnswer && (
         <div className="mb-3">
-          <div className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${d.answerSource === 'ai' ? 'text-amber-700 dark:text-amber-400' : 'text-green-700 dark:text-green-400'}`}>
+          <div className={`mb-1.5 text-[10px] font-[650] uppercase tracking-[0.09em] ${d.answerSource === 'ai' ? 'text-warn-700 dark:text-warn-100' : 'text-success-700 dark:text-success-100'}`}>
             {d.answerSource === 'ai' ? 'Réponse générée par IA — à vérifier' : 'Réponse officielle'}
           </div>
-          <div className={`text-sm p-3 rounded-lg border whitespace-pre-wrap leading-relaxed ${d.answerSource === 'ai' ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/50 text-amber-900 dark:text-amber-200' : 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 text-green-900 dark:text-green-200'}`}>
+          <div className={`whitespace-pre-wrap rounded-input border p-3 text-sm leading-relaxed ${d.answerSource === 'ai' ? 'border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/30 dark:text-warn-100' : 'border-success-100 bg-success-50 text-success-700 dark:border-success-700/40 dark:bg-success-950/30 dark:text-success-100'}`}>
             {d.expectedAnswer}
           </div>
         </div>
@@ -1550,13 +1550,13 @@ function InlineCorrection({ detail: d, annaleId }: { detail: GradeDetail; annale
 
       {d.correctedImage && (
         <div className="mb-3">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
+          <div className="mb-1.5 text-[10px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
             Correction visuelle
           </div>
           <img
             src={`/api/annales/${annaleId}/img/${d.correctedImage}`}
             alt=""
-            className="rounded-lg border border-neutral-200 dark:border-neutral-700 max-w-full max-h-[400px] object-contain"
+            className="max-h-[400px] max-w-full rounded-card border border-border object-contain"
           />
         </div>
       )}
@@ -1564,16 +1564,16 @@ function InlineCorrection({ detail: d, annaleId }: { detail: GradeDetail; annale
       {/* Correction détaillée OU message d'absence */}
       {d.correctionText ? (
         <details className="text-sm group" open>
-          <summary className="cursor-pointer font-medium text-neutral-700 dark:text-neutral-300 select-none flex items-center gap-1.5">
+          <summary className="flex cursor-pointer select-none items-center gap-1.5 font-medium text-foreground">
             <ChevronRight size={14} className="transition-transform group-open:rotate-90" />
             Correction détaillée
           </summary>
-          <div className="mt-2 ml-5 p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-800 whitespace-pre-wrap text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <div className="ml-5 mt-2 whitespace-pre-wrap rounded-input border border-border bg-muted/60 p-3 leading-relaxed text-foreground">
             {d.correctionText}
           </div>
         </details>
       ) : (
-        <div className="mt-3 text-xs italic text-neutral-500 dark:text-neutral-400 px-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/50 border border-dashed border-neutral-300 dark:border-neutral-700">
+        <div className="mt-3 rounded-input border border-dashed border-border bg-muted/60 px-3 py-2 text-xs italic text-muted-foreground">
           Pas de commentaire de correction écrit dans le PDF source. Réfère-toi aux bonnes réponses cochées + un manuel/livre de cours.
         </div>
       )}
@@ -1594,14 +1594,14 @@ function ConfirmSubmitModal({
   const unanswered = total - answeredCount;
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl max-w-md w-full p-6">
+      <div className="bg-card text-card-foreground rounded-card border border-border shadow-2xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
-          <div className="shrink-0 w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-            <AlertTriangle size={20} className="text-amber-600 dark:text-amber-400" />
+          <div className="shrink-0 w-10 h-10 rounded-full bg-warn-100 dark:bg-warn-950/40 flex items-center justify-center">
+            <AlertTriangle size={20} className="text-warn-700 dark:text-warn-500" />
           </div>
           <div>
-            <h3 className="text-base font-bold">Soumettre l'annale ?</h3>
-            <p className="text-sm text-neutral-500 mt-1">
+            <h3 className="text-base font-medium">Soumettre l'annale ?</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               {unanswered > 0
                 ? `Il te reste ${unanswered} question(s) sans réponse. Elles seront comptées comme fausses (QRU/QRM) ou non comptées (QROC/Zone).`
                 : 'Toutes les questions sont répondues. Bonne chance !'}
@@ -1611,13 +1611,13 @@ function ConfirmSubmitModal({
         <div className="flex gap-2 justify-end pt-2">
           <button
             onClick={onCancel} disabled={submitting}
-            className="px-4 py-2 text-sm font-medium rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            className="px-4 py-2 text-sm font-medium rounded-input text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             Continuer
           </button>
           <button
             onClick={onConfirm} disabled={submitting}
-            className="px-5 py-2 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-60 shadow-sm"
+            className="px-5 py-2 text-sm font-medium rounded-input bg-brand-600 hover:bg-brand-700 text-white disabled:opacity-60 shadow-sm"
           >
             {submitting ? 'Soumission…' : 'Soumettre'}
           </button>
@@ -1639,26 +1639,26 @@ function KeyboardShortcutsModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
+      <div className="w-full max-w-md rounded-card border border-border bg-card p-6 shadow-2xl">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-base font-bold text-neutral-900 dark:text-neutral-100">Raccourcis clavier</h3>
-            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Disponibles hors champs texte.</p>
+            <h3 className="text-base font-medium text-foreground">Raccourcis clavier</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Disponibles hors champs texte.</p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg px-2 py-1 text-sm font-medium text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            className="rounded-input px-2 py-1 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             Fermer
           </button>
         </div>
         <div className="space-y-2">
           {shortcuts.map(([keys, label]) => (
-            <div key={keys} className="flex items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 dark:border-neutral-800 dark:bg-neutral-950">
-              <kbd className="rounded-md border border-neutral-300 bg-white px-2 py-1 font-mono text-xs font-bold text-neutral-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+            <div key={keys} className="flex items-center justify-between gap-4 rounded-input border border-border bg-muted/50 px-3 py-2">
+              <kbd className="rounded-md border border-border bg-card px-2 py-1 font-mono text-xs font-medium text-foreground shadow-sm">
                 {keys}
               </kbd>
-              <span className="text-right text-sm text-neutral-600 dark:text-neutral-300">{label}</span>
+              <span className="text-right text-sm text-muted-foreground">{label}</span>
             </div>
           ))}
         </div>
@@ -1685,22 +1685,22 @@ function ResultView({
   const maxPoints = finalMaxPoints(finalScore);
 
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-950">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 sticky top-0 z-10">
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4 flex-wrap">
           <button
             onClick={() => navigate('/entrainement')}
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 flex items-center gap-1"
+            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
           >
             <ArrowLeft size={16} /> Annales
           </button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-base font-bold truncate">Résultats — {annale.title}</h1>
-            <p className="text-xs text-neutral-500 font-mono">Durée : {formatElapsed(elapsedSec)}</p>
+            <h1 className="text-base font-medium truncate text-foreground">Résultats — {annale.title}</h1>
+            <p className="text-xs text-muted-foreground font-mono">Durée : {formatElapsed(elapsedSec)}</p>
           </div>
           <button
             onClick={onRetry}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 shadow-sm"
+            className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-input text-sm font-medium flex items-center gap-1.5 shadow-sm"
           >
             <RotateCcw size={14} /> Refaire l'annale
           </button>
@@ -1709,28 +1709,28 @@ function ResultView({
 
       <main className="max-w-4xl mx-auto px-6 py-8 pb-24">
         {/* Note finale */}
-        <div className={`bg-gradient-to-br ${scoreGradient} text-white rounded-3xl p-10 mb-8 text-center shadow-lg`}>
-          <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Note finale</div>
-          <div className="text-7xl font-bold mb-2">
+        <div className={`bg-gradient-to-br ${scoreGradient} text-white rounded-card p-10 mb-8 text-center shadow-lg`}>
+          <div className="text-xs font-medium uppercase tracking-wider opacity-80 mb-2">Note finale</div>
+          <div className="text-7xl font-medium mb-2">
             {formatScoreNumber(points)} / {formatScoreNumber(maxPoints)}
           </div>
           {finalScore.percentage !== null && (
             <div className="text-2xl opacity-90">{finalScore.percentage}%</div>
           )}
           <div className="mt-6 flex justify-center gap-4 text-sm flex-wrap">
-            <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur px-3 py-1.5 rounded-lg">
+            <span className="flex items-center gap-1.5 bg-primary-foreground/10 backdrop-blur px-3 py-1.5 rounded-input">
               <CheckCircle2 size={15} /> {finalScore.juste} a 1 pt
             </span>
             {(finalScore.partiel || 0) > 0 && (
-              <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur px-3 py-1.5 rounded-lg">
+              <span className="flex items-center gap-1.5 bg-primary-foreground/10 backdrop-blur px-3 py-1.5 rounded-input">
                 <HelpCircle size={15} /> {finalScore.partiel} partielle{finalScore.partiel && finalScore.partiel > 1 ? 's' : ''}
               </span>
             )}
-            <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur px-3 py-1.5 rounded-lg">
+            <span className="flex items-center gap-1.5 bg-primary-foreground/10 backdrop-blur px-3 py-1.5 rounded-input">
               <XCircle size={15} /> {finalScore.faux} a 0
             </span>
             {finalScore.nonComptees > 0 && (
-              <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur px-3 py-1.5 rounded-lg">
+              <span className="flex items-center gap-1.5 bg-primary-foreground/10 backdrop-blur px-3 py-1.5 rounded-input">
                 <HelpCircle size={15} /> {finalScore.nonComptees} à revoir
               </span>
             )}
@@ -1738,7 +1738,7 @@ function ResultView({
         </div>
 
         {/* Détail */}
-        <h2 className="text-lg font-bold mb-4 text-neutral-900 dark:text-neutral-100">
+        <h2 className="text-lg font-medium mb-4 text-foreground">
           Détail des questions
         </h2>
         <div className="space-y-5">
@@ -1771,43 +1771,43 @@ function ResultCard({
   detail: d, index, annaleId,
 }: { detail: GradeResult['details'][number]; index: number; annaleId: string; }) {
   const cfg = {
-    juste: { label: 'Juste', icon: CheckCircle2, ring: 'ring-green-500/30', accent: 'text-green-700 dark:text-green-400', bg: 'bg-white dark:bg-neutral-900' },
-    faux: { label: 'Faux', icon: XCircle, ring: 'ring-red-500/30', accent: 'text-red-700 dark:text-red-400', bg: 'bg-white dark:bg-neutral-900' },
-    partiel: { label: 'Partiel', icon: HelpCircle, ring: 'ring-amber-500/30', accent: 'text-amber-700 dark:text-amber-400', bg: 'bg-white dark:bg-neutral-900' },
-    'non-comptee': { label: 'À revoir', icon: HelpCircle, ring: 'ring-amber-500/30', accent: 'text-amber-700 dark:text-amber-400', bg: 'bg-white dark:bg-neutral-900' },
+    juste: { label: 'Juste', icon: CheckCircle2, ring: 'ring-success-500/30', accent: 'text-success-700 dark:text-success-100', bg: 'bg-card' },
+    faux: { label: 'Faux', icon: XCircle, ring: 'ring-danger-500/30', accent: 'text-danger-700 dark:text-danger-100', bg: 'bg-card' },
+    partiel: { label: 'Partiel', icon: HelpCircle, ring: 'ring-warn-500/30', accent: 'text-warn-700 dark:text-warn-100', bg: 'bg-card' },
+    'non-comptee': { label: 'À revoir', icon: HelpCircle, ring: 'ring-muted-foreground/20', accent: 'text-muted-foreground', bg: 'bg-card' },
   }[d.result] || scoreVisual(d);
   const Icon = cfg.icon;
   const mistakeLabel = scoreMistakeLabel(d);
 
   return (
-    <div className={`rounded-2xl border border-neutral-200 dark:border-neutral-800 ${cfg.bg} ring-2 ${cfg.ring} p-6 shadow-sm`}>
+    <div className={`rounded-card border border-border ${cfg.bg} ring-2 ${cfg.ring} p-6 shadow-sm`}>
       <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
         <Icon size={16} className={cfg.accent} />
-        <span className={`font-bold uppercase tracking-wider ${cfg.accent}`}>{cfg.label}</span>
-        <span className="rounded-md bg-neutral-100 px-2 py-1 font-mono text-xs font-bold text-neutral-800 dark:bg-neutral-800 dark:text-neutral-100">
+        <span className={`font-medium uppercase tracking-wider ${cfg.accent}`}>{cfg.label}</span>
+        <span className="rounded-md bg-muted px-2 py-1 font-mono text-xs font-medium text-foreground">
           {formatScoreNumber(d.scoreValue)} / {formatScoreNumber(d.maxScore)}
         </span>
-        {mistakeLabel && <span className="text-neutral-500 dark:text-neutral-400">{mistakeLabel}</span>}
-        <span className="text-neutral-400">·</span>
-        <span className="font-mono text-neutral-500">Q{index + 1}</span>
-        <span className="text-neutral-400">·</span>
-        <span className="text-neutral-500 uppercase">{d.questionType}</span>
+        {mistakeLabel && <span className="text-muted-foreground">{mistakeLabel}</span>}
+        <span className="text-muted-foreground/60">·</span>
+        <span className="font-mono text-muted-foreground">Q{index + 1}</span>
+        <span className="text-muted-foreground/60">·</span>
+        <span className="text-muted-foreground uppercase">{d.questionType}</span>
         {d.seriesId && (
           <>
-            <span className="text-neutral-400">·</span>
-            <span className="text-neutral-500">{d.seriesFormat || 'DP'} Q{d.seriesPosition}</span>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="text-muted-foreground">{d.seriesFormat || 'DP'} Q{d.seriesPosition}</span>
           </>
         )}
       </div>
 
-      <p className="text-base font-medium mb-4 whitespace-pre-wrap text-neutral-900 dark:text-neutral-100 leading-relaxed">
+      <p className="text-base font-medium mb-4 whitespace-pre-wrap text-foreground leading-relaxed">
         {d.text}
       </p>
 
       {d.image && (
         <img
           src={`/api/annales/${annaleId}/img/${d.image}`} alt=""
-          className="rounded-lg border border-neutral-200 dark:border-neutral-700 mb-4 max-w-full max-h-[400px] object-contain"
+          className="rounded-input border border-border mb-4 max-w-full max-h-[400px] object-contain"
         />
       )}
 
@@ -1819,22 +1819,22 @@ function ResultCard({
             return (
               <div
                 key={o.id}
-                className={`flex items-start gap-3 p-3 rounded-lg text-sm border ${
+                className={`flex items-start gap-3 p-3 rounded-input text-sm border ${
                   o.correct
-                    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 text-green-900 dark:text-green-200'
+                    ? 'bg-success-50 dark:bg-success-950/30 border-success-100 dark:border-success-700/50 text-success-950 dark:text-success-100'
                     : userPicked
-                    ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50 text-red-900 dark:text-red-200'
-                    : 'bg-neutral-50 dark:bg-neutral-800/50 border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-400'
+                    ? 'bg-danger-50 dark:bg-danger-950/30 border-danger-100 dark:border-danger-700/50 text-danger-950 dark:text-danger-100'
+                    : 'bg-muted/50 border-border text-muted-foreground'
                 }`}
               >
-                <span className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
-                  o.correct ? 'bg-green-600 text-white' : userPicked ? 'bg-red-600 text-white' : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
+                <span className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-medium ${
+                  o.correct ? 'bg-success-700 text-white' : userPicked ? 'bg-danger-700 text-white' : 'bg-muted text-muted-foreground'
                 }`}>
                   {o.id}
                 </span>
                 <span className="flex-1 leading-relaxed">{o.text}</span>
-                {o.correct && <CheckCircle2 size={16} className="text-green-700 dark:text-green-400 shrink-0 mt-0.5" />}
-                {userPicked && !o.correct && <XCircle size={16} className="text-red-700 dark:text-red-400 shrink-0 mt-0.5" />}
+                {o.correct && <CheckCircle2 size={16} className="text-success-700 dark:text-success-500 shrink-0 mt-0.5" />}
+                {userPicked && !o.correct && <XCircle size={16} className="text-danger-700 dark:text-danger-500 shrink-0 mt-0.5" />}
               </div>
             );
           })}
@@ -1845,33 +1845,33 @@ function ResultCard({
       {(d.questionType === 'QROC' || d.questionType === 'ZONE') && (
         <div className="space-y-3 mb-4">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
+            <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1.5">
               Ta réponse
             </div>
-            <div className="text-sm bg-neutral-50 dark:bg-neutral-800/60 p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 whitespace-pre-wrap text-neutral-800 dark:text-neutral-200">
+            <div className="text-sm bg-muted/50 p-3 rounded-input border border-border whitespace-pre-wrap text-foreground">
               {typeof d.userAnswer === 'string' && d.userAnswer
                 ? d.userAnswer
-                : <span className="italic text-neutral-400">Pas de réponse</span>}
+                : <span className="italic text-muted-foreground">Pas de réponse</span>}
             </div>
           </div>
           {d.expectedAnswer && (
             <div>
-              <div className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${d.answerSource === 'ai' ? 'text-amber-700 dark:text-amber-400' : 'text-green-700 dark:text-green-400'}`}>
+              <div className={`text-[10px] font-medium uppercase tracking-wider mb-1.5 ${d.answerSource === 'ai' ? 'text-warn-700 dark:text-warn-500' : 'text-success-700 dark:text-success-500'}`}>
                 {d.answerSource === 'ai' ? 'Réponse générée par IA — à vérifier' : 'Réponse officielle'}
               </div>
-              <div className={`text-sm p-3 rounded-lg border whitespace-pre-wrap leading-relaxed ${d.answerSource === 'ai' ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/50 text-amber-900 dark:text-amber-200' : 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 text-green-900 dark:text-green-200'}`}>
+              <div className={`text-sm p-3 rounded-input border whitespace-pre-wrap leading-relaxed ${d.answerSource === 'ai' ? 'bg-warn-50 dark:bg-warn-950/30 border-warn-100 dark:border-warn-700/50 text-warn-950 dark:text-warn-100' : 'bg-success-50 dark:bg-success-950/30 border-success-100 dark:border-success-700/50 text-success-950 dark:text-success-100'}`}>
                 {d.expectedAnswer}
               </div>
             </div>
           )}
           {d.correctedImage && (
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
+              <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1.5">
                 Correction visuelle
               </div>
               <img
                 src={`/api/annales/${annaleId}/img/${d.correctedImage}`} alt=""
-                className="rounded-lg border border-neutral-200 dark:border-neutral-700 max-w-full max-h-[400px] object-contain"
+                className="rounded-input border border-border max-w-full max-h-[400px] object-contain"
               />
             </div>
           )}
@@ -1879,7 +1879,7 @@ function ResultCard({
       )}
 
       {d.answerSource === 'ai' && (
-        <div className="mb-3 flex items-start gap-2 rounded-lg border border-amber-300 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
+        <div className="mb-3 flex items-start gap-2 rounded-input border border-warn-100 dark:border-warn-700/60 bg-warn-50 dark:bg-warn-950/30 px-3 py-2 text-xs text-warn-950 dark:text-warn-100">
           <Sparkles size={14} className="mt-0.5 shrink-0" />
           <span>Corrigé <strong>généré par IA</strong> (absent du PDF source) — à vérifier avec un référentiel/cours avant de le mémoriser.</span>
         </div>
@@ -1888,16 +1888,16 @@ function ResultCard({
       {/* Correction détaillée OU message d'absence */}
       {d.correctionText ? (
         <details className="text-sm group">
-          <summary className="cursor-pointer font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 select-none flex items-center gap-1.5">
+          <summary className="cursor-pointer font-medium text-muted-foreground hover:text-foreground select-none flex items-center gap-1.5">
             <ChevronRight size={14} className="transition-transform group-open:rotate-90" />
             Correction détaillée
           </summary>
-          <div className="mt-3 ml-5 p-4 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-800 whitespace-pre-wrap text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <div className="mt-3 ml-5 p-4 rounded-input bg-muted/50 border border-border whitespace-pre-wrap text-muted-foreground leading-relaxed">
             {d.correctionText}
           </div>
         </details>
       ) : (
-        <div className="mt-3 text-xs italic text-neutral-500 dark:text-neutral-400 px-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/50 border border-dashed border-neutral-300 dark:border-neutral-700">
+        <div className="mt-3 text-xs italic text-muted-foreground px-3 py-2 rounded-input bg-muted/50 border border-dashed border-border">
           Pas de commentaire de correction écrit dans le PDF source. Réfère-toi aux bonnes réponses cochées + un manuel/livre de cours.
         </div>
       )}

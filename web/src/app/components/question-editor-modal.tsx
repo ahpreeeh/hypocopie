@@ -170,10 +170,10 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="flex w-full max-w-3xl flex-col gap-0 overflow-hidden p-0">
-        <SheetHeader className="border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
+        <SheetHeader className="border-b border-border px-5 py-4">
           <SheetTitle className="flex items-center gap-2 text-base">
             ✏️ Corriger la question
-            <span className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[10px] text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+            <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
               {annaleId} · {question.id} · {question.questionType}
             </span>
           </SheetTitle>
@@ -182,11 +182,11 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
         <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
           {/* Contexte signalement / extrait auto */}
           {contextNote && (
-            <div className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3 dark:border-indigo-800 dark:bg-indigo-950/30">
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+            <div className="rounded-input border border-brand-100 bg-brand-50 px-4 py-3 dark:border-brand-700/40 dark:bg-brand-950/30">
+              <div className="mb-1 text-[10px] font-[650] uppercase tracking-wide text-brand-700 dark:text-brand-100">
                 Contexte du signalement
               </div>
-              <div className="whitespace-pre-wrap text-xs text-indigo-900 dark:text-indigo-200">
+              <div className="whitespace-pre-wrap text-xs text-brand-950 dark:text-brand-100">
                 {contextNote}
               </div>
             </div>
@@ -198,7 +198,7 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
               value={vignette}
               onChange={(e) => setVignette(e.target.value)}
               rows={5}
-              className="w-full resize-y rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full resize-y rounded-input border border-input bg-input-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </FieldGroup>
 
@@ -208,7 +208,7 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={4}
-              className="w-full resize-y rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full resize-y rounded-input border border-input bg-input-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </FieldGroup>
 
@@ -243,7 +243,7 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
                 type="text"
                 value={expectedAnswer}
                 onChange={(e) => setExpectedAnswer(e.target.value)}
-                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                className="w-full rounded-input border border-input bg-input-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </FieldGroup>
           )}
@@ -254,7 +254,7 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
               value={correctionText}
               onChange={(e) => setCorrectionText(e.target.value)}
               rows={4}
-              className="w-full resize-y rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full resize-y rounded-input border border-input bg-input-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </FieldGroup>
 
@@ -264,20 +264,20 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
               type="text"
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-input border border-input bg-input-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </FieldGroup>
 
           {/* Dry-run banner : sessions impactées */}
           {confirmStep && dryRun && dryRun.sessionsImpacted > 0 && (
-            <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30">
+            <div className="rounded-input border border-warn-100 bg-warn-50 px-4 py-3 dark:border-warn-700/50 dark:bg-warn-950/30">
               <div className="flex items-start gap-2">
-                <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                <AlertTriangle size={18} className="mt-0.5 shrink-0 text-warn-700 dark:text-warn-500" />
                 <div className="space-y-1 text-sm">
-                  <div className="font-semibold text-amber-800 dark:text-amber-200">
+                  <div className="font-[650] text-warn-950 dark:text-warn-100">
                     {dryRun.sessionsImpacted} session(s) historique(s) seront impactée(s)
                   </div>
-                  <div className="text-xs text-amber-700 dark:text-amber-300">
+                  <div className="text-xs text-warn-700 dark:text-warn-100">
                     Modifier <strong>{(dryRun.changedFields || []).join(', ')}</strong> va rendre les scores passés incohérents pour ces sessions. Confirmer pour appliquer quand même.
                   </div>
                 </div>
@@ -286,12 +286,12 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-3 dark:border-neutral-800">
+        <div className="flex items-center justify-end gap-2 border-t border-border px-5 py-3">
           <button
             type="button"
             onClick={() => onOpenChange(false)}
             disabled={submitting}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
+            className="inline-flex items-center gap-1.5 rounded-input border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
           >
             <X size={14} /> Annuler
           </button>
@@ -300,7 +300,7 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
               type="button"
               onClick={handleClickSave}
               disabled={submitting || !hasChanges}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-input bg-brand-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               Enregistrer
@@ -310,7 +310,7 @@ export function QuestionEditorModal({ open, onOpenChange, annaleId, question, co
               type="button"
               onClick={handleConfirmedSave}
               disabled={submitting}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-input bg-warn-500 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-warn-700 disabled:opacity-60"
             >
               {submitting ? <Loader2 size={14} className="animate-spin" /> : <AlertTriangle size={14} />}
               Confirmer malgré l'impact
@@ -327,11 +327,11 @@ function FieldGroup({
 }: { label: string; required?: boolean; hint?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-        {label} {required && <span className="text-red-500">*</span>}
+      <label className="block text-xs font-[650] uppercase tracking-wide text-muted-foreground">
+        {label} {required && <span className="text-danger-700 dark:text-danger-500">*</span>}
       </label>
       {children}
-      {hint && <div className="text-[11px] text-neutral-400 dark:text-neutral-500">{hint}</div>}
+      {hint && <div className="text-[11px] text-muted-foreground">{hint}</div>}
     </div>
   );
 }
@@ -344,20 +344,20 @@ function OptionRow({
   onCorrectChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-start gap-2 rounded-lg border border-neutral-200 bg-white p-2 dark:border-neutral-800 dark:bg-neutral-900">
+    <div className="flex items-start gap-2 rounded-input border border-border bg-card p-2">
       <div className="flex shrink-0 items-center gap-1.5 pt-2">
         <Checkbox
           checked={option.correct}
           onCheckedChange={(v) => onCorrectChange(!!v)}
           aria-label={`Marquer ${option.id} comme correcte`}
         />
-        <span className="w-5 text-center font-mono text-xs font-bold text-neutral-600 dark:text-neutral-300">{option.id}</span>
+        <span className="w-5 text-center font-mono text-xs font-[650] text-muted-foreground">{option.id}</span>
       </div>
       <textarea
         value={option.text}
         onChange={(e) => onTextChange(e.target.value)}
         rows={2}
-        className="min-h-[44px] flex-1 resize-y rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+        className="min-h-[44px] flex-1 resize-y rounded-input border border-input bg-input-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
       />
     </div>
   );

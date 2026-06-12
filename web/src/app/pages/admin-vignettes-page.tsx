@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronsUpDown,
+  Lightbulb,
   Pencil,
   ArrowUp,
   ArrowDown,
@@ -132,21 +133,21 @@ export function AdminVignettesPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50 dark:bg-neutral-900">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
+    <div className="h-full overflow-y-auto bg-background">
+      <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
           <Link
             to="/entrainement"
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 flex items-center gap-1"
+            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
           >
             <ArrowLeft size={16} /> Entrainement
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-bold flex items-center gap-2">
-              <AlertTriangle size={20} className="text-amber-600" />
+            <h1 className="text-lg font-medium flex items-center gap-2 text-foreground">
+              <AlertTriangle size={20} className="text-warn-700 dark:text-warn-500" />
               Vignettes orphelines
             </h1>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            <p className="text-xs text-muted-foreground">
               {data
                 ? `${data.affectedAnnales} annale${data.affectedAnnales > 1 ? 's' : ''} / ${data.problematicQuestions} question${data.problematicQuestions > 1 ? 's' : ''} problematique${data.problematicQuestions > 1 ? 's' : ''} sur ${data.totalAnnales} annales (${data.totalQuestions} questions).`
                 : 'Diagnostic en cours...'}
@@ -164,14 +165,15 @@ export function AdminVignettesPage() {
       />
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
-        <div className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm dark:border-indigo-900/40 dark:bg-indigo-950/30">
+        <div className="rounded-card border border-brand-100 bg-brand-50 px-4 py-3 text-sm dark:border-brand-700/40 dark:bg-brand-950/30">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-indigo-800 dark:text-indigo-200">
-              💡 Une vue unifiée combine ces détections auto avec tes signalements manuels.
+            <div className="flex items-center gap-1.5 text-brand-950 dark:text-brand-100">
+              <Lightbulb size={14} className="shrink-0" />
+              Une vue unifiée combine ces détections auto avec tes signalements manuels.
             </div>
             <Link
               to="/admin/corrections"
-              className="shrink-0 rounded-md border border-indigo-300 bg-white px-2.5 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-50 dark:border-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200 dark:hover:bg-indigo-900/60"
+              className="shrink-0 rounded-input border border-brand-100 bg-card px-2.5 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100"
             >
               Voir /admin/corrections →
             </Link>
@@ -179,7 +181,7 @@ export function AdminVignettesPage() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-400">
+          <div className="rounded-input border border-danger-100 bg-danger-50 p-4 text-danger-700 dark:border-danger-700/50 dark:bg-danger-950/30 dark:text-danger-500">
             <div className="font-medium">Erreur de chargement</div>
             <div className="mt-1 text-sm">{error}</div>
           </div>
@@ -188,11 +190,11 @@ export function AdminVignettesPage() {
         {!data && !error && <VignettesLoadingSkeleton />}
 
         {data && data.annales.length === 0 && (
-          <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center text-neutral-500 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50 text-green-600 ring-1 ring-green-100 dark:bg-green-950/40 dark:text-green-300 dark:ring-green-800/40">
+          <div className="rounded-card border border-border bg-card p-8 text-center text-muted-foreground shadow-[var(--shadow-card)]">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-card bg-success-50 text-success-700 ring-1 ring-success-100 dark:bg-success-950/40 dark:text-success-500 dark:ring-success-700/40">
               <AlertTriangle size={22} strokeWidth={1.8} />
             </div>
-            <h2 className="text-base font-bold text-neutral-900 dark:text-neutral-100">
+            <h2 className="text-base font-medium text-foreground">
               Aucune annale problematique detectee
             </h2>
             <p className="mt-2 text-sm">
@@ -202,10 +204,10 @@ export function AdminVignettesPage() {
         )}
 
         {data && data.annales.length > 0 && (
-          <div className="rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="rounded-card border border-border bg-card shadow-[var(--shadow-card)]">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+                <thead className="border-b border-border bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
                   <tr>
                     <th className="w-10 px-3 py-3 text-left"></th>
                     <SortableHeader
@@ -250,20 +252,20 @@ export function AdminVignettesPage() {
                     <th className="px-3 py-3 text-right font-medium">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+                <tbody className="divide-y divide-border">
                   {sortedAnnales.map((annale) => {
                     const isOpen = !!expanded[annale.id];
                     const rateClass = rateToClass(annale.rate);
                     return (
                       <Fragment key={annale.id}>
                         <tr
-                          className="cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900/50"
+                          className="cursor-pointer hover:bg-muted/50"
                           onClick={() => toggleExpand(annale.id)}
                         >
                           <td className="px-3 py-3 align-top">
                             <button
                               type="button"
-                              className="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
+                              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                               aria-label={isOpen ? 'Replier' : 'Deplier'}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -277,21 +279,21 @@ export function AdminVignettesPage() {
                             <SourceBadge source={annale.source} />
                           </td>
                           <td className="px-3 py-3 align-top">
-                            <div className="font-mono text-xs text-neutral-500 dark:text-neutral-400">
+                            <div className="font-mono text-xs text-muted-foreground">
                               {annale.id}
                             </div>
-                            <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                            <div className="text-sm font-medium text-foreground">
                               {annale.title || '(sans titre)'}
                             </div>
                           </td>
-                          <td className="px-3 py-3 text-right align-top text-neutral-700 dark:text-neutral-300 tabular-nums">
+                          <td className="px-3 py-3 text-right align-top text-muted-foreground tabular-nums">
                             {annale.totalQuestions}
                           </td>
-                          <td className="px-3 py-3 text-right align-top font-semibold text-neutral-900 dark:text-neutral-100 tabular-nums">
+                          <td className="px-3 py-3 text-right align-top font-[650] text-foreground tabular-nums">
                             {annale.problematicCount}
                           </td>
                           <td className="px-3 py-3 text-right align-top tabular-nums">
-                            <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold ${rateClass}`}>
+                            <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-[650] ${rateClass}`}>
                               {(annale.rate * 100).toFixed(1)}%
                             </span>
                           </td>
@@ -299,7 +301,7 @@ export function AdminVignettesPage() {
                             <Link
                               to={`/entrainement/${annale.id}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="inline-flex items-center gap-1 rounded-lg border border-neutral-200 px-2.5 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800"
+                              className="inline-flex items-center gap-1 rounded-input border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                               title="Ouvrir cette annale"
                             >
                               <Pencil size={12} />
@@ -308,7 +310,7 @@ export function AdminVignettesPage() {
                           </td>
                         </tr>
                         {isOpen && (
-                          <tr className="bg-neutral-50/60 dark:bg-neutral-900/40">
+                          <tr className="bg-muted/40">
                             <td colSpan={7} className="px-3 py-3">
                               <QuestionList annale={annale} />
                             </td>
@@ -354,8 +356,8 @@ function SortableHeader({
         onClick={() => onSort(sortKey)}
         className={`inline-flex items-center gap-1 transition-colors ${
           active
-            ? 'text-neutral-900 dark:text-neutral-100'
-            : 'hover:text-neutral-700 dark:hover:text-neutral-300'
+            ? 'text-foreground'
+            : 'hover:text-foreground'
         }`}
       >
         <span>{label}</span>
@@ -376,52 +378,52 @@ function SortableHeader({
 function SourceBadge({ source }: { source: 'qroc' | 'pdf' }) {
   if (source === 'qroc') {
     return (
-      <Badge className="border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+      <Badge className="border-transparent bg-warn-100 text-warn-700 dark:bg-warn-950/40 dark:text-warn-100">
         QROC
       </Badge>
     );
   }
   return (
-    <Badge className="border-transparent bg-indigo-100 text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300">
+    <Badge className="border-transparent bg-brand-100 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100">
       PDF
     </Badge>
   );
 }
 
 function rateToClass(rate: number): string {
-  if (rate >= 0.3) return 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300';
-  if (rate >= 0.15) return 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300';
-  return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300';
+  if (rate >= 0.3) return 'bg-danger-100 text-danger-700 dark:bg-danger-950/40 dark:text-danger-500';
+  if (rate >= 0.15) return 'bg-warn-100 text-warn-700 dark:bg-warn-950/40 dark:text-warn-100';
+  return 'bg-muted text-muted-foreground';
 }
 
 function QuestionList({ annale }: { annale: OrphanAnnale }) {
   if (!annale.questions || annale.questions.length === 0) {
     return (
-      <div className="text-xs italic text-neutral-500 dark:text-neutral-400">
+      <div className="text-xs italic text-muted-foreground">
         Aucune question listee.
       </div>
     );
   }
   return (
     <div className="space-y-2">
-      <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+      <div className="text-xs font-[650] uppercase tracking-wider text-muted-foreground">
         Questions detectees ({annale.questions.length})
       </div>
       <ul className="space-y-1.5">
         {annale.questions.map((q) => (
           <li
             key={q.id}
-            className="rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs dark:border-neutral-800 dark:bg-neutral-950"
+            className="rounded-input border border-border bg-card px-3 py-2 text-xs"
           >
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400">
+              <span className="font-mono text-[11px] text-muted-foreground">
                 {q.id}
               </span>
-              <span className="rounded bg-amber-50 px-1.5 py-0.5 font-mono text-[10px] text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
+              <span className="rounded bg-warn-50 px-1.5 py-0.5 font-mono text-[10px] text-warn-700 dark:bg-warn-950/40 dark:text-warn-100">
                 {q.pattern}
               </span>
             </div>
-            <div className="mt-1 text-neutral-700 dark:text-neutral-300">
+            <div className="mt-1 text-muted-foreground">
               {q.textExcerpt}
               {q.textExcerpt.length >= 100 ? '...' : ''}
             </div>

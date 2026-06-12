@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hypocampus — Maquette Axe 2 · « Bibliothèque calme »</title>
+<style>
+@font-face {
+  font-family: 'InterVariable';
+  src: url('../web/src/styles/fonts/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'InterVariable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #15141a;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv05' 1;
+}
+
+svg.ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+svg.ic.sm { width: 15px; height: 15px; }
+
+/* ===== Barre de la maquette (hors design) ===== */
+.bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 24px; background: #15141a; color: #b5b1c2;
+  font-size: 13px; position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid #2b2a35;
+}
+.bar b { color: #edebf4; font-weight: 600; }
+.bar .tabs { display: flex; gap: 4px; margin-left: 12px; }
+.bar button {
+  font: inherit; color: #b5b1c2; background: transparent; border: 1px solid transparent;
+  padding: 6px 14px; border-radius: 8px; cursor: pointer;
+}
+.bar button:hover { color: #edebf4; background: #232230; }
+.bar button.on { color: #edebf4; background: #2e2d3d; border-color: #3c3b4d; }
+.bar .right { margin-left: auto; display: flex; gap: 8px; }
+
+/* ============================================================
+   TOKENS — direction « Bibliothèque calme »
+   ============================================================ */
+#frame {
+  --bg: #F6F5F1;             /* papier chaud */
+  --surface: #FFFFFF;
+  --sunken: #EFEDE6;
+  --border: #E5E2D9;
+  --border-strong: #D5D1C5;
+  --text-1: #23211D;         /* encre */
+  --text-2: #5D584F;
+  --text-3: #948E82;
+  --brand: #4D53C0;          /* indigo bibliothèque */
+  --brand-hover: #4046A8;
+  --brand-text: #4348AE;
+  --brand-soft: #EEEFFA;
+  --brand-soft-border: #D9DBF4;
+  --sage: #4E7A5F;           /* vert sauge — réussite, « déjà fait » */
+  --sage-soft: #E8F0E9;
+  --sage-border: #CFE0D3;
+  --warn: #9C6B14;           /* ambre — attention, contenu IA */
+  --warn-soft: #F9F1DD;
+  --warn-border: #EBDDB9;
+  --danger: #B3433D;
+  --danger-soft: #F8E9E7;
+  --danger-border: #EDD2CE;
+  --on-brand: #FFFFFF;
+  --ring: rgba(77, 83, 192, .35);
+  --shadow-card: 0 1px 2px rgba(35, 33, 29, .05);
+  color: var(--text-1);
+  background: var(--bg);
+}
+#frame.dark {
+  --bg: #141319;             /* presque noir, tirant violet */
+  --surface: #1C1B23;
+  --sunken: #17161d;
+  --border: #2B2A35;
+  --border-strong: #3B3A48;
+  --text-1: #EBE9F1;
+  --text-2: #A8A4B4;
+  --text-3: #6E6A7C;
+  --brand: #5C62D6;
+  --brand-hover: #6B71E2;
+  --brand-text: #A3A7F0;
+  --brand-soft: rgba(124, 129, 235, .14);
+  --brand-soft-border: rgba(124, 129, 235, .28);
+  --sage: #99C4A6;
+  --sage-soft: rgba(125, 170, 140, .14);
+  --sage-border: rgba(125, 170, 140, .30);
+  --warn: #DCAC5E;
+  --warn-soft: rgba(220, 172, 94, .12);
+  --warn-border: rgba(220, 172, 94, .30);
+  --danger: #E0837B;
+  --danger-soft: rgba(224, 131, 123, .12);
+  --danger-border: rgba(224, 131, 123, .30);
+  --on-brand: #FFFFFF;
+  --ring: rgba(124, 129, 235, .45);
+  --shadow-card: none;
+}
+
+#frame { font-size: 14px; line-height: 1.5; }
+#frame .tabular { font-variant-numeric: tabular-nums; }
+
+/* ===== Boutons ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: inherit; font-size: 13.5px; font-weight: 550;
+  padding: 8px 14px; border-radius: 10px; cursor: pointer;
+  border: 1px solid transparent; transition: all .15s ease;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--brand); color: var(--on-brand); }
+.btn-primary:hover { background: var(--brand-hover); }
+.btn-secondary { background: var(--surface); color: var(--text-1); border-color: var(--border-strong); }
+.btn-secondary:hover { background: var(--sunken); }
+.btn-ghost { background: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--sunken); color: var(--text-1); }
+.btn-ghost-danger { background: transparent; color: var(--text-3); }
+.btn-ghost-danger:hover { background: var(--danger-soft); color: var(--danger); }
+.btn-sm { padding: 6px 11px; font-size: 13px; border-radius: 9px; }
+
+/* ===== Chips / badges ===== */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
+  padding: 3px 9px; border-radius: 999px;
+}
+.chip-brand { background: var(--brand-soft); color: var(--brand-text); border: 1px solid var(--brand-soft-border); }
+.chip-sage { background: var(--sage-soft); color: var(--sage); border: 1px solid var(--sage-border); }
+.chip-warn { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn-border); }
+.chip-danger { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger-border); }
+.chip-neutral { background: var(--sunken); color: var(--text-2); border: 1px solid var(--border); }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; box-shadow: var(--shadow-card);
+}
+
+/* ============================================================
+   ÉCRAN 1 — Tableau de bord
+   ============================================================ */
+.shell { display: flex; height: 780px; overflow: hidden; }
+
+.side {
+  width: 230px; flex-shrink: 0; display: flex; flex-direction: column;
+  background: var(--surface); border-right: 1px solid var(--border);
+  padding: 16px 10px 12px;
+}
+.side .logo { display: flex; align-items: center; gap: 10px; padding: 4px 8px 14px; }
+.side .logo img { width: 34px; height: 34px; border-radius: 9px; object-fit: cover; }
+.side .logo .t { font-size: 14px; font-weight: 650; letter-spacing: -.01em; }
+.side .logo .s { font-size: 11px; color: var(--text-3); margin-top: -1px; }
+.grouplabel {
+  font-size: 10.5px; font-weight: 650; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--text-3); padding: 14px 10px 6px;
+}
+.navitem {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7.5px 10px; border-radius: 10px; cursor: pointer;
+  color: var(--text-2); font-size: 13.5px; font-weight: 500;
+  transition: all .15s ease; position: relative;
+}
+.navitem:hover { background: var(--sunken); color: var(--text-1); }
+.navitem.on { background: var(--brand-soft); color: var(--brand-text); font-weight: 600; }
+.navitem .count {
+  margin-left: auto; font-size: 11px; font-weight: 650;
+  background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn-border);
+  padding: 1px 7px; border-radius: 999px;
+}
+.side .foot { margin-top: auto; border-top: 1px solid var(--border); padding-top: 8px; }
+
+.main { flex: 1; overflow-y: auto; padding: 30px 36px 48px; }
+.main .inner { max-width: 1000px; margin: 0 auto; }
+
+.pagehead { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+.pagehead h1 { font-size: 22px; font-weight: 650; letter-spacing: -.015em; }
+.pagehead .sub { font-size: 13px; color: var(--text-3); margin-top: 3px; }
+.pagehead .actions { margin-left: auto; display: flex; gap: 8px; }
+
+/* Reprendre */
+.resume { display: flex; align-items: center; gap: 28px; padding: 20px 24px; margin-bottom: 20px; }
+.resume .label { font-size: 10.5px; font-weight: 650; text-transform: uppercase; letter-spacing: .09em; color: var(--brand-text); }
+.resume h2 { font-size: 16.5px; font-weight: 600; margin-top: 4px; letter-spacing: -.01em; }
+.resume .meta { font-size: 12.5px; color: var(--text-3); margin-top: 3px; }
+.resume .grow { flex: 1; min-width: 0; }
+.track { height: 6px; border-radius: 999px; background: var(--sunken); overflow: hidden; margin-top: 12px; }
+.track .fill { height: 100%; border-radius: 999px; background: var(--brand); }
+
+/* KPI */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi { padding: 16px 18px; }
+.kpi .top { display: flex; align-items: center; justify-content: space-between; }
+.kpi .lab { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); }
+.kpi .icon { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.kpi .val { font-size: 24px; font-weight: 650; letter-spacing: -.02em; margin-top: 6px; }
+.kpi .det { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.ic-brand { background: var(--brand-soft); color: var(--brand-text); }
+.ic-sage { background: var(--sage-soft); color: var(--sage); }
+.ic-warn { background: var(--warn-soft); color: var(--warn); }
+.ic-neutral { background: var(--sunken); color: var(--text-2); }
+
+/* Colonnes */
+.cols { display: grid; grid-template-columns: 1fr 330px; gap: 16px; align-items: start; }
+.cardhead { display: flex; align-items: baseline; padding: 16px 20px 12px; }
+.cardhead h3 { font-size: 14px; font-weight: 600; letter-spacing: -.005em; }
+.cardhead a { margin-left: auto; font-size: 12.5px; font-weight: 550; color: var(--brand-text); text-decoration: none; }
+.cardhead a:hover { text-decoration: underline; }
+
+.sessionrow {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 20px; border-top: 1px solid var(--border); cursor: pointer;
+  transition: background .15s ease;
+}
+.sessionrow:hover { background: var(--sunken); }
+.sessionrow .t { font-size: 13.5px; font-weight: 550; }
+.sessionrow .m { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+.score { margin-left: auto; font-size: 12.5px; font-weight: 650; padding: 3px 10px; border-radius: 999px; }
+.score.good { background: var(--sage-soft); color: var(--sage); border: 1px solid var(--sage-border); }
+.score.mid { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn-border); }
+.score.bad { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger-border); }
+
+.subjrow { padding: 10px 20px 0; }
+.subjrow:last-child { padding-bottom: 16px; }
+.subjrow .l { display: flex; align-items: baseline; font-size: 13px; }
+.subjrow .l b { font-weight: 550; }
+.subjrow .l span { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--text-2); }
+.subjrow .track { height: 4px; margin-top: 6px; }
+.fill.sage { background: var(--sage); }
+.fill.warn { background: var(--warn); }
+.fill.danger { background: var(--danger); }
+
+.sidecard-note { padding: 16px 20px; }
+.sidecard-note .big { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.sidecard-note .s { font-size: 12.5px; color: var(--text-3); }
+.sidecard-note a { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12.5px; font-weight: 550; color: var(--brand-text); text-decoration: none; }
+
+/* ============================================================
+   ÉCRAN 2 — Examen (mode « copie »)
+   ============================================================ */
+.examwrap { height: 780px; display: flex; flex-direction: column; overflow: hidden; }
+.examhead {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 16px; height: 52px; flex-shrink: 0;
+}
+.examhead .title { font-size: 13.5px; font-weight: 550; color: var(--text-2); }
+.examhead .right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.examhead .qcount { font-size: 13px; color: var(--text-3); }
+.timer {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13.5px; font-weight: 600; color: var(--text-1);
+  background: var(--sunken); border: 1px solid var(--border);
+  padding: 5px 11px; border-radius: 999px;
+}
+.examprogress { height: 3px; background: var(--sunken); flex-shrink: 0; }
+.examprogress .fill { height: 100%; background: var(--brand); }
+
+.exambody { flex: 1; display: flex; overflow: hidden; }
+.exammain { flex: 1; overflow-y: auto; padding: 32px 40px 60px; }
+.copie { max-width: 720px; margin: 0 auto; }
+
+.vignette {
+  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--brand);
+  border-radius: 12px; padding: 16px 20px; margin-bottom: 16px;
+}
+.vignette .lab { font-size: 10.5px; font-weight: 650; text-transform: uppercase; letter-spacing: .09em; color: var(--brand-text); margin-bottom: 6px; }
+.vignette p { font-size: 14px; line-height: 1.65; color: var(--text-2); }
+
+.qcard { padding: 24px 28px; }
+.qmeta { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.qmeta .qnum { font-size: 12.5px; font-weight: 650; color: var(--text-3); letter-spacing: .02em; }
+.qmeta .flagbtn { margin-left: auto; }
+.enonce { font-size: 17px; line-height: 1.6; font-weight: 530; letter-spacing: -.008em; margin-bottom: 18px; }
+
+.opt {
+  display: flex; align-items: flex-start; gap: 12px;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 8px; cursor: pointer;
+  transition: all .15s ease; background: var(--surface);
+}
+.opt:hover { border-color: var(--border-strong); background: var(--sunken); }
+.opt .letter {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12.5px; font-weight: 650; color: var(--text-3);
+  background: var(--sunken); border: 1px solid var(--border);
+}
+.opt .box {
+  width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0; margin-top: 4px;
+  border: 1.5px solid var(--border-strong); background: var(--surface);
+  display: flex; align-items: center; justify-content: center; color: transparent;
+}
+.opt .txt { font-size: 14.5px; line-height: 1.55; padding-top: 2px; }
+.opt.sel { border-color: var(--brand); background: var(--brand-soft); }
+.opt.sel .letter { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.opt.sel .box { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+
+.examactions { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+.examactions .hint { flex: 1; text-align: center; font-size: 12px; color: var(--text-3); }
+
+.palette {
+  width: 248px; flex-shrink: 0; background: var(--surface);
+  border-left: 1px solid var(--border); padding: 18px 16px;
+  display: flex; flex-direction: column; overflow-y: auto;
+}
+.palette .ph { display: flex; align-items: baseline; margin-bottom: 12px; }
+.palette .ph h3 { font-size: 13px; font-weight: 600; }
+.palette .ph span { margin-left: auto; font-size: 12px; color: var(--text-3); font-weight: 600; }
+.pgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.pq {
+  aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 11.5px; font-weight: 600; cursor: pointer; position: relative;
+  border: 1px solid var(--border); color: var(--text-3); background: var(--surface);
+  transition: all .15s ease;
+}
+.pq:hover { border-color: var(--border-strong); }
+.pq.done { background: var(--brand-soft); border-color: var(--brand-soft-border); color: var(--brand-text); }
+.pq.cur { border: 2px solid var(--brand); color: var(--brand-text); font-weight: 700; }
+.pq.marked::after {
+  content: ''; position: absolute; top: 3px; right: 3px;
+  width: 6px; height: 6px; border-radius: 999px; background: var(--warn);
+}
+.plegend { display: flex; flex-direction: column; gap: 6px; margin: 14px 0; font-size: 11.5px; color: var(--text-3); }
+.plegend .li { display: flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 3px; border: 1px solid var(--border); }
+.dot.d1 { background: var(--brand-soft); border-color: var(--brand-soft-border); }
+.dot.d2 { background: var(--warn); border-color: var(--warn); border-radius: 999px; width: 7px; height: 7px; margin: 0 1.5px; }
+.dot.d3 { border: 2px solid var(--brand); }
+.palette .pfoot { margin-top: auto; padding-top: 14px; }
+.palette .save { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--sage); margin-top: 10px; justify-content: center; }
+
+/* ============================================================
+   ÉCRAN 3 — Fondations (specimen)
+   ============================================================ */
+.spec { max-width: 920px; margin: 0 auto; padding: 36px 32px 64px; }
+.spec h1 { font-size: 22px; font-weight: 650; letter-spacing: -.015em; }
+.spec .lead { font-size: 13.5px; color: var(--text-2); margin: 6px 0 28px; max-width: 640px; line-height: 1.6; }
+.spec h2 { font-size: 13px; font-weight: 650; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); margin: 28px 0 12px; }
+.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.sw { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; background: var(--surface); }
+.sw .c { height: 52px; }
+.sw .n { padding: 8px 10px 3px; font-size: 12px; font-weight: 600; }
+.sw .h { padding: 0 10px 8px; font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.typerow { display: flex; align-items: baseline; gap: 18px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.typerow .tag { width: 130px; font-size: 11px; color: var(--text-3); font-weight: 600; flex-shrink: 0; }
+.btnrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chiprow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.specinput {
+  font: inherit; font-size: 13.5px; color: var(--text-1);
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: 10px; padding: 8px 12px; width: 280px; outline: none;
+}
+.specinput:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--ring); }
+.specnote { font-size: 12.5px; color: var(--text-3); margin-top: 10px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <b>Maquette Axe 2</b> · direction « Bibliothèque calme »
+  <nav class="tabs">
+    <button class="on" data-tab="dash">Tableau de bord</button>
+    <button data-tab="exam">Examen</button>
+    <button data-tab="spec">Fondations</button>
+  </nav>
+  <div class="right">
+    <button id="themeBtn">Passer en sombre</button>
+  </div>
+</header>
+
+<div id="frame">
+
+<!-- ════════════════ ÉCRAN 1 · TABLEAU DE BORD ════════════════ -->
+<section id="tab-dash">
+<div class="shell">
+
+  <aside class="side">
+    <div class="logo">
+      <img src="../web/src/imports/ChatGPT_Image_11_mai_2026__22_39_20.png" alt="">
+      <div><div class="t">Hypocampus</div><div class="s">Révisions</div></div>
+    </div>
+
+    <div class="grouplabel">Réviser</div>
+    <div class="navitem on">
+      <svg class="ic" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      Tableau de bord
+    </div>
+    <div class="navitem">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+      Annales
+    </div>
+    <div class="navitem">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>
+      Cahier d'erreurs
+    </div>
+    <div class="navitem">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+      Historique
+    </div>
+
+    <div class="grouplabel">Maintenance</div>
+    <div class="navitem">
+      <svg class="ic" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+      Corrections
+      <span class="count">3</span>
+    </div>
+    <div class="navitem">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      Vignettes orphelines
+    </div>
+    <div class="navitem">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+      Sauvegarder
+    </div>
+
+    <div class="foot">
+      <div class="navitem">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        Mode sombre
+      </div>
+    </div>
+  </aside>
+
+  <main class="main"><div class="inner">
+
+    <div class="pagehead">
+      <div>
+        <h1>Tableau de bord</h1>
+        <div class="sub">Mercredi 11 juin · 16 annales · 412 questions disponibles</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary">
+          <svg class="ic sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+          Importer
+        </button>
+        <button class="btn btn-primary">
+          <svg class="ic sm" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          Nouvelle session
+        </button>
+      </div>
+    </div>
+
+    <div class="card resume">
+      <div class="grow">
+        <div class="label">Examen en cours</div>
+        <h2>Endocrinologie 2025 — Sujet 1</h2>
+        <div class="meta">Question 12 / 45 · 14 min écoulées · sauvegardé il y a 2 min</div>
+        <div class="track"><div class="fill" style="width:27%"></div></div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button class="btn btn-ghost-danger btn-sm">Abandonner</button>
+        <button class="btn btn-primary">
+          Reprendre
+          <svg class="ic sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="card kpi">
+        <div class="top"><span class="lab">Annales</span><span class="icon ic-brand"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span></div>
+        <div class="val tabular">16</div>
+        <div class="det">412 questions</div>
+      </div>
+      <div class="card kpi">
+        <div class="top"><span class="lab">Sessions</span><span class="icon ic-sage"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        <div class="val tabular">23</div>
+        <div class="det">5 matières travaillées</div>
+      </div>
+      <div class="card kpi">
+        <div class="top"><span class="lab">Moyenne 30 j</span><span class="icon ic-warn"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span></div>
+        <div class="val tabular">67 %</div>
+        <div class="det" style="color:var(--sage); font-weight:600;">+4 pts vs mois dernier</div>
+      </div>
+      <div class="card kpi">
+        <div class="top"><span class="lab">Temps moyen</span><span class="icon ic-neutral"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span></div>
+        <div class="val tabular">1 h 12</div>
+        <div class="det">par examen, 30 derniers jours</div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="card">
+        <div class="cardhead"><h3>Dernières sessions</h3><a href="#">Tout l'historique</a></div>
+        <div class="sessionrow"><div><div class="t">Endocrinologie 2024 — Sujet 2</div><div class="m">Hier · 58 min · mode examen</div></div><span class="score good tabular">72 %</span></div>
+        <div class="sessionrow"><div><div class="t">Cardiologie 2024 — Sujet 1</div><div class="m">Il y a 2 jours · 1 h 04 · mode examen</div></div><span class="score mid tabular">64 %</span></div>
+        <div class="sessionrow"><div><div class="t">Neurologie 2023 — Sujet 2</div><div class="m">Il y a 3 jours · 49 min · mode libre</div></div><span class="score bad tabular">48 %</span></div>
+        <div class="sessionrow"><div><div class="t">Endocrinologie 2023 — Sujet 1</div><div class="m">Il y a 5 jours · 55 min · mode examen</div></div><span class="score good tabular">70 %</span></div>
+        <div class="sessionrow"><div><div class="t">Hématologie 2024 — Sujet 1</div><div class="m">Il y a 6 jours · 1 h 12 · mode examen</div></div><span class="score good tabular">81 %</span></div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="card" style="padding-bottom:16px;">
+          <div class="cardhead"><h3>Par matière</h3></div>
+          <div class="subjrow"><div class="l"><b>Hématologie</b><span class="tabular">81 %</span></div><div class="track"><div class="fill sage" style="width:81%"></div></div></div>
+          <div class="subjrow"><div class="l"><b>Cardiologie</b><span class="tabular">72 %</span></div><div class="track"><div class="fill sage" style="width:72%"></div></div></div>
+          <div class="subjrow"><div class="l"><b>Endocrinologie</b><span class="tabular">64 %</span></div><div class="track"><div class="fill warn" style="width:64%"></div></div></div>
+          <div class="subjrow"><div class="l"><b>Rhumatologie</b><span class="tabular">55 %</span></div><div class="track"><div class="fill warn" style="width:55%"></div></div></div>
+          <div class="subjrow"><div class="l"><b>Neurologie</b><span class="tabular">48 %</span></div><div class="track"><div class="fill danger" style="width:48%"></div></div></div>
+        </div>
+
+        <div class="card sidecard-note">
+          <div class="big tabular">12 questions à revoir</div>
+          <div class="s">dans le cahier d'erreurs · 3 capturées cette semaine</div>
+          <a href="#">Ouvrir le cahier
+            <svg class="ic sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div></main>
+</div>
+</section>
+
+<!-- ════════════════ ÉCRAN 2 · EXAMEN ════════════════ -->
+<section id="tab-exam" hidden>
+<div class="examwrap">
+
+  <div class="examhead">
+    <button class="btn btn-ghost btn-sm" style="padding:6px;">
+      <svg class="ic" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <span class="title">Endocrinologie 2025 — Sujet 1</span>
+    <span class="chip chip-brand">Examen</span>
+    <div class="right">
+      <span class="qcount tabular">Question 7 / 45</span>
+      <span class="timer tabular">
+        <svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        42:18
+      </span>
+      <button class="btn btn-ghost btn-sm" style="padding:6px;" title="Sommaire des questions">
+        <svg class="ic" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="15" x2="15" y1="3" y2="21"/></svg>
+      </button>
+      <button class="btn btn-secondary btn-sm">Terminer l'examen</button>
+    </div>
+  </div>
+  <div class="examprogress"><div class="fill" style="width:15.5%"></div></div>
+
+  <div class="exambody">
+    <main class="exammain"><div class="copie">
+
+      <div class="vignette">
+        <div class="lab">Cas clinique — suite 2 / 3</div>
+        <p>Mme R., 54 ans, consulte pour une asthénie évoluant depuis trois mois, associée à une prise de poids de 6 kg. L'examen retrouve une bradycardie à 52/min, une peau sèche et des réflexes ostéotendineux ralentis. Le bilan montre : TSH = 18 mUI/L, T4L basse.</p>
+      </div>
+
+      <div class="card qcard">
+        <div class="qmeta">
+          <span class="qnum">Question 7</span>
+          <span class="chip chip-neutral">QRM</span>
+          <span class="chip chip-neutral">1 pt</span>
+          <button class="btn btn-ghost btn-sm flagbtn" style="color:var(--text-3);">
+            <svg class="ic sm" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+            Marquer
+          </button>
+        </div>
+        <div class="enonce">Quelle(s) est (sont) la (les) proposition(s) exacte(s) concernant la prise en charge de cette patiente ?</div>
+
+        <div class="opt">
+          <span class="letter">A</span><span class="box"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="txt">Une substitution par lévothyroxine doit être débutée à pleine dose d'emblée</span>
+        </div>
+        <div class="opt sel">
+          <span class="letter">B</span><span class="box"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="txt">La posologie initiale doit être prudente en cas de cardiopathie sous-jacente</span>
+        </div>
+        <div class="opt">
+          <span class="letter">C</span><span class="box"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="txt">Un dosage des anticorps anti-récepteurs de la TSH est indispensable avant traitement</span>
+        </div>
+        <div class="opt sel">
+          <span class="letter">D</span><span class="box"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="txt">La TSH de contrôle est dosée 6 à 8 semaines après l'initiation du traitement</span

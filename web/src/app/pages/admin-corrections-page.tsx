@@ -490,15 +490,15 @@ export function AdminCorrectionsPage() {
   }, [activeTab, loadSourceInfo]);
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
-      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-20 border-b border-border bg-card/95 px-4 py-3 backdrop-blur">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Link to="/captures" className="mb-1 inline-flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">
+            <Link to="/captures" className="mb-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
               <ArrowLeft size={12} /> Retour
             </Link>
-            <h1 className="flex items-center gap-2 text-xl font-bold">
-              <FileText size={21} className="text-indigo-600" />
+            <h1 className="flex items-center gap-2 text-xl font-[650]">
+              <FileText size={21} className="text-brand-700 dark:text-brand-500" />
               Atelier de correction
             </h1>
           </div>
@@ -509,14 +509,14 @@ export function AdminCorrectionsPage() {
                 const id = e.target.value || null;
                 if (id) loadAnnale(id);
               }}
-              className="h-9 min-w-[260px] rounded-md border border-neutral-300 bg-white px-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              className="h-9 min-w-[260px] rounded-input border border-input bg-input-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Ouvrir une annale complète...</option>
               {annales.map((item) => (
                 <option key={item.id} value={item.id}>{item.title || item.id}</option>
               ))}
             </select>
-            <button onClick={loadQueue} disabled={refreshing} className="inline-flex h-9 items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 text-sm hover:bg-neutral-50 disabled:opacity-60 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+            <button onClick={loadQueue} disabled={refreshing} className="inline-flex h-9 items-center gap-2 rounded-input border border-border bg-card px-3 text-sm hover:bg-muted disabled:opacity-60">
               {refreshing ? <Loader2 size={15} className="animate-spin" /> : <RefreshCw size={15} />}
               Rafraîchir
             </button>
@@ -525,7 +525,7 @@ export function AdminCorrectionsPage() {
       </header>
 
       {error && (
-        <div className="mx-4 mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+        <div className="mx-4 mt-4 rounded-input border border-danger-100 bg-danger-50 px-4 py-3 text-sm text-danger-700 dark:border-danger-700/50 dark:bg-danger-950/40 dark:text-danger-500">
           {error}
         </div>
       )}
@@ -550,14 +550,14 @@ export function AdminCorrectionsPage() {
           }}
         />
 
-        <section className="border-r border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-950">
+        <section className="border-r border-border bg-muted/40 p-4">
           {loadingAnnale && <WorkbenchSkeleton />}
           {!loadingAnnale && !annale && (
-            <div className="flex min-h-[420px] items-center justify-center rounded-lg border border-dashed border-neutral-300 bg-white text-center dark:border-neutral-700 dark:bg-neutral-900">
+            <div className="flex min-h-[420px] items-center justify-center rounded-card border border-dashed border-border bg-card text-center">
               <div>
-                <BookOpen className="mx-auto mb-3 text-neutral-400" size={34} />
+                <BookOpen className="mx-auto mb-3 text-muted-foreground" size={34} />
                 <div className="text-sm font-medium">Sélectionne un signalement ou une annale</div>
-                <div className="mt-1 text-xs text-neutral-500">La prévisualisation complète apparaîtra ici.</div>
+                <div className="mt-1 text-xs text-muted-foreground">La prévisualisation complète apparaîtra ici.</div>
               </div>
             </div>
           )}
@@ -575,33 +575,33 @@ export function AdminCorrectionsPage() {
           )}
         </section>
 
-        <section className="bg-white p-4 dark:bg-neutral-900">
+        <section className="bg-card p-4">
           {!draftQuestion ? (
-            <div className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-sm text-neutral-500 dark:border-neutral-700">
+            <div className="rounded-card border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
               Aucune question sélectionnée.
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <div className="text-xs uppercase tracking-wide text-neutral-500">Éditeur structurel</div>
-                  <h2 className="font-mono text-lg font-semibold">{draftQuestion.id}</h2>
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">Éditeur structurel</div>
+                  <h2 className="font-mono text-lg font-[650]">{draftQuestion.id}</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={suggestLocalPatch} className="inline-flex h-9 items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 text-sm text-amber-800 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+                  <button onClick={suggestLocalPatch} className="inline-flex h-9 items-center gap-2 rounded-input border border-warn-100 bg-warn-50 px-3 text-sm text-warn-700 hover:bg-warn-100 dark:border-warn-700/50 dark:bg-warn-950/40 dark:text-warn-100">
                     <Wand2 size={15} /> Suggérer
                   </button>
-                  <button onClick={() => saveQuestion(false)} disabled={saving} className="inline-flex h-9 items-center gap-2 rounded-md bg-neutral-900 px-3 text-sm text-white hover:bg-neutral-800 disabled:opacity-60 dark:bg-neutral-100 dark:text-neutral-950">
+                  <button onClick={() => saveQuestion(false)} disabled={saving} className="inline-flex h-9 items-center gap-2 rounded-input bg-foreground px-3 text-sm text-background hover:opacity-90 disabled:opacity-60">
                     {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
                     Sauvegarder
                   </button>
-                  <button onClick={() => saveQuestion(true)} disabled={saving} className="inline-flex h-9 items-center gap-2 rounded-md bg-green-600 px-3 text-sm text-white hover:bg-green-700 disabled:opacity-60">
+                  <button onClick={() => saveQuestion(true)} disabled={saving} className="inline-flex h-9 items-center gap-2 rounded-input bg-success-700 px-3 text-sm text-white hover:bg-success-500 disabled:opacity-60">
                     <CheckCircle2 size={15} /> Sauver + résoudre
                   </button>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800">
+              <div className="flex flex-wrap gap-1 rounded-input bg-muted p-1">
                 {[
                   ['content', 'Contenu'],
                   ['options', 'Options'],
@@ -613,7 +613,7 @@ export function AdminCorrectionsPage() {
                   <button
                     key={key}
                     onClick={() => setActiveTab(key as TabKey)}
-                    className={`rounded-md px-3 py-1.5 text-sm ${activeTab === key ? 'bg-white shadow-sm dark:bg-neutral-950' : 'text-neutral-600 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white'}`}
+                    className={`rounded-md px-3 py-1.5 text-sm ${activeTab === key ? 'bg-card shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     {label}
                   </button>
@@ -679,36 +679,36 @@ function QueuePanel(props: {
   onSelect: (row: WorkRow) => void;
 }) {
   return (
-    <aside className="border-r border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
+    <aside className="border-r border-border bg-card p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold">File de travail</h2>
-        <Badge className="border-neutral-300 bg-neutral-100 text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+        <h2 className="text-sm font-[650]">File de travail</h2>
+        <Badge className="border-border bg-muted text-muted-foreground">
           {props.rows.length}
         </Badge>
       </div>
       <div className="space-y-2">
         <div className="relative">
-          <Search size={14} className="absolute left-2 top-2.5 text-neutral-400" />
+          <Search size={14} className="absolute left-2 top-2.5 text-muted-foreground" />
           <input
             value={props.queueSearch}
             onChange={(e) => props.onSearch(e.target.value)}
             placeholder="Rechercher..."
-            className="h-9 w-full rounded-md border border-neutral-300 bg-white pl-8 pr-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+            className="h-9 w-full rounded-input border border-input bg-input-background pl-8 pr-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <select value={props.statusFilter} onChange={(e) => props.onStatusFilter(e.target.value as StatusFilter)} className="h-8 rounded-md border border-neutral-300 bg-white px-2 text-xs dark:border-neutral-700 dark:bg-neutral-950">
+          <select value={props.statusFilter} onChange={(e) => props.onStatusFilter(e.target.value as StatusFilter)} className="h-8 rounded-input border border-input bg-input-background px-2 text-xs outline-none focus:ring-2 focus:ring-ring">
             <option value="open">Ouverts</option>
             <option value="resolved">Résolus</option>
             <option value="all">Tous</option>
           </select>
-          <select value={props.sourceFilter} onChange={(e) => props.onSourceFilter(e.target.value as SourceFilter)} className="h-8 rounded-md border border-neutral-300 bg-white px-2 text-xs dark:border-neutral-700 dark:bg-neutral-950">
+          <select value={props.sourceFilter} onChange={(e) => props.onSourceFilter(e.target.value as SourceFilter)} className="h-8 rounded-input border border-input bg-input-background px-2 text-xs outline-none focus:ring-2 focus:ring-ring">
             <option value="all">Tout</option>
             <option value="reported">Signalés</option>
             <option value="auto">Auto</option>
           </select>
         </div>
-        <select value={props.categoryFilter} onChange={(e) => props.onCategoryFilter(e.target.value)} className="h-8 w-full rounded-md border border-neutral-300 bg-white px-2 text-xs dark:border-neutral-700 dark:bg-neutral-950">
+        <select value={props.categoryFilter} onChange={(e) => props.onCategoryFilter(e.target.value)} className="h-8 w-full rounded-input border border-input bg-input-background px-2 text-xs outline-none focus:ring-2 focus:ring-ring">
           <option value="all">Toutes catégories</option>
           {props.categories.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
@@ -717,7 +717,7 @@ function QueuePanel(props: {
       <div className="mt-4 max-h-[calc(100vh-250px)] space-y-2 overflow-y-auto pr-1">
         {!props.rawRows && Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-lg" />)}
         {props.rawRows && props.rows.length === 0 && (
-          <div className="rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-700">
+          <div className="rounded-card border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             Aucun signalement dans ce filtre.
           </div>
         )}
@@ -730,17 +730,17 @@ function QueuePanel(props: {
             <button
               key={`${row.source}-${row.annaleId}-${row.questionId}-${row.reportId || 'auto'}`}
               onClick={() => props.onSelect(row)}
-              className={`w-full rounded-lg border p-3 text-left transition ${selected ? 'border-indigo-400 bg-indigo-50 dark:border-indigo-700 dark:bg-indigo-950/30' : 'border-neutral-200 bg-neutral-50 hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-900'}`}
+              className={`w-full rounded-card border p-3 text-left transition ${selected ? 'border-brand-500 bg-brand-50 dark:border-brand-700/50 dark:bg-brand-950/30' : 'border-border bg-muted/40 hover:bg-muted'}`}
             >
               <div className="mb-2 flex items-start justify-between gap-2">
                 <span className="truncate text-sm font-medium">{row.annaleTitle || row.annaleId}</span>
-                <Badge className={row.source === 'reported' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-neutral-300 bg-neutral-100 text-neutral-700'}>
+                <Badge className={row.source === 'reported' ? 'border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/50 dark:bg-warn-950/30 dark:text-warn-100' : 'border-border bg-muted text-muted-foreground'}>
                   {row.source === 'reported' ? 'user' : 'auto'}
                 </Badge>
               </div>
-              <div className="font-mono text-xs text-neutral-500">{row.annaleId} · {row.questionId}</div>
-              <div className="mt-1 line-clamp-2 text-xs text-neutral-600 dark:text-neutral-400">{row.note || row.excerpt || row.categoryLabel}</div>
-              {row.annaleOrphan && <div className="mt-2 text-xs text-red-500">Annale introuvable</div>}
+              <div className="font-mono text-xs text-muted-foreground">{row.annaleId} · {row.questionId}</div>
+              <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{row.note || row.excerpt || row.categoryLabel}</div>
+              {row.annaleOrphan && <div className="mt-2 text-xs text-danger-700 dark:text-danger-500">Annale introuvable</div>}
             </button>
           );
         })}
@@ -770,13 +770,13 @@ function QuestionPreview(props: {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <div className="text-sm text-neutral-500">{annale.subject || 'Annale'} · {annale.year || 'année ?'} · révision {annale.revision || 0}</div>
-          <h2 className="text-xl font-semibold">{annale.title || annale.id}</h2>
+          <div className="text-sm text-muted-foreground">{annale.subject || 'Annale'} · {annale.year || 'année ?'} · révision {annale.revision || 0}</div>
+          <h2 className="text-xl font-[650]">{annale.title || annale.id}</h2>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={props.onPrev} disabled={props.selectedIndex <= 0} className="rounded-md border border-neutral-300 p-2 disabled:opacity-40 dark:border-neutral-700"><ChevronLeft size={16} /></button>
+          <button onClick={props.onPrev} disabled={props.selectedIndex <= 0} className="rounded-input border border-border p-2 hover:bg-muted disabled:opacity-40"><ChevronLeft size={16} /></button>
           <span className="text-sm tabular-nums">{props.selectedIndex + 1} / {annale.questions.length}</span>
-          <button onClick={props.onNext} disabled={props.selectedIndex >= annale.questions.length - 1} className="rounded-md border border-neutral-300 p-2 disabled:opacity-40 dark:border-neutral-700"><ChevronRight size={16} /></button>
+          <button onClick={props.onNext} disabled={props.selectedIndex >= annale.questions.length - 1} className="rounded-input border border-border p-2 hover:bg-muted disabled:opacity-40"><ChevronRight size={16} /></button>
         </div>
       </div>
 
@@ -789,7 +789,7 @@ function QuestionPreview(props: {
             <button
               key={q.id}
               onClick={() => props.onSelect(q.id)}
-              className={`h-8 min-w-8 rounded-md border px-2 text-xs ${q.id === question.id ? 'border-indigo-500 bg-indigo-600 text-white' : hasError ? 'border-red-300 bg-red-50 text-red-700' : hasWarning ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-900'}`}
+              className={`h-8 min-w-8 rounded-input border px-2 text-xs ${q.id === question.id ? 'border-brand-600 bg-brand-600 text-white' : hasError ? 'border-danger-100 bg-danger-50 text-danger-700' : hasWarning ? 'border-warn-100 bg-warn-50 text-warn-700' : 'border-border bg-card'}`}
               title={q.id}
             >
               {index + 1}
@@ -798,44 +798,44 @@ function QuestionPreview(props: {
         })}
       </div>
 
-      <article className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+      <article className="rounded-card border border-border bg-card p-5 shadow-[var(--shadow-card)]">
         <div className="mb-3 flex flex-wrap items-center gap-2">
-          <Badge className="border-neutral-300 bg-neutral-100 text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">{question.questionType}</Badge>
-          {question.seriesId && <Badge className="border-indigo-300 bg-indigo-50 text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/30 dark:text-indigo-300">{question.seriesFormat} {question.seriesPosition}/{question.seriesTotal}</Badge>}
-          <button onClick={() => props.onMove(-1)} disabled={props.selectedIndex <= 0} className="ml-auto rounded-md border border-neutral-300 px-2 py-1 text-xs disabled:opacity-40 dark:border-neutral-700">Monter</button>
-          <button onClick={() => props.onMove(1)} disabled={props.selectedIndex >= annale.questions.length - 1} className="rounded-md border border-neutral-300 px-2 py-1 text-xs disabled:opacity-40 dark:border-neutral-700">Descendre</button>
+          <Badge className="border-border bg-muted text-muted-foreground">{question.questionType}</Badge>
+          {question.seriesId && <Badge className="border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/50 dark:bg-brand-950/30 dark:text-brand-100">{question.seriesFormat} {question.seriesPosition}/{question.seriesTotal}</Badge>}
+          <button onClick={() => props.onMove(-1)} disabled={props.selectedIndex <= 0} className="ml-auto rounded-input border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-40">Monter</button>
+          <button onClick={() => props.onMove(1)} disabled={props.selectedIndex >= annale.questions.length - 1} className="rounded-input border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-40">Descendre</button>
         </div>
         {question.vignette && (
-          <div className="mb-4 rounded-md border border-indigo-200 bg-indigo-50 p-3 text-sm leading-relaxed text-indigo-950 dark:border-indigo-900 dark:bg-indigo-950/30 dark:text-indigo-100">
+          <div className="mb-4 rounded-input border border-brand-100 bg-brand-50 p-3 text-sm leading-relaxed text-brand-950 dark:border-brand-700/50 dark:bg-brand-950/30 dark:text-brand-100">
             {question.vignette}
           </div>
         )}
-        <h3 className="whitespace-pre-wrap text-lg font-semibold leading-relaxed">{question.text}</h3>
+        <h3 className="whitespace-pre-wrap text-lg font-[650] leading-relaxed">{question.text}</h3>
         {images.length > 0 && (
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {images.map((img) => (
-              <img key={img.filename} src={`/api/annales/${encodeURIComponent(annale.id)}/img/${encodeURIComponent(img.filename || '')}`} alt={img.label || img.filename || 'image'} className="max-h-80 rounded-md border border-neutral-200 object-contain dark:border-neutral-700" />
+              <img key={img.filename} src={`/api/annales/${encodeURIComponent(annale.id)}/img/${encodeURIComponent(img.filename || '')}`} alt={img.label || img.filename || 'image'} className="max-h-80 rounded-input border border-border object-contain" />
             ))}
           </div>
         )}
         {question.options?.length ? (
           <div className="mt-5 space-y-2">
             {question.options.map((opt) => (
-              <div key={opt.id} className={`flex gap-3 rounded-md border p-3 ${opt.correct ? 'border-green-300 bg-green-50 dark:border-green-800 dark:bg-green-950/30' : 'border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950'}`}>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white font-mono text-xs dark:bg-neutral-900">{opt.id}</span>
+              <div key={opt.id} className={`flex gap-3 rounded-input border p-3 ${opt.correct ? 'border-success-100 bg-success-50 dark:border-success-700/50 dark:bg-success-950/30' : 'border-border bg-muted/40'}`}>
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-card font-mono text-xs">{opt.id}</span>
                 <span className="whitespace-pre-wrap text-sm">{opt.text}</span>
-                {opt.correct && <CheckCircle2 className="ml-auto shrink-0 text-green-600" size={16} />}
+                {opt.correct && <CheckCircle2 className="ml-auto shrink-0 text-success-700 dark:text-success-500" size={16} />}
               </div>
             ))}
           </div>
         ) : question.expectedAnswer ? (
-          <div className="mt-5 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-900 dark:border-green-900 dark:bg-green-950/30 dark:text-green-100">
+          <div className="mt-5 rounded-input border border-success-100 bg-success-50 p-3 text-sm text-success-950 dark:border-success-700/50 dark:bg-success-950/30 dark:text-success-100">
             Réponse attendue : {question.expectedAnswer}
           </div>
         ) : null}
         {question.correctionText && (
-          <div className="mt-5 rounded-md border border-neutral-200 bg-neutral-50 p-3 text-sm leading-relaxed dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="mb-1 text-xs font-semibold uppercase text-neutral-500">Correction</div>
+          <div className="mt-5 rounded-input border border-border bg-muted/50 p-3 text-sm leading-relaxed">
+            <div className="mb-1 text-xs font-[650] uppercase text-muted-foreground">Correction</div>
             <div className="whitespace-pre-wrap">{question.correctionText}</div>
           </div>
         )}
@@ -848,13 +848,13 @@ function ContentEditor({ question, update }: { question: AdminQuestion; update: 
   return (
     <div className="space-y-3">
       <label className="block text-sm font-medium">Titre interne
-        <input value={question.customTitle || ''} onChange={(e) => update({ customTitle: e.target.value })} className="mt-1 h-9 w-full rounded-md border border-neutral-300 bg-white px-2 text-sm dark:border-neutral-700 dark:bg-neutral-950" />
+        <input value={question.customTitle || ''} onChange={(e) => update({ customTitle: e.target.value })} className="mt-1 h-9 w-full rounded-input border border-input bg-input-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
       </label>
       <label className="block text-sm font-medium">Énoncé
-        <textarea value={question.text || ''} onChange={(e) => update({ text: e.target.value })} rows={7} className="mt-1 w-full resize-y rounded-md border border-neutral-300 bg-white p-2 text-sm leading-relaxed dark:border-neutral-700 dark:bg-neutral-950" />
+        <textarea value={question.text || ''} onChange={(e) => update({ text: e.target.value })} rows={7} className="mt-1 w-full resize-y rounded-input border border-input bg-input-background p-2 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-ring" />
       </label>
       <label className="block text-sm font-medium">Correction
-        <textarea value={question.correctionText || ''} onChange={(e) => update({ correctionText: e.target.value })} rows={7} className="mt-1 w-full resize-y rounded-md border border-neutral-300 bg-white p-2 text-sm leading-relaxed dark:border-neutral-700 dark:bg-neutral-950" />
+        <textarea value={question.correctionText || ''} onChange={(e) => update({ correctionText: e.target.value })} rows={7} className="mt-1 w-full resize-y rounded-input border border-input bg-input-background p-2 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-ring" />
       </label>
     </div>
   );
@@ -878,7 +878,7 @@ function OptionsEditor(props: {
             const nextType = e.target.value as QuestionType;
             props.update({ questionType: nextType, options: nextType === 'QRU' || nextType === 'QRM' ? options.length ? options : [{ id: 'A', text: '', correct: true }] : [] });
           }}
-          className="mt-1 h-9 w-full rounded-md border border-neutral-300 bg-white px-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          className="mt-1 h-9 w-full rounded-input border border-input bg-input-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
         >
           <option value="QRU">QRU</option>
           <option value="QRM">QRM</option>
@@ -891,30 +891,30 @@ function OptionsEditor(props: {
         <>
           <div className="space-y-2">
             {options.map((opt, index) => (
-              <div key={`${opt.id}-${index}`} className="grid grid-cols-[34px_1fr_auto_auto_auto] items-center gap-2 rounded-md border border-neutral-200 bg-neutral-50 p-2 dark:border-neutral-800 dark:bg-neutral-950">
+              <div key={`${opt.id}-${index}`} className="grid grid-cols-[34px_1fr_auto_auto_auto] items-center gap-2 rounded-input border border-border bg-muted/40 p-2">
                 <span className="font-mono text-sm">{OPTION_IDS[index]}</span>
-                <input value={opt.text || ''} onChange={(e) => props.updateOption(index, { text: e.target.value })} className="h-9 rounded-md border border-neutral-300 bg-white px-2 text-sm dark:border-neutral-700 dark:bg-neutral-900" />
+                <input value={opt.text || ''} onChange={(e) => props.updateOption(index, { text: e.target.value })} className="h-9 rounded-input border border-input bg-input-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
                 <label className="inline-flex items-center gap-1 text-xs">
                   <input type="checkbox" checked={!!opt.correct} onChange={(e) => props.updateOption(index, { correct: e.target.checked })} />
                   juste
                 </label>
-                <button onClick={() => index > 0 && setOptions(moveItem(options, index, index - 1))} disabled={index === 0} className="rounded border border-neutral-300 px-2 py-1 text-xs disabled:opacity-40 dark:border-neutral-700">↑</button>
-                <button onClick={() => setOptions(options.filter((_, i) => i !== index))} className="rounded border border-red-300 px-2 py-1 text-xs text-red-700 dark:border-red-800 dark:text-red-300"><X size={13} /></button>
+                <button onClick={() => index > 0 && setOptions(moveItem(options, index, index - 1))} disabled={index === 0} className="rounded border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-40">↑</button>
+                <button onClick={() => setOptions(options.filter((_, i) => i !== index))} className="rounded border border-danger-100 px-2 py-1 text-xs text-danger-700 hover:bg-danger-50 dark:border-danger-700/50 dark:text-danger-500"><X size={13} /></button>
               </div>
             ))}
           </div>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => options.length < OPTION_LIMIT && setOptions([...options, { id: '', text: '', correct: false }])} disabled={options.length >= OPTION_LIMIT} className="inline-flex items-center gap-2 rounded-md border border-neutral-300 px-3 py-2 text-sm disabled:opacity-50 dark:border-neutral-700">
+            <button onClick={() => options.length < OPTION_LIMIT && setOptions([...options, { id: '', text: '', correct: false }])} disabled={options.length >= OPTION_LIMIT} className="inline-flex items-center gap-2 rounded-input border border-border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50">
               <Plus size={15} /> Option
             </button>
-            <button onClick={() => props.update({ questionType: 'QROC', options: [], expectedAnswer: props.question.expectedAnswer || '' })} className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700">
+            <button onClick={() => props.update({ questionType: 'QROC', options: [], expectedAnswer: props.question.expectedAnswer || '' })} className="rounded-input border border-border px-3 py-2 text-sm hover:bg-muted">
               Convertir en QROC
             </button>
           </div>
         </>
       ) : (
         <label className="block text-sm font-medium">Réponse attendue
-          <textarea value={props.question.expectedAnswer || ''} onChange={(e) => props.update({ expectedAnswer: e.target.value })} rows={5} className="mt-1 w-full resize-y rounded-md border border-neutral-300 bg-white p-2 text-sm dark:border-neutral-700 dark:bg-neutral-950" />
+          <textarea value={props.question.expectedAnswer || ''} onChange={(e) => props.update({ expectedAnswer: e.target.value })} rows={5} className="mt-1 w-full resize-y rounded-input border border-input bg-input-background p-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
         </label>
       )}
     </div>
@@ -936,7 +936,7 @@ function SeriesEditor({ question, update }: { question: AdminQuestion; update: (
                 update({ seriesFormat: value, seriesId: question.seriesId || `series-${question.id}` });
               }
             }}
-            className="mt-1 h-9 w-full rounded-md border border-neutral-300 bg-white px-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+            className="mt-1 h-9 w-full rounded-input border border-input bg-input-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">QI</option>
             <option value="DP">DP</option>
@@ -944,13 +944,13 @@ function SeriesEditor({ question, update }: { question: AdminQuestion; update: (
           </select>
         </label>
         <label className="block text-sm font-medium">seriesId
-          <input value={question.seriesId || ''} onChange={(e) => update({ seriesId: e.target.value })} className="mt-1 h-9 w-full rounded-md border border-neutral-300 bg-white px-2 text-sm font-mono dark:border-neutral-700 dark:bg-neutral-950" />
+          <input value={question.seriesId || ''} onChange={(e) => update({ seriesId: e.target.value })} className="mt-1 h-9 w-full rounded-input border border-input bg-input-background px-2 text-sm font-mono outline-none focus:ring-2 focus:ring-ring" />
         </label>
       </div>
       <label className="block text-sm font-medium">Vignette clinique
-        <textarea value={question.vignette || ''} onChange={(e) => update({ vignette: e.target.value })} rows={8} className="mt-1 w-full resize-y rounded-md border border-neutral-300 bg-white p-2 text-sm leading-relaxed dark:border-neutral-700 dark:bg-neutral-950" />
+        <textarea value={question.vignette || ''} onChange={(e) => update({ vignette: e.target.value })} rows={8} className="mt-1 w-full resize-y rounded-input border border-input bg-input-background p-2 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-ring" />
       </label>
-      <button onClick={() => update({ seriesId: null, seriesFormat: null, seriesPosition: null, seriesTotal: null, vignette: null })} className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700">
+      <button onClick={() => update({ seriesId: null, seriesFormat: null, seriesPosition: null, seriesTotal: null, vignette: null })} className="rounded-input border border-border px-3 py-2 text-sm hover:bg-muted">
         Repasser en QI
       </button>
     </div>
@@ -967,21 +967,21 @@ function ImagesEditor(props: {
   const images = collectImages(props.question);
   return (
     <div className="space-y-4">
-      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-neutral-300 p-6 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800">
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-card border border-dashed border-border p-6 text-sm hover:bg-muted">
         {props.uploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
         Ajouter une image
         <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && props.onUpload(e.target.files[0])} />
       </label>
-      {images.length === 0 && <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">Aucune image attachée.</div>}
+      {images.length === 0 && <div className="rounded-input border border-warn-100 bg-warn-50 p-3 text-sm text-warn-700 dark:border-warn-700/50 dark:bg-warn-950/30 dark:text-warn-100">Aucune image attachée.</div>}
       <div className="space-y-3">
         {images.map((img) => (
-          <div key={img.filename} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+          <div key={img.filename} className="rounded-card border border-border p-3">
             {props.annaleId && img.filename && (
-              <img src={`/api/annales/${encodeURIComponent(props.annaleId)}/img/${encodeURIComponent(img.filename)}`} alt={img.label || img.filename} className="max-h-52 rounded border border-neutral-200 object-contain dark:border-neutral-700" />
+              <img src={`/api/annales/${encodeURIComponent(props.annaleId)}/img/${encodeURIComponent(img.filename)}`} alt={img.label || img.filename} className="max-h-52 rounded border border-border object-contain" />
             )}
             <div className="mt-2 flex items-center justify-between gap-2">
               <span className="truncate font-mono text-xs">{img.filename}</span>
-              {img.filename && <button onClick={() => props.onDelete(img.filename!)} className="inline-flex items-center gap-1 rounded-md border border-red-300 px-2 py-1 text-xs text-red-700 dark:border-red-800 dark:text-red-300"><Trash2 size={12} /> Supprimer</button>}
+              {img.filename && <button onClick={() => props.onDelete(img.filename!)} className="inline-flex items-center gap-1 rounded-input border border-danger-100 px-2 py-1 text-xs text-danger-700 hover:bg-danger-50 dark:border-danger-700/50 dark:text-danger-500"><Trash2 size={12} /> Supprimer</button>}
             </div>
           </div>
         ))}
@@ -996,32 +996,32 @@ function SourcePanel({ sourceInfo, loading, onReload }: { sourceInfo: SourceInfo
       <div className="flex items-center justify-between gap-2">
         <div>
           <div className="text-sm font-medium">Sources disponibles</div>
-          <div className="text-xs text-neutral-500">Lecture seule : texte extrait localement et blocs QROC si présents.</div>
+          <div className="text-xs text-muted-foreground">Lecture seule : texte extrait localement et blocs QROC si présents.</div>
         </div>
-        <button onClick={onReload} disabled={loading} className="inline-flex items-center gap-2 rounded-md border border-neutral-300 px-3 py-2 text-sm disabled:opacity-50 dark:border-neutral-700">
+        <button onClick={onReload} disabled={loading} className="inline-flex items-center gap-2 rounded-input border border-border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50">
           {loading ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
           Recharger
         </button>
       </div>
       {loading && <Skeleton className="h-40 rounded-lg" />}
       {!loading && !sourceInfo && (
-        <div className="rounded-md border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-700">
+        <div className="rounded-input border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           Aucune source chargée.
         </div>
       )}
       {!loading && sourceInfo && (
         <>
           {sourceInfo.excerpt && (
-            <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-3 dark:border-indigo-900 dark:bg-indigo-950/30">
-              <div className="mb-2 text-xs font-semibold uppercase text-indigo-700 dark:text-indigo-300">Extrait autour de la question · {sourceInfo.excerpt.file}</div>
+            <div className="rounded-card border border-brand-100 bg-brand-50 p-3 dark:border-brand-700/50 dark:bg-brand-950/30">
+              <div className="mb-2 text-xs font-[650] uppercase text-brand-700 dark:text-brand-100">Extrait autour de la question · {sourceInfo.excerpt.file}</div>
               <pre className="max-h-72 overflow-auto whitespace-pre-wrap text-xs leading-relaxed">{sourceInfo.excerpt.text}</pre>
             </div>
           )}
           {sourceInfo.sourceBlocks?.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-semibold uppercase text-neutral-500">Blocs QROC</div>
+              <div className="text-xs font-[650] uppercase text-muted-foreground">Blocs QROC</div>
               {sourceInfo.sourceBlocks.slice(0, 8).map((block, index) => (
-                <details key={`${block.draftId}-${block.id || index}`} className="rounded-md border border-neutral-200 bg-neutral-50 p-3 dark:border-neutral-800 dark:bg-neutral-950">
+                <details key={`${block.draftId}-${block.id || index}`} className="rounded-input border border-border bg-muted/50 p-3">
                   <summary className="cursor-pointer text-sm font-medium">{block.title || block.id || `Bloc ${index + 1}`} · {block.draftId}</summary>
                   <pre className="mt-2 max-h-60 overflow-auto whitespace-pre-wrap text-xs leading-relaxed">{block.cleanText}</pre>
                 </details>
@@ -1030,9 +1030,9 @@ function SourcePanel({ sourceInfo, loading, onReload }: { sourceInfo: SourceInfo
           )}
           {sourceInfo.files?.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-semibold uppercase text-neutral-500">Fichiers extraits</div>
+              <div className="text-xs font-[650] uppercase text-muted-foreground">Fichiers extraits</div>
               {sourceInfo.files.map((file) => (
-                <details key={file.name} className="rounded-md border border-neutral-200 bg-neutral-50 p-3 dark:border-neutral-800 dark:bg-neutral-950">
+                <details key={file.name} className="rounded-input border border-border bg-muted/50 p-3">
                   <summary className="cursor-pointer text-sm font-medium">{file.name}</summary>
                   <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap text-xs leading-relaxed">{file.text}</pre>
                 </details>
@@ -1040,7 +1040,7 @@ function SourcePanel({ sourceInfo, loading, onReload }: { sourceInfo: SourceInfo
             </div>
           )}
           {sourceInfo.files?.length === 0 && sourceInfo.sourceBlocks?.length === 0 && (
-            <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+            <div className="rounded-input border border-warn-100 bg-warn-50 p-3 text-sm text-warn-700 dark:border-warn-700/50 dark:bg-warn-950/30 dark:text-warn-100">
               Aucune source locale trouvée pour cette annale.
             </div>
           )}
@@ -1061,22 +1061,22 @@ function ValidationPanel(props: {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        <button onClick={props.onValidate} className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700">Valider annale</button>
-        <button onClick={props.onAddQuestion} className="inline-flex items-center gap-2 rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700"><Plus size={15} /> Ajouter question</button>
-        <button onClick={props.onDeleteQuestion} className="inline-flex items-center gap-2 rounded-md border border-red-300 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:text-red-300"><Trash2 size={15} /> Supprimer question</button>
+        <button onClick={props.onValidate} className="rounded-input border border-border px-3 py-2 text-sm hover:bg-muted">Valider annale</button>
+        <button onClick={props.onAddQuestion} className="inline-flex items-center gap-2 rounded-input border border-border px-3 py-2 text-sm hover:bg-muted"><Plus size={15} /> Ajouter question</button>
+        <button onClick={props.onDeleteQuestion} className="inline-flex items-center gap-2 rounded-input border border-danger-100 px-3 py-2 text-sm text-danger-700 hover:bg-danger-50 dark:border-danger-700/50 dark:text-danger-500"><Trash2 size={15} /> Supprimer question</button>
       </div>
       {props.validation && (
         <div className="grid grid-cols-3 gap-2 text-center text-sm">
-          <div className="rounded-md bg-red-50 p-2 text-red-700 dark:bg-red-950/30 dark:text-red-300">{props.validation.counts.error} erreurs</div>
-          <div className="rounded-md bg-amber-50 p-2 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300">{props.validation.counts.warning} warnings</div>
-          <div className="rounded-md bg-neutral-100 p-2 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">{props.validation.counts.info} infos</div>
+          <div className="rounded-input bg-danger-50 p-2 text-danger-700 dark:bg-danger-950/30 dark:text-danger-500">{props.validation.counts.error} erreurs</div>
+          <div className="rounded-input bg-warn-50 p-2 text-warn-700 dark:bg-warn-950/30 dark:text-warn-100">{props.validation.counts.warning} warnings</div>
+          <div className="rounded-input bg-muted p-2 text-muted-foreground">{props.validation.counts.info} infos</div>
         </div>
       )}
       <div className="space-y-2">
         {issues.length === 0 ? (
-          <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800 dark:border-green-900 dark:bg-green-950/30 dark:text-green-200">Aucun problème sur cette question.</div>
+          <div className="rounded-input border border-success-100 bg-success-50 p-3 text-sm text-success-950 dark:border-success-700/50 dark:bg-success-950/30 dark:text-success-100">Aucun problème sur cette question.</div>
         ) : issues.map((issue, index) => (
-          <div key={`${issue.code}-${index}`} className={`rounded-md border p-3 text-sm ${issue.severity === 'error' ? 'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950/30 dark:text-red-200' : 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200'}`}>
+          <div key={`${issue.code}-${index}`} className={`rounded-input border p-3 text-sm ${issue.severity === 'error' ? 'border-danger-100 bg-danger-50 text-danger-700 dark:border-danger-700/50 dark:bg-danger-950/30 dark:text-danger-500' : 'border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/50 dark:bg-warn-950/30 dark:text-warn-100'}`}>
             <div className="font-mono text-xs">{issue.severity} · {issue.code} · {issue.questionId || 'annale'}</div>
             <div>{issue.message}</div>
           </div>
