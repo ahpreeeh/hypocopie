@@ -57,8 +57,10 @@ function slugifyId(value: string): string {
 }
 
 export type ExamMode = 'exam' | 'libre';
+type GroupBy = 'subject' | 'year';
 
 const EXAM_MODE_STORAGE_KEY = 'hypocampus_exam_mode';
+const ANNALES_GROUP_KEY = 'hypocampus_annales_group_by';
 
 export function getStoredExamMode(): ExamMode {
   const raw = typeof window !== 'undefined' ? localStorage.getItem(EXAM_MODE_STORAGE_KEY) : null;
@@ -205,21 +207,43 @@ export function AnnalesList() {
     };
   }, []);
 
-  // Regroupement par matière
+  // Rangement de la bibliothèque : sections par matière ou par année (persisté).
+  const [groupBy, setGroupBy] = useState<GroupBy>(() =>
+    localStorage.getItem(ANNALES_GROUP_KEY) === 'year' ? 'year' : 'subject');
+  const selectGroupBy = (next: GroupBy) => {
+    setGroupBy(next);
+    localStorage.setItem(ANNALES_GROUP_KEY, next);
+  };
+
   const grouped = useMemo(() => {
     if (!annales) return [];
     const map = new Map<string, AnnaleSummary[]>();
     for (const a of annales) {
-      const key = a.subject || 'Sans matière';
+      const key = groupBy === 'year'
+        ? (a.year ? String(a.year) : 'Sans année')
+        : (a.subject || 'Sans matière');
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(a);
     }
-    // Trie chaque groupe par année descendante puis par titre
+    if (groupBy === 'year') {
+      // Sections de la plus récente à la plus ancienne, « Sans année » en
+      // dernier ; dans chaque année : matière puis titre.
+      for (const list of map.values()) {
+        list.sort((a, b) =>
+          (a.subject || '').localeCompare(b.subject || '', 'fr') || a.title.localeCompare(b.title, 'fr'));
+      }
+      return Array.from(map.entries()).sort((a, b) => {
+        if (a[0] === 'Sans année') return 1;
+        if (b[0] === 'Sans année') return -1;
+        return Number(b[0]) - Number(a[0]);
+      });
+    }
+    // Par matière : sections A→Z ; dans chaque matière : année desc puis titre.
     for (const list of map.values()) {
       list.sort((a, b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title, 'fr'));
     }
     return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0], 'fr'));
-  }, [annales]);
+  }, [annales, groupBy]);
 
   // Index des tentatives par annaleId : count, date dernière, meilleur score
   // Sert au marqueur "déjà fait" subtil sur chaque card.
@@ -466,10 +490,25 @@ export function AnnalesList() {
             }}
           />
         )}
-        {grouped.map(([subject, list]) => (
-          <section key={subject} className="mb-8">
+        {annales && annales.length > 0 && (
+          <div className="mb-3 flex items-center justify-end gap-2">
+            <span className="text-xs text-muted-foreground">Ranger par</span>
+            <SegmentedControl
+              ariaLabel="Ranger les annales"
+              value={groupBy}
+              onChange={selectGroupBy}
+              options={[
+                { value: 'subject', label: 'Matière', title: 'Sections par matière, années récentes en premier' },
+                { value: 'year', label: 'Année', title: 'Sections par année, de la plus récente à la plus ancienne' },
+              ]}
+            />
+          </div>
+        )}
+
+        {grouped.map(([groupLabel, list]) => (
+          <section key={groupLabel} className="mb-8">
             <h2 className="mb-2 px-1 text-[12px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
-              {subject} <span className="text-muted-foreground/70 font-normal">· {list.length}</span>
+              {groupLabel} <span className="text-muted-foreground/70 font-normal">· {list.length}</span>
             </h2>
             <div className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card shadow-[var(--shadow-card)]">
               {list.map((a) => (
@@ -581,8 +620,10 @@ export function AnnalesList() {
                         <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground transition-colors group-hover:text-brand-700 dark:group-hover:text-brand-100">
                           {a.title}
                         </span>
-                        <span className="hidden w-20 shrink-0 text-xs text-muted-foreground sm:block">
-                          {a.year || ''}{a.year && a.session ? ' · ' : ''}{a.session || ''}
+                        <span className="hidden w-28 shrink-0 truncate text-xs text-muted-foreground sm:block">
+                          {groupBy === 'year'
+                            ? [a.subject, a.session].filter(Boolean).join(' · ')
+                            : [a.year, a.session].filter(Boolean).join(' · ')}
                         </span>
                         <span className="hidden w-24 shrink-0 text-right text-xs tabular-nums text-muted-foreground md:block">
                           {a.questionsCount} questions
