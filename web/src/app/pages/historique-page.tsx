@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Skeleton } from '../components/ui/skeleton';
-import { EmptyState, KpiCard, MiniSparkline, PageBreadcrumb } from '../components/design-primitives';
+import { EmptyState, MiniSparkline, PageHeader, StatBar } from '../components/design-primitives';
 import { formatScoreNumber, humanizeError, scoreGradientClass, scoreTextClass } from '../ui-feedback';
 
 interface SessionSummary {
@@ -166,32 +166,13 @@ export function HistoriquePage() {
 
   return (
     <div className="h-full overflow-y-auto bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link
-            to="/entrainement"
-            className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft size={16} /> Annales
-          </Link>
-          <div className="flex-1">
-            <h1 className="flex items-center gap-2 text-[22px] font-[650] tracking-[-0.015em] text-foreground">
-              <History size={20} className="text-brand-700" />
-              Historique des sessions
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Retrouve toutes tes copies (mode examen et mode libre).
-            </p>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="Historique"
+        description="Toutes tes copies, mode examen et mode libre."
+        crumbs={[{ label: 'Tableau de bord', to: '/entrainement' }, { label: 'Historique' }]}
+      />
 
-      <PageBreadcrumb items={[
-        { label: 'Entrainement', to: '/entrainement' },
-        { label: 'Historique' },
-      ]} />
-
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="mx-auto max-w-6xl px-6 py-8">
         {error && (
           <div className="p-4 rounded-input bg-danger-50 dark:bg-danger-950/30 text-danger-700 dark:text-danger-500 mb-6">
             Erreur : {error}
@@ -203,12 +184,15 @@ export function HistoriquePage() {
         )}
 
         {sessionStats && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-            <KpiCard icon={History} label="Sessions" value={sessionStats.sessionsCount} tone="brand" />
-            <KpiCard icon={BookOpen} label="Annales" value={sessionStats.annalesCount} />
-            <KpiCard icon={CheckCircle2} label="Moyenne" value={sessionStats.averageScore === null ? '-' : `${sessionStats.averageScore}%`} tone="success" />
-            <KpiCard icon={Clock} label="Temps total" value={formatDuration(sessionStats.totalDuration)} tone="warn" />
-          </div>
+          <StatBar
+            className="mb-8"
+            items={[
+              { label: 'Sessions', value: sessionStats.sessionsCount },
+              { label: 'Annales jouées', value: sessionStats.annalesCount },
+              { label: 'Moyenne', value: sessionStats.averageScore === null ? '—' : `${sessionStats.averageScore}%` },
+              { label: 'Temps total', value: formatDuration(sessionStats.totalDuration) },
+            ]}
+          />
         )}
 
         {sessions && sessions.length === 0 && (
@@ -251,67 +235,62 @@ export function HistoriquePage() {
                 <Play size={12} /> Refaire l'annale
               </Link>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card shadow-[var(--shadow-card)]">
               {list.map((s) => {
                 const pct = s.score.percentage;
                 const colorClass = scoreTextClass(pct);
                 const points = scorePoints(s.score);
                 const maxPoints = scoreMaxPoints(s.score);
+                const extras = [
+                  (s.score.partiel || 0) > 0 ? `${s.score.partiel} partielle${(s.score.partiel || 0) > 1 ? 's' : ''}` : null,
+                  s.score.nonComptees > 0 ? `${s.score.nonComptees} à revoir` : null,
+                ].filter(Boolean).join(' · ');
 
                 return (
                   <div
                     key={s.id}
-                    className="group relative rounded-card border border-border bg-card p-4 shadow-[var(--shadow-card)] transition-colors hover:border-brand-100"
+                    title={s.scoreWarning || undefined}
+                    className="group relative flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-muted/60"
                   >
+                    <span className={`w-16 shrink-0 rounded-pill border px-1.5 py-0.5 text-center text-[10px] font-[650] uppercase tracking-[0.05em] ${
+                      s.mode === 'exam'
+                        ? 'border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
+                        : 'border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/40 dark:text-warn-100'
+                    }`}>
+                      {s.mode === 'exam' ? 'Examen' : 'Libre'}
+                    </span>
+                    <Link
+                      to={`/entrainement/historique/${s.id}`}
+                      className="flex min-w-0 flex-1 items-center gap-3 after:absolute after:inset-0 after:content-['']"
+                    >
+                      <span className={`shrink-0 text-sm font-[650] tabular-nums ${colorClass}`}>
+                        {formatScoreNumber(points)} / {formatScoreNumber(maxPoints)}
+                        {pct !== null && <span className="ml-1.5 text-xs font-medium opacity-70">{pct}%</span>}
+                      </span>
+                      <span className="hidden min-w-0 flex-1 truncate text-xs text-muted-foreground sm:block">
+                        {extras}
+                        {s.scoreWarning ? `${extras ? ' · ' : ''}${s.scoreWarning}` : ''}
+                      </span>
+                      <span className="ml-auto flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+                        <span>{formatDate(s.submittedAt)}</span>
+                        {s.durationSec !== undefined && (
+                          <span className="inline-flex items-center gap-0.5"><Clock size={11} /> {formatDuration(s.durationSec)}</span>
+                        )}
+                      </span>
+                    </Link>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDelete(s.id); }}
-                      className="absolute right-2 top-2 rounded-input p-1.5 text-muted-foreground opacity-0 transition-colors hover:bg-danger-50 hover:text-danger-700 group-hover:opacity-100 dark:hover:bg-danger-950/40"
+                      className="relative z-10 shrink-0 rounded-input p-1.5 text-muted-foreground opacity-0 transition-colors hover:bg-danger-50 hover:text-danger-700 group-hover:opacity-100 dark:hover:bg-danger-950/40"
                       title="Supprimer cette session"
+                      aria-label="Supprimer cette session"
                     >
                       <Trash2 size={14} />
                     </button>
-                    <Link
-                      to={`/entrainement/historique/${s.id}`}
-                      className="block"
-                    >
-                      <div className="mb-2 flex items-center gap-1.5 text-[10px] font-[650] uppercase tracking-[0.09em]">
-                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded ${
-                          s.mode === 'exam'
-                            ? 'border border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
-                            : 'border border-warn-100 bg-warn-50 text-warn-700 dark:border-warn-700/40 dark:bg-warn-950/40 dark:text-warn-100'
-                        }`}>
-                          {s.mode === 'exam' ? 'EXAMEN' : 'LIBRE'}
-                        </span>
-                      </div>
-                      <div className={`text-2xl font-[650] ${colorClass}`}>
-                        {formatScoreNumber(points)} / {formatScoreNumber(maxPoints)}
-                        {pct !== null && <span className="text-sm font-medium ml-2 opacity-70">{pct}%</span>}
-                      </div>
-                      {(s.score.partiel || 0) > 0 && (
-                        <div className="text-xs text-warn-700 dark:text-warn-500 mt-0.5">
-                          {s.score.partiel} partielle{s.score.partiel && s.score.partiel > 1 ? 's' : ''}
-                        </div>
-                      )}
-                      {s.score.nonComptees > 0 && (
-                        <div className="mt-0.5 text-xs text-muted-foreground">
-                          + {s.score.nonComptees} à revoir
-                        </div>
-                      )}
-                      {s.scoreWarning && (
-                        <div className="mt-2 rounded-md bg-warn-50 px-2 py-1 text-[11px] text-warn-700 dark:bg-warn-950/30 dark:text-warn-100">
-                          {s.scoreWarning}
-                        </div>
-                      )}
-                      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        <span>{formatDate(s.submittedAt)}</span>
-                        {s.durationSec !== undefined && (
-                          <>
-                            <span className="opacity-40">·</span>
-                            <span className="inline-flex items-center gap-0.5"><Clock size={11} /> {formatDuration(s.durationSec)}</span>
-                          </>
-                        )}
-                      </div>
-                    </Link>
+                    <ChevronRight
+                      size={15}
+                      aria-hidden="true"
+                      className="shrink-0 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-brand-700"
+                    />
                   </div>
                 );
               })}
@@ -332,15 +311,12 @@ function HistoriqueListSkeleton() {
             <Skeleton className="h-4 w-56" />
             <Skeleton className="h-4 w-24" />
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card">
             {[0, 1, 2].map((item) => (
-              <div
-                key={item}
-                className="space-y-3 rounded-card border border-border bg-card p-4"
-              >
-                <Skeleton className="h-5 w-20" />
-                <Skeleton className="h-8 w-32" />
-                <Skeleton className="h-4 w-44" />
+              <div key={item} className="flex items-center gap-3 px-4 py-3">
+                <Skeleton className="h-5 w-16 rounded-pill" />
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="ml-auto h-4 w-36" />
               </div>
             ))}
           </div>

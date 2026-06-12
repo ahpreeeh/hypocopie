@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { BookOpen, Play, FileText, ScanText, History, Pencil, Save, X, CheckCircle2, Clock, Target, GitMerge, Loader2 } from 'lucide-react';
+import { ChevronRight, FileText, GitMerge, History, Loader2, Pencil, Play, Save, ScanText, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Skeleton } from '../components/ui/skeleton';
-import { EmptyState, KpiCard } from '../components/design-primitives';
+import { EmptyState, PageHeader, StatBar } from '../components/design-primitives';
 import { SegmentedControl } from '../components/ui/segmented-control';
-import { humanizeError } from '../ui-feedback';
+import { humanizeError, scoreTextClass } from '../ui-feedback';
 
 interface AnnaleDetailQuestion {
   id: string;
@@ -321,19 +321,12 @@ export function AnnalesList() {
 
   return (
     <div className="h-full overflow-y-auto bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-6 py-5">
-          <div className="min-w-0 flex-1">
-            <h1 className="text-[22px] font-[650] tracking-[-0.015em] text-foreground">
-              Tableau de bord
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {examMode === 'exam'
-                ? 'Mode examen — correction à la fin, note finale.'
-                : 'Mode libre — correction après chaque question validée.'}
-            </p>
-          </div>
-
+      <PageHeader
+        title="Tableau de bord"
+        description={examMode === 'exam'
+          ? 'Mode examen — correction à la fin, note finale.'
+          : 'Mode libre — correction après chaque question validée.'}
+        actions={
           <SegmentedControl
             ariaLabel="Mode de correction"
             value={examMode}
@@ -343,18 +336,10 @@ export function AnnalesList() {
               { value: 'libre', label: 'Libre', title: 'Correction après chaque question validée' },
             ]}
           />
+        }
+      />
 
-          <Link
-            to="/entrainement/import"
-            className="inline-flex items-center gap-2 rounded-input bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-[var(--shadow-card)] transition-colors hover:bg-brand-700"
-          >
-            <ScanText size={16} />
-            Importer
-          </Link>
-        </div>
-      </header>
-
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="mx-auto max-w-6xl px-6 py-8">
         {error && (
           <div className="p-4 rounded-input bg-danger-50 dark:bg-danger-950/30 text-danger-700 dark:text-danger-500 mb-6">
             Erreur de chargement : {error}
@@ -443,12 +428,15 @@ export function AnnalesList() {
         )}
 
         {annaleStats && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-            <KpiCard icon={BookOpen} label="Annales" value={annaleStats.totalAnnales} detail={`${annaleStats.totalQuestions} questions`} tone="brand" />
-            <KpiCard icon={CheckCircle2} label="Sessions" value={annaleStats.sessionsCount} detail={`${annaleStats.subjectsCount} matiere${annaleStats.subjectsCount > 1 ? 's' : ''}`} tone="success" />
-            <KpiCard icon={Target} label="Moyenne 30j" value={annaleStats.averageScore === null ? '-' : `${annaleStats.averageScore}%`} detail="Sessions recentes" tone="warn" />
-            <KpiCard icon={Clock} label="Moy/exam 30j" value={annaleStats.averageDuration === null ? '-' : formatShortDuration(annaleStats.averageDuration)} detail={annaleStats.latestYear ? `Derniere annee ${annaleStats.latestYear}` : 'Pas de session'} />
-          </div>
+          <StatBar
+            className="mb-8"
+            items={[
+              { label: 'Annales', value: annaleStats.totalAnnales, detail: `${annaleStats.totalQuestions} questions` },
+              { label: 'Sessions', value: annaleStats.sessionsCount, detail: `${annaleStats.subjectsCount} matière${annaleStats.subjectsCount > 1 ? 's' : ''}` },
+              { label: 'Moyenne 30 j', value: annaleStats.averageScore === null ? '—' : `${annaleStats.averageScore}%`, detail: 'Sessions récentes' },
+              { label: 'Durée / examen', value: annaleStats.averageDuration === null ? '—' : formatShortDuration(annaleStats.averageDuration), detail: annaleStats.latestYear ? `Dernière année ${annaleStats.latestYear}` : 'Pas de session' },
+            ]}
+          />
         )}
 
         {annales && annales.length === 0 && (
@@ -479,16 +467,16 @@ export function AnnalesList() {
           />
         )}
         {grouped.map(([subject, list]) => (
-          <section key={subject} className="mb-10">
-            <h2 className="mb-3 text-[12px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
-              {subject} <span className="text-muted-foreground/70 font-normal">({list.length})</span>
+          <section key={subject} className="mb-8">
+            <h2 className="mb-2 px-1 text-[12px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
+              {subject} <span className="text-muted-foreground/70 font-normal">· {list.length}</span>
             </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card shadow-[var(--shadow-card)]">
               {list.map((a) => (
                 editingId === a.id ? (
                   <div
                     key={a.id}
-                    className="space-y-2.5 rounded-card border-2 border-brand-500 bg-card p-4 shadow-[var(--shadow-card)]"
+                    className="space-y-2.5 border-l-2 border-brand-500 bg-brand-50/40 p-4 dark:bg-brand-950/20"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">Édition</span>
@@ -568,8 +556,8 @@ export function AnnalesList() {
                     </div>
                   </div>
                 ) : (() => {
-                  // Marqueur "déjà fait" : trait vertical fin sur le bord gauche
-                  // + petit point coloré près du titre. Tooltip avec stats.
+                  // Ligne dense : état fait (point sauge), titre, méta, score
+                  // coloré + tentatives, actions au survol, toute la ligne clique.
                   const attempt = attemptsByAnnale.get(a.id);
                   const done = !!attempt;
                   const attemptLabel = attempt
@@ -577,11 +565,45 @@ export function AnnalesList() {
                       + (attempt.bestScore != null ? ` — meilleur ${attempt.bestScore}%` : '')
                     : 'Jamais joué';
                   return (
-                    <div key={a.id} className="relative group">
-                      <div className="absolute top-3 right-3 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div
+                      key={a.id}
+                      title={attemptLabel}
+                      className="group relative flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-muted/60"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${done ? 'bg-success-500' : 'bg-border'}`}
+                      />
+                      <Link
+                        to={`/entrainement/${a.id}`}
+                        className="flex min-w-0 flex-1 items-center gap-3 after:absolute after:inset-0 after:content-['']"
+                      >
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground transition-colors group-hover:text-brand-700 dark:group-hover:text-brand-100">
+                          {a.title}
+                        </span>
+                        <span className="hidden w-20 shrink-0 text-xs text-muted-foreground sm:block">
+                          {a.year || ''}{a.year && a.session ? ' · ' : ''}{a.session || ''}
+                        </span>
+                        <span className="hidden w-24 shrink-0 text-right text-xs tabular-nums text-muted-foreground md:block">
+                          {a.questionsCount} questions
+                        </span>
+                        <span className="w-20 shrink-0 text-right text-xs tabular-nums">
+                          {attempt ? (
+                            <>
+                              {attempt.bestScore != null && (
+                                <span className={`font-[650] ${scoreTextClass(attempt.bestScore)}`}>{attempt.bestScore}%</span>
+                              )}
+                              <span className="text-muted-foreground">{attempt.bestScore != null ? ' · ' : ''}{attempt.count}×</span>
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground/50">—</span>
+                          )}
+                        </span>
+                      </Link>
+                      <div className="relative z-10 flex shrink-0 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setRegroupAnnaleId(a.id); }}
-                          className="rounded-input border border-border bg-card/80 p-1.5 text-muted-foreground backdrop-blur transition-colors hover:text-brand-700"
+                          className="rounded-input p-1.5 text-muted-foreground transition-colors hover:bg-card hover:text-brand-700"
                           title="Regrouper des questions QI en DP"
                           aria-label="Regrouper des questions QI en DP"
                         >
@@ -589,56 +611,18 @@ export function AnnalesList() {
                         </button>
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); startEdit(a); }}
-                          className="rounded-input border border-border bg-card/80 p-1.5 text-muted-foreground backdrop-blur transition-colors hover:text-brand-700"
+                          className="rounded-input p-1.5 text-muted-foreground transition-colors hover:bg-card hover:text-brand-700"
                           title="Renommer l'annale"
                           aria-label="Renommer"
                         >
                           <Pencil size={14} />
                         </button>
                       </div>
-                      <Link
-                        to={`/entrainement/${a.id}`}
-                        title={attemptLabel}
-                        className={`relative block rounded-card border bg-card p-5 shadow-[var(--shadow-card)] transition-colors
-                          ${done
-                            ? 'border-success-100 hover:border-success-500'
-                            : 'border-border hover:border-brand-100'}`}
-                      >
-                        {done && (
-                          <span
-                            aria-hidden="true"
-                            className="absolute top-0 left-0 h-full w-1 rounded-l-card bg-success-500/80"
-                          />
-                        )}
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1 min-w-0 pr-7">
-                            <h3 className="flex items-center gap-2 font-[650] text-foreground transition-colors group-hover:text-brand-700">
-                              {done && (
-                                <span
-                                  aria-hidden="true"
-                                  className="inline-block h-2 w-2 shrink-0 rounded-full bg-success-700"
-                                />
-                              )}
-                              <span className="truncate">{a.title}</span>
-                            </h3>
-                            <div className="mt-1 text-xs text-muted-foreground">
-                              {a.year && <span>{a.year}</span>}
-                              {a.session && <span> · {a.session}</span>}
-                              {done && (
-                                <span className="ml-2 font-medium text-success-700">
-                                  · fait {attempt.count}×
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">{a.questionsCount} questions</span>
-                          <span className="flex items-center gap-1 font-medium text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">
-                            <Play size={14} /> {done ? 'Refaire' : 'Démarrer'}
-                          </span>
-                        </div>
-                      </Link>
+                      <ChevronRight
+                        size={15}
+                        aria-hidden="true"
+                        className="shrink-0 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-brand-700"
+                      />
                     </div>
                   );
                 })()

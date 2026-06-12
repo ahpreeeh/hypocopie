@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import {
   AlertTriangle,
-  ArrowLeft,
   CheckCircle2,
   Clock,
   FileText,
@@ -22,7 +21,8 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { PageBreadcrumb } from '../components/design-primitives';
+import { PageHeader } from '../components/design-primitives';
+import { SegmentedControl } from '../components/ui/segmented-control';
 
 type ImportMode = 'local' | 'qroc' | 'autre';
 
@@ -344,32 +344,29 @@ export function AnnaleImportPage() {
 
   return (
     <div className="h-full overflow-y-auto bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link to="/entrainement" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
-            <ArrowLeft size={16} /> Annales
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-lg font-[650] flex items-center gap-2 text-foreground">
-              <ScanText size={20} className="text-brand-700 dark:text-brand-500" />
-              Import annale
-            </h1>
-            <p className="text-xs text-muted-foreground">Import local deterministe ou conversion controlee des anciens QROC.</p>
-          </div>
-        </div>
-      </header>
-
-      <PageBreadcrumb items={[
-        { label: 'Entrainement', to: '/entrainement' },
-        { label: 'Import' },
-      ]} />
+      <PageHeader
+        title="Importer une annale"
+        description={mode === 'local'
+          ? 'Faculté — parsing local déterministe du format UNESS.'
+          : mode === 'qroc'
+            ? 'QROC — conversion contrôlée des anciens sujets en QCM jouables.'
+            : 'Autre — transcription fidèle de PDF variés, corrigé généré si absent.'}
+        crumbs={[{ label: 'Tableau de bord', to: '/entrainement' }, { label: 'Importer' }]}
+        actions={
+          <SegmentedControl
+            ariaLabel="Type d'import"
+            value={mode}
+            onChange={(next) => setMode(next)}
+            options={[
+              { value: 'local', label: 'Faculté', title: 'PDF UNESS officiel avec correction à cases cochées' },
+              { value: 'qroc', label: 'QROC', title: 'Anciens sujets QROC convertis en QCM via DeepSeek' },
+              { value: 'autre', label: 'Autre', title: 'Tout autre PDF — transcription fidèle, corrigé IA si absent' },
+            ]}
+          />
+        }
+      />
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-5">
-        <div className="inline-flex rounded-input border border-border bg-card p-1">
-          <ModeButton active={mode === 'local'} onClick={() => setMode('local')}>Faculté</ModeButton>
-          <ModeButton active={mode === 'qroc'} onClick={() => setMode('qroc')}>QROC</ModeButton>
-          <ModeButton active={mode === 'autre'} onClick={() => setMode('autre')}>Autre</ModeButton>
-        </div>
 
         <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
           <section className="space-y-5">
@@ -2986,19 +2983,6 @@ function ErrorBox({ message }: { message: string }) {
       <AlertTriangle size={17} className="shrink-0 mt-0.5" />
       <span>{message}</span>
     </div>
-  );
-}
-
-function ModeButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-        active ? 'bg-brand-600 text-white' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 

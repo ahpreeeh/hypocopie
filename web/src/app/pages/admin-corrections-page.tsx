@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import {
   AlertTriangle,
-  ArrowLeft,
   BookOpen,
   CheckCircle2,
   ChevronLeft,
@@ -494,15 +493,20 @@ export function AdminCorrectionsPage() {
       <header className="sticky top-0 z-20 border-b border-border bg-card/95 px-4 py-3 backdrop-blur">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Link to="/captures" className="mb-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-              <ArrowLeft size={12} /> Retour
-            </Link>
             <h1 className="flex items-center gap-2 text-xl font-[650]">
               <FileText size={21} className="text-brand-700 dark:text-brand-500" />
               Atelier de correction
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-0.5 rounded-input border border-border bg-muted p-0.5">
+              <span className="rounded-[8px] bg-card px-3 py-1.5 text-[13px] font-medium text-foreground shadow-[var(--shadow-card)] ring-1 ring-border">
+                Corrections
+              </span>
+              <Link to="/admin/vignettes" className="rounded-[8px] px-3 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Vignettes
+              </Link>
+            </div>
             <select
               value={selectedAnnaleId || ''}
               onChange={(e) => {

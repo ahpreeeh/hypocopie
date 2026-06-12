@@ -2,7 +2,6 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import {
   AlertTriangle,
-  ArrowLeft,
   ChevronDown,
   ChevronRight,
   ChevronsUpDown,
@@ -13,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Badge } from '../components/ui/badge';
-import { PageBreadcrumb } from '../components/design-primitives';
+import { PageHeader } from '../components/design-primitives';
 import { humanizeError } from '../ui-feedback';
 
 // ────────────────────────────────────────────────────────────────────
@@ -134,34 +133,22 @@ export function AdminVignettesPage() {
 
   return (
     <div className="h-full overflow-y-auto bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link
-            to="/entrainement"
-            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
-          >
-            <ArrowLeft size={16} /> Entrainement
-          </Link>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-medium flex items-center gap-2 text-foreground">
-              <AlertTriangle size={20} className="text-warn-700 dark:text-warn-500" />
-              Vignettes orphelines
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {data
-                ? `${data.affectedAnnales} annale${data.affectedAnnales > 1 ? 's' : ''} / ${data.problematicQuestions} question${data.problematicQuestions > 1 ? 's' : ''} problematique${data.problematicQuestions > 1 ? 's' : ''} sur ${data.totalAnnales} annales (${data.totalQuestions} questions).`
-                : 'Diagnostic en cours...'}
-            </p>
+      <PageHeader
+        title="Vignettes orphelines"
+        description={data
+          ? `${data.affectedAnnales} annale${data.affectedAnnales > 1 ? 's' : ''} / ${data.problematicQuestions} question${data.problematicQuestions > 1 ? 's' : ''} problematique${data.problematicQuestions > 1 ? 's' : ''} sur ${data.totalAnnales} annales (${data.totalQuestions} questions).`
+          : 'Diagnostic en cours...'}
+        crumbs={[{ label: 'Tableau de bord', to: '/entrainement' }, { label: 'Maintenance' }]}
+        actions={
+          <div className="inline-flex items-center gap-0.5 rounded-input border border-border bg-muted p-0.5">
+            <Link to="/admin/corrections" className="rounded-[8px] px-3 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Corrections
+            </Link>
+            <span className="rounded-[8px] bg-card px-3 py-1.5 text-[13px] font-medium text-foreground shadow-[var(--shadow-card)] ring-1 ring-border">
+              Vignettes
+            </span>
           </div>
-        </div>
-      </header>
-
-      <PageBreadcrumb
-        items={[
-          { label: 'Entrainement', to: '/entrainement' },
-          { label: 'Admin' },
-          { label: 'Vignettes orphelines' },
-        ]}
+        }
       />
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

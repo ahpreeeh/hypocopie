@@ -1,16 +1,14 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router';
-import { Search, Filter, X, Image as ImageIcon, BookOpen, AlertCircle, CheckCircle2, HelpCircle, ChevronRight, Hash, ChevronDown, History, Library, Layers, Calendar, ChevronUp, Repeat2, NotebookPen, PanelLeftClose, PanelLeftOpen, Menu } from 'lucide-react';
+import { Search, Filter, X, Image as ImageIcon, AlertCircle, CheckCircle2, HelpCircle, ChevronRight, ChevronDown, Library, Layers, Calendar, ChevronUp, Repeat2, NotebookPen } from 'lucide-react';
 import { useData, Question, Status, Format } from '../data-context';
-import { EmptyState } from '../components/design-primitives';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../components/ui/sheet';
-import logoImg from '../../imports/ChatGPT_Image_11_mai_2026__22_39_20.png';
+import { EmptyState, PageHeader } from '../components/design-primitives';
+import { SegmentedControl } from '../components/ui/segmented-control';
 import { format, isToday, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 type ViewMode = 'history' | 'subjects' | 'series';
 type SortBy = 'newest' | 'oldest' | 'az';
-const CAPTURES_SIDEBAR_KEY = 'hypocampus_captures_sidebar_open';
 
 export function ListPage() {
   const { questions } = useData();
@@ -35,8 +33,6 @@ export function ListPage() {
   const [filterChapter, setFilterChapter] = useState<string | 'all'>('all');
   const [sortBy, setSortBy] = useState<SortBy>('newest');
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(() => localStorage.getItem(CAPTURES_SIDEBAR_KEY) !== '0');
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Accordion state (expanded groups)
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
@@ -102,10 +98,6 @@ export function ListPage() {
 
   const hasActiveFilters = filterStatus !== 'all' || filterFormat !== 'all' || filterHasImage !== 'all' || filterSubject !== 'all' || filterChapter !== 'all' || search !== '';
 
-  useEffect(() => {
-    localStorage.setItem(CAPTURES_SIDEBAR_KEY, sidebarOpen ? '1' : '0');
-  }, [sidebarOpen]);
-
   const groupedQuestions = useMemo(() => {
     const groups: Record<string, Question[]> = {};
     
@@ -144,215 +136,114 @@ export function ListPage() {
     }
   }, [groupedQuestions]);
 
+  const viewModeLabel = viewMode === 'history' ? 'vue chronologique' : viewMode === 'subjects' ? 'vue par matière' : 'vue par série';
+
   return (
-    <div className="flex h-full overflow-hidden bg-background">
-      {/* Sidebar Navigation & Filters */}
-      <aside className={`${sidebarOpen ? 'w-[280px]' : 'w-16'} hidden md:flex flex-col border-r border-border bg-card z-10 flex-shrink-0 transition-[width] duration-200 ease-out`}>
-        <div className={`${sidebarOpen ? 'px-4 justify-between' : 'px-2 justify-center'} h-16 border-b border-border flex items-center gap-2 shrink-0`}>
-          <div className={`${sidebarOpen ? 'flex' : 'hidden'} items-center gap-2 font-medium text-sm tracking-tight text-foreground`}>
-            <NotebookPen size={16} className="text-brand-700" />
-            Cahier d'erreurs
-          </div>
-          <button
-            onClick={() => setSidebarOpen((value) => !value)}
-            className="rounded-input p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            title={sidebarOpen ? 'Reduire les filtres' : 'Afficher les filtres'}
-          >
-            {sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
-          </button>
-        </div>
-
-        <div className={`${sidebarOpen ? 'p-4 space-y-6' : 'p-2 space-y-2'} flex-1 overflow-y-auto`}>
-          
-          {/* Navigation Views */}
-          <div className="space-y-1">
-            {sidebarOpen && <h3 className="px-3 text-xs font-[650] uppercase tracking-wider text-muted-foreground mb-2">Bibliothèque</h3>}
-            <NavItem icon={Calendar} label="Récents (Jours)" active={viewMode === 'history'} onClick={() => setViewMode('history')} compact={!sidebarOpen} />
-            <NavItem icon={Library} label="Par Matière" active={viewMode === 'subjects'} onClick={() => setViewMode('subjects')} compact={!sidebarOpen} />
-            <NavItem icon={Layers} label="Annales & Séries" active={viewMode === 'series'} onClick={() => setViewMode('series')} compact={!sidebarOpen} />
-          </div>
-
-          <div className={`${sidebarOpen ? '' : 'hidden'} h-px bg-border w-full`} />
-
-          {/* Filters Section (Collapsible or just clean) */}
-          <div className={`${sidebarOpen ? 'space-y-3' : 'hidden'}`}>
-            <button 
-              onClick={() => setFiltersOpen(!filtersOpen)}
-              className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground rounded-input transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <Filter size={16} className={hasActiveFilters ? "text-brand-700" : "text-muted-foreground"} />
-                Filtres {hasActiveFilters && <span className="h-2 w-2 rounded-full bg-brand-600"></span>}
-              </div>
-              {filtersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-
-            {filtersOpen && (
-              <div className="px-3 space-y-4 pt-2">
-                {hasActiveFilters && (
-                  <button onClick={resetFilters} className="text-xs font-medium text-brand-700 hover:underline">
-                    Réinitialiser les filtres
-                  </button>
-                )}
-
-                <SelectField label="Statut" value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)}>
-                  <option value="all">Tous les statuts</option>
-                  <option value="wrong">Incorrecte</option>
-                  <option value="partial">Partielle</option>
-                  <option value="unknown">Indéterminée</option>
-                  <option value="correct">Correcte</option>
-                </SelectField>
-
-                <SelectField label="Format" value={filterFormat} onChange={e => setFilterFormat(e.target.value as any)}>
-                  <option value="all">Tous les formats</option>
-                  <option value="QI">Questions Isolées (QI)</option>
-                  <option value="DP">Dossiers Progressifs (DP)</option>
-                  <option value="KFP">Key Feature Problems (KFP)</option>
-                </SelectField>
-
-                <SelectField label="Matière" value={filterSubject} onChange={e => setFilterSubject(e.target.value)}>
-                  <option value="all">Toutes les matières</option>
-                  {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-                </SelectField>
-
-                {filterSubject !== 'all' && (
-                  <SelectField label="Chapitre" value={filterChapter} onChange={e => setFilterChapter(e.target.value)}>
-                    <option value="all">Tous les chapitres</option>
-                    {Array.from(new Set(questions.filter(q => q.subject === filterSubject && q.chapter).map(q => q.chapter))).map(c => 
-                      <option key={c!} value={c!}>{c}</option>
-                    )}
-                  </SelectField>
-                )}
-
-                <SelectField label="Image" value={filterHasImage.toString()} onChange={e => setFilterHasImage(e.target.value === 'all' ? 'all' : e.target.value === 'true')}>
-                  <option value="all">Indifférent</option>
-                  <option value="true">Avec image(s)</option>
-                  <option value="false">Sans image</option>
-                </SelectField>
-
-                <div className="h-px bg-border w-full my-4" />
-                
-                <SelectField label="Trier par" value={sortBy} onChange={e => setSortBy(e.target.value as any)}>
-                  <option value="newest">Plus récentes d'abord</option>
-                  <option value="oldest">Plus anciennes d'abord</option>
-                  <option value="az">Matière (A→Z)</option>
-                </SelectField>
-              </div>
+    <div className="flex h-full flex-col overflow-hidden bg-background">
+      <PageHeader
+        title="Cahier d'erreurs"
+        description={`${filteredQuestions.length} question${filteredQuestions.length !== 1 ? 's' : ''} · ${viewModeLabel}`}
+        actions={
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher une question…"
+              className="w-full rounded-input border border-border bg-input-background py-2 pl-9 pr-8 text-sm text-foreground outline-none transition-shadow focus:ring-2 focus:ring-ring"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Effacer la recherche"
+              >
+                <X size={13} />
+              </button>
             )}
           </div>
+        }
+      />
+
+      {/* Barre d'outils : vue + filtres inline (remplace l'ancienne sidebar interne) */}
+      <div className="shrink-0 border-b border-border bg-card">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-6 py-2.5">
+          <SegmentedControl
+            ariaLabel="Vue du cahier"
+            value={viewMode}
+            onChange={(mode) => setViewMode(mode)}
+            options={[
+              { value: 'history', label: 'Récents' },
+              { value: 'subjects', label: 'Matières' },
+              { value: 'series', label: 'Séries' },
+            ]}
+          />
+          <div className="flex-1" />
+          {hasActiveFilters && (
+            <button onClick={resetFilters} className="text-xs font-medium text-brand-700 hover:underline dark:text-brand-100">
+              Réinitialiser
+            </button>
+          )}
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className={`inline-flex items-center gap-1.5 rounded-input border px-3 py-1.5 text-[13px] font-medium transition-colors ${
+              filtersOpen || hasActiveFilters
+                ? 'border-brand-100 bg-brand-50 text-brand-700 dark:border-brand-700/40 dark:bg-brand-950/40 dark:text-brand-100'
+                : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+            }`}
+          >
+            <Filter size={14} />
+            Filtres
+            {filtersOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
         </div>
-        
-        <div className={`${sidebarOpen ? 'p-4' : 'p-2 text-center'} border-t border-border bg-muted/60 text-xs font-medium text-muted-foreground`}>
-          {sidebarOpen
-            ? `${filteredQuestions.length} question${filteredQuestions.length !== 1 ? 's' : ''} au total`
-            : filteredQuestions.length}
-        </div>
-      </aside>
-
-      <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
-        <SheetContent side="left" className="w-[86vw] max-w-sm gap-0 p-0">
-          <SheetHeader className="border-b border-border">
-            <SheetTitle className="text-left text-base">Cahier d'erreurs</SheetTitle>
-          </SheetHeader>
-          <div className="h-full overflow-y-auto bg-card p-4">
-            <div className="mb-5 flex items-center justify-between">
-              <div className="text-xs font-medium text-muted-foreground">
-                {filteredQuestions.length} question{filteredQuestions.length !== 1 ? 's' : ''}
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="mb-2 px-3 text-xs font-[650] uppercase tracking-wider text-muted-foreground">Bibliothèque</h3>
-              <NavItem icon={Calendar} label="Récents (Jours)" active={viewMode === 'history'} onClick={() => { setViewMode('history'); setMobileSidebarOpen(false); }} />
-              <NavItem icon={Library} label="Par Matière" active={viewMode === 'subjects'} onClick={() => { setViewMode('subjects'); setMobileSidebarOpen(false); }} />
-              <NavItem icon={Layers} label="Annales & Séries" active={viewMode === 'series'} onClick={() => { setViewMode('series'); setMobileSidebarOpen(false); }} />
-            </div>
-
-            <div className="my-5 h-px bg-border" />
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                  <Filter size={16} className={hasActiveFilters ? "text-brand-700" : "text-muted-foreground"} />
-                  Filtres
-                </div>
-                {hasActiveFilters && (
-                  <button onClick={resetFilters} className="text-xs font-medium text-brand-700">
-                    Réinitialiser
-                  </button>
+        {filtersOpen && (
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-3 px-6 pb-4 md:grid-cols-3 lg:grid-cols-6">
+            <SelectField label="Statut" value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)}>
+              <option value="all">Tous les statuts</option>
+              <option value="wrong">Incorrecte</option>
+              <option value="partial">Partielle</option>
+              <option value="unknown">Indéterminée</option>
+              <option value="correct">Correcte</option>
+            </SelectField>
+            <SelectField label="Format" value={filterFormat} onChange={e => setFilterFormat(e.target.value as any)}>
+              <option value="all">Tous les formats</option>
+              <option value="QI">Questions Isolées (QI)</option>
+              <option value="DP">Dossiers Progressifs (DP)</option>
+              <option value="KFP">Key Feature Problems (KFP)</option>
+            </SelectField>
+            <SelectField label="Matière" value={filterSubject} onChange={e => setFilterSubject(e.target.value)}>
+              <option value="all">Toutes les matières</option>
+              {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+            </SelectField>
+            {filterSubject !== 'all' && (
+              <SelectField label="Chapitre" value={filterChapter} onChange={e => setFilterChapter(e.target.value)}>
+                <option value="all">Tous les chapitres</option>
+                {Array.from(new Set(questions.filter(q => q.subject === filterSubject && q.chapter).map(q => q.chapter))).map(c =>
+                  <option key={c!} value={c!}>{c}</option>
                 )}
-              </div>
-              <SelectField label="Statut" value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)}>
-                <option value="all">Tous les statuts</option>
-                <option value="wrong">Incorrecte</option>
-                <option value="partial">Partielle</option>
-                <option value="unknown">Indéterminée</option>
-                <option value="correct">Correcte</option>
               </SelectField>
-              <SelectField label="Format" value={filterFormat} onChange={e => setFilterFormat(e.target.value as any)}>
-                <option value="all">Tous les formats</option>
-                <option value="QI">Questions Isolées (QI)</option>
-                <option value="DP">Dossiers Progressifs (DP)</option>
-                <option value="KFP">Key Feature Problems (KFP)</option>
-              </SelectField>
-              <SelectField label="Matière" value={filterSubject} onChange={e => setFilterSubject(e.target.value)}>
-                <option value="all">Toutes les matières</option>
-                {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-              </SelectField>
-              {filterSubject !== 'all' && (
-                <SelectField label="Chapitre" value={filterChapter} onChange={e => setFilterChapter(e.target.value)}>
-                  <option value="all">Tous les chapitres</option>
-                  {Array.from(new Set(questions.filter(q => q.subject === filterSubject && q.chapter).map(q => q.chapter))).map(c =>
-                    <option key={c!} value={c!}>{c}</option>
-                  )}
-                </SelectField>
-              )}
-              <SelectField label="Image" value={filterHasImage.toString()} onChange={e => setFilterHasImage(e.target.value === 'all' ? 'all' : e.target.value === 'true')}>
-                <option value="all">Indifférent</option>
-                <option value="true">Avec image(s)</option>
-                <option value="false">Sans image</option>
-              </SelectField>
-              <SelectField label="Trier par" value={sortBy} onChange={e => setSortBy(e.target.value as any)}>
-                <option value="newest">Plus récentes d'abord</option>
-                <option value="oldest">Plus anciennes d'abord</option>
-                <option value="az">Matière (A→Z)</option>
-              </SelectField>
-            </div>
+            )}
+            <SelectField label="Image" value={filterHasImage.toString()} onChange={e => setFilterHasImage(e.target.value === 'all' ? 'all' : e.target.value === 'true')}>
+              <option value="all">Indifférent</option>
+              <option value="true">Avec image(s)</option>
+              <option value="false">Sans image</option>
+            </SelectField>
+            <SelectField label="Trier par" value={sortBy} onChange={e => setSortBy(e.target.value as any)}>
+              <option value="newest">Plus récentes d'abord</option>
+              <option value="oldest">Plus anciennes d'abord</option>
+              <option value="az">Matière (A→Z)</option>
+            </SelectField>
           </div>
-        </SheetContent>
-      </Sheet>
+        )}
+      </div>
 
-      {/* Main Content */}
-      <main className="flex h-full flex-1 flex-col overflow-hidden bg-background">
-        {/* Top Search Bar */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-6">
-           <button
-             onClick={() => setMobileSidebarOpen(true)}
-             className="mr-3 inline-flex h-10 w-10 items-center justify-center rounded-input border border-border text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:bg-muted hover:text-foreground md:hidden"
-             title="Ouvrir les filtres"
-           >
-             <Menu size={18} />
-           </button>
-           <div className="relative max-w-xl w-full">
-             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-             <input 
-               type="text" 
-               value={search}
-               onChange={e => setSearch(e.target.value)}
-               placeholder="Rechercher dans les questions, vignettes, options..."
-               className="w-full rounded-pill border border-border bg-muted py-2.5 pl-10 pr-10 text-sm text-foreground outline-none transition-shadow focus:ring-2 focus:ring-ring"
-             />
-             {search && (
-               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground">
-                 <X size={14} />
-               </button>
-             )}
-           </div>
-        </div>
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
 
         {/* List Content */}
         <div className="flex-1 overflow-y-auto p-6 md:p-8">
-          <div className="max-w-5xl mx-auto">
+          <div className="mx-auto max-w-6xl">
             {filteredQuestions.length === 0 ? (
               <EmptyState
                 icon={questions.length === 0 ? NotebookPen : Search}
@@ -416,23 +307,6 @@ export function ListPage() {
       </main>
     </div>
   );
-}
-
-function NavItem({ icon: Icon, label, active, onClick, compact = false }: { icon: any, label: string, active: boolean, onClick: () => void, compact?: boolean }) {
-  return (
-    <button 
-      onClick={onClick}
-      title={label}
-      className={`flex w-full items-center ${compact ? 'justify-center px-2' : 'gap-3 px-3'} rounded-input py-2.5 text-sm font-medium transition-colors ${
-        active 
-          ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-      }`}
-    >
-      <Icon size={18} className={active ? 'text-brand-700 dark:text-brand-100' : 'text-muted-foreground'} />
-      {!compact && label}
-    </button>
-  )
 }
 
 function SelectField({ label, value, onChange, children }: { label: string, value: string, onChange: (e: any) => void, children: React.ReactNode }) {

@@ -1,44 +1,22 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router';
-import {
-  AlertTriangle,
-  BookOpen,
-  Check,
-  FileWarning,
-  History,
-  Inbox,
-  LayoutDashboard,
-  Loader2,
-  Menu,
-  Moon,
-  NotebookPen,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Save,
-  ScanText,
-  Sun,
-  X,
-} from 'lucide-react';
+import { AlertTriangle, Check, Loader2, Menu, Moon, Save, ScanText, Sun } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from './components/ui/sheet';
 import { useTheme } from './theme-context';
 import logoImg from '../imports/ChatGPT_Image_11_mai_2026__22_39_20.png';
 
 const BACKUP_AUTO_KEY = 'hypocampus_last_backup_iso';
 const BACKUP_AUTO_INTERVAL_MS = 24 * 60 * 60 * 1000;
-const APP_SIDEBAR_KEY = 'hypocampus_app_sidebar_expanded';
+
+type Tab = { to: string; label: string; active: boolean; badge?: number | null };
 
 export function AppShell() {
   const { pathname } = useLocation();
-  const [sidebarExpanded, setSidebarExpanded] = useState(() => localStorage.getItem(APP_SIDEBAR_KEY) !== '0');
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const inDashboard = pathname === '/' || pathname === '/entrainement';
   const inImport = pathname.startsWith('/entrainement/import');
   const inHistory = pathname.startsWith('/entrainement/historique');
   const inExam = pathname.startsWith('/entrainement/') && !inImport && !inHistory;
-  const inCaptures = pathname.startsWith('/captures');
-  const inAdminVignettes = pathname.startsWith('/admin/vignettes');
-  const inAdminCorrections = pathname.startsWith('/admin/corrections');
 
   const [correctionsTotal, setCorrectionsTotal] = useState<number | null>(null);
   useEffect(() => {
@@ -52,10 +30,6 @@ export function AppShell() {
       .catch(() => {});
     return () => { cancelled = true; };
   }, [pathname]);
-
-  useEffect(() => {
-    localStorage.setItem(APP_SIDEBAR_KEY, sidebarExpanded ? '1' : '0');
-  }, [sidebarExpanded]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -76,220 +50,151 @@ export function AppShell() {
       .catch(() => {});
   }, []);
 
-  const nav = (
-    <SidebarContent
-      expanded={sidebarExpanded}
-      active={{
-        dashboard: inDashboard,
-        import: inImport,
-        history: inHistory,
-        exam: inExam,
-        captures: inCaptures,
-        corrections: inAdminCorrections,
-        vignettes: inAdminVignettes,
-      }}
-      correctionsTotal={correctionsTotal}
-      onToggle={() => setSidebarExpanded((value) => !value)}
-      onNavigate={() => setMobileOpen(false)}
-    />
-  );
-
-  return (
-    <div className="flex h-screen overflow-hidden bg-background text-foreground">
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed left-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-input border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground md:hidden"
-        title="Ouvrir la navigation"
-      >
-        <Menu size={18} />
-      </button>
-
-      <aside
-        className={`hidden shrink-0 border-r border-sidebar-border bg-sidebar transition-[width] duration-200 ease-out md:flex ${
-          sidebarExpanded ? 'w-[230px]' : 'w-[76px]'
-        }`}
-      >
-        {nav}
-      </aside>
-
-      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="w-[86vw] max-w-xs gap-0 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground">
-          <SheetHeader className="sr-only">
-            <SheetTitle>Navigation</SheetTitle>
-          </SheetHeader>
-          <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
-              <Brand expanded />
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="rounded-input p-2 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                title="Fermer"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <SidebarContent
-              expanded
-              active={{
-                dashboard: inDashboard,
-                import: inImport,
-                history: inHistory,
-                exam: inExam,
-                captures: inCaptures,
-                corrections: inAdminCorrections,
-                vignettes: inAdminVignettes,
-              }}
-              correctionsTotal={correctionsTotal}
-              onToggle={() => setSidebarExpanded((value) => !value)}
-              onNavigate={() => setMobileOpen(false)}
-              hideToggle
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      <div className="min-w-0 flex-1 overflow-hidden">
+  // Mode copie : pendant un examen, aucun chrome de navigation — la copie
+  // occupe tout l'écran, comme à l'UNESS. exam-page gère son propre header.
+  if (inExam) {
+    return (
+      <div className="h-screen overflow-hidden bg-background text-foreground">
         <Outlet />
       </div>
+    );
+  }
+
+  const tabs: Tab[] = [
+    { to: '/entrainement', label: 'Tableau de bord', active: pathname === '/' || pathname === '/entrainement' },
+    { to: '/captures', label: "Cahier d'erreurs", active: pathname.startsWith('/captures') },
+    { to: '/entrainement/historique', label: 'Historique', active: inHistory },
+    { to: '/admin/corrections', label: 'Maintenance', active: pathname.startsWith('/admin'), badge: correctionsTotal },
+  ];
+
+  return (
+    <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
+      <header className="z-40 flex h-14 shrink-0 items-center gap-1.5 border-b border-border bg-card px-3 sm:px-5">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-input text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+          aria-label="Ouvrir la navigation"
+        >
+          <Menu size={18} />
+        </button>
+
+        <Link to="/entrainement" className="flex items-center gap-2.5 pr-3" title="Hypocampus — tableau de bord">
+          <img src={logoImg} alt="" className="h-8 w-8 rounded-[8px] object-cover" />
+          <span className="hidden text-[15px] font-[650] tracking-[-0.01em] text-foreground sm:block">
+            Hypocampus
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Navigation principale">
+          {tabs.map((tab) => (
+            <TopNavLink key={tab.to} {...tab} />
+          ))}
+        </nav>
+
+        <div className="flex-1" />
+
+        {!inImport && (
+          <Link
+            to="/entrainement/import"
+            className="hidden items-center gap-1.5 rounded-input bg-brand-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-brand-700 sm:inline-flex"
+          >
+            <ScanText size={14} />
+            Importer
+          </Link>
+        )}
+        <BackupButton />
+        <ThemeToggle />
+      </header>
+
+      <main className="min-h-0 flex-1 overflow-hidden">
+        <Outlet />
+      </main>
+
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="w-[80vw] max-w-xs gap-0 p-0">
+          <SheetHeader className="border-b border-border px-4 py-3">
+            <SheetTitle className="flex items-center gap-2.5 text-left text-sm font-[650]">
+              <img src={logoImg} alt="" className="h-8 w-8 rounded-[8px] object-cover" />
+              Hypocampus
+            </SheetTitle>
+          </SheetHeader>
+          <nav className="flex flex-col gap-1 p-3" aria-label="Navigation">
+            {tabs.map((tab) => {
+              const badgeLabel = tab.badge && tab.badge > 0 ? (tab.badge > 99 ? '99+' : String(tab.badge)) : null;
+              return (
+                <Link
+                  key={tab.to}
+                  to={tab.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center justify-between rounded-input px-3 py-2.5 text-sm font-medium transition-colors ${
+                    tab.active
+                      ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  {tab.label}
+                  {badgeLabel && (
+                    <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-warn-500 px-1.5 text-[10px] font-[650] text-white">
+                      {badgeLabel}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+            <div className="my-2 h-px bg-border" />
+            <Link
+              to="/entrainement/import"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-input bg-brand-600 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
+            >
+              <ScanText size={15} />
+              Importer une annale
+            </Link>
+          </nav>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
 
-function SidebarContent({
-  expanded,
-  active,
-  correctionsTotal,
-  onToggle,
-  onNavigate,
-  hideToggle = false,
-}: {
-  expanded: boolean;
-  active: {
-    dashboard: boolean;
-    import: boolean;
-    history: boolean;
-    exam: boolean;
-    captures: boolean;
-    corrections: boolean;
-    vignettes: boolean;
-  };
-  correctionsTotal: number | null;
-  onToggle: () => void;
-  onNavigate: () => void;
-  hideToggle?: boolean;
-}) {
+function TopNavLink({ to, label, active, badge }: Tab) {
+  const badgeLabel = badge && badge > 0 ? (badge > 99 ? '99+' : String(badge)) : null;
   return (
-    <nav className="flex h-full w-full flex-col px-3 py-4">
-      <div className={`flex items-center ${expanded ? 'justify-between gap-3' : 'justify-center'}`}>
-        <Brand expanded={expanded} onNavigate={onNavigate} />
-        {!hideToggle && expanded && (
-          <button
-            onClick={onToggle}
-            className="rounded-input p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            title="Reduire la sidebar"
-          >
-            <PanelLeftClose size={17} />
-          </button>
-        )}
-      </div>
-
-      {!hideToggle && !expanded && (
-        <button
-          onClick={onToggle}
-          className="mx-auto mt-3 rounded-input p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          title="Etendre la sidebar"
-        >
-          <PanelLeftOpen size={17} />
-        </button>
-      )}
-
-      <SidebarSection label="Reviser" expanded={expanded}>
-        <NavTile to="/entrainement" icon={<LayoutDashboard size={19} />} label="Tableau de bord" active={active.dashboard} expanded={expanded} onNavigate={onNavigate} />
-        <NavTile to="/captures" icon={<NotebookPen size={19} />} label="Cahier d'erreurs" active={active.captures} expanded={expanded} onNavigate={onNavigate} />
-        <NavTile to="/entrainement/historique" icon={<History size={19} />} label="Historique" active={active.history} expanded={expanded} onNavigate={onNavigate} />
-        {active.exam && (
-          <NavTile to="/entrainement" icon={<BookOpen size={19} />} label="Annale en cours" active expanded={expanded} onNavigate={onNavigate} />
-        )}
-      </SidebarSection>
-
-      <SidebarSection label="Maintenance" expanded={expanded} className="mt-4">
-        <NavTile to="/entrainement/import" icon={<ScanText size={19} />} label="Importer" active={active.import} expanded={expanded} onNavigate={onNavigate} />
-        <NavTile
-          to="/admin/corrections"
-          icon={<Inbox size={19} />}
-          label="Corrections"
-          active={active.corrections}
-          expanded={expanded}
-          onNavigate={onNavigate}
-          badge={correctionsTotal && correctionsTotal > 0 ? correctionsTotal : undefined}
-        />
-        <NavTile to="/admin/vignettes" icon={<FileWarning size={19} />} label="Vignettes" active={active.vignettes} expanded={expanded} onNavigate={onNavigate} />
-        <BackupButton expanded={expanded} />
-      </SidebarSection>
-
-      <div className="flex-1" />
-      <ThemeToggle expanded={expanded} />
-    </nav>
-  );
-}
-
-function Brand({ expanded, onNavigate }: { expanded: boolean; onNavigate?: () => void }) {
-  return (
-    <Link to="/entrainement" onClick={onNavigate} className={`min-w-0 ${expanded ? 'flex items-center gap-3' : ''}`} title="Hypocampus">
-      <img src={logoImg} alt="Hypocampus" className="h-10 w-10 rounded-[10px] object-cover shadow-sm" />
-      {expanded && (
-        <div className="min-w-0">
-          <div className="truncate text-sm font-[650] tracking-[-0.01em] text-sidebar-foreground">Hypocampus</div>
-          <div className="truncate text-[11px] text-muted-foreground">Revisions</div>
-        </div>
+    <Link
+      to={to}
+      aria-current={active ? 'page' : undefined}
+      className={`inline-flex items-center gap-1.5 rounded-input px-3 py-1.5 text-[13.5px] font-medium transition-colors ${
+        active
+          ? 'bg-muted text-foreground'
+          : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+      }`}
+    >
+      {label}
+      {badgeLabel && (
+        <span className="inline-flex h-4 min-w-[18px] items-center justify-center rounded-pill bg-warn-500 px-1 text-[10px] font-[650] text-white">
+          {badgeLabel}
+        </span>
       )}
     </Link>
   );
 }
 
-function SidebarSection({
-  label,
-  expanded,
-  children,
-  className = '',
-}: {
-  label: string;
-  expanded: boolean;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`space-y-1 ${className}`}>
-      {expanded && (
-        <div className="px-3 pb-1 pt-5 text-[10.5px] font-[650] uppercase tracking-[0.09em] text-muted-foreground">
-          {label}
-        </div>
-      )}
-      {children}
-    </div>
-  );
-}
-
-function ThemeToggle({ expanded }: { expanded: boolean }) {
+function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
-  const icon = isDark ? <Sun size={18} /> : <Moon size={18} />;
-  const label = isDark ? 'Mode clair' : 'Mode sombre';
   return (
     <button
       onClick={toggleTheme}
-      className={`flex items-center rounded-[10px] text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${
-        expanded ? 'w-full gap-3 px-3 py-2 text-[13.5px]' : 'mx-auto h-11 w-11 justify-center'
-      }`}
-      title={label}
+      className="inline-flex h-9 w-9 items-center justify-center rounded-input text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      title={isDark ? 'Mode clair' : 'Mode sombre'}
+      aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
     >
-      <span className="shrink-0">{icon}</span>
-      {expanded && <span className="truncate font-medium">{label}</span>}
+      {isDark ? <Sun size={17} /> : <Moon size={17} />}
     </button>
   );
 }
 
-function BackupButton({ expanded }: { expanded: boolean }) {
+function BackupButton() {
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -313,22 +218,18 @@ function BackupButton({ expanded }: { expanded: boolean }) {
     }
   };
 
-  let icon = <Save size={18} />;
-  let label = 'Sauvegarder';
-  let titleAttr = 'Creer une sauvegarde maintenant';
-  let tone = 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground';
+  let icon = <Save size={17} />;
+  let titleAttr = 'Creer une sauvegarde maintenant (auto 1x/jour)';
+  let tone = 'text-muted-foreground hover:bg-muted hover:text-foreground';
   if (busy) {
-    icon = <Loader2 size={18} className="animate-spin" />;
-    label = 'Sauvegarde';
+    icon = <Loader2 size={17} className="animate-spin" />;
     titleAttr = 'Sauvegarde en cours';
   } else if (success) {
-    icon = <Check size={18} />;
-    label = 'Sauvegardee';
+    icon = <Check size={17} />;
     titleAttr = 'Sauvegarde creee';
     tone = 'bg-success-50 text-success-700 dark:bg-success-950/40 dark:text-success-100';
   } else if (error) {
-    icon = <AlertTriangle size={18} />;
-    label = 'Erreur';
+    icon = <AlertTriangle size={17} />;
     titleAttr = error;
     tone = 'bg-danger-50 text-danger-700 dark:bg-danger-950/40 dark:text-danger-100';
   }
@@ -337,64 +238,11 @@ function BackupButton({ expanded }: { expanded: boolean }) {
     <button
       onClick={handleBackup}
       disabled={busy}
-      className={`flex items-center rounded-[10px] transition-colors disabled:opacity-60 ${
-        expanded ? 'w-full gap-3 px-3 py-2 text-[13.5px]' : 'mx-auto h-11 w-11 justify-center'
-      } ${tone}`}
+      className={`inline-flex h-9 w-9 items-center justify-center rounded-input transition-colors disabled:opacity-60 ${tone}`}
       title={titleAttr}
+      aria-label="Sauvegarder les donnees"
     >
-      <span className="shrink-0">{icon}</span>
-      {expanded && <span className="truncate font-medium">{label}</span>}
+      {icon}
     </button>
-  );
-}
-
-function NavTile({
-  to,
-  icon,
-  label,
-  active,
-  expanded,
-  onNavigate,
-  badge,
-}: {
-  to: string;
-  icon: ReactNode;
-  label: string;
-  active: boolean;
-  expanded: boolean;
-  onNavigate: () => void;
-  badge?: number;
-}) {
-  const badgeLabel = typeof badge === 'number' && badge > 0
-    ? (badge > 99 ? '99+' : String(badge))
-    : null;
-  return (
-    <Link
-      to={to}
-      onClick={onNavigate}
-      className={`group relative flex items-center rounded-[10px] transition-colors ${
-        expanded ? 'gap-3 px-3 py-2 text-[13.5px]' : 'mx-auto h-11 w-11 justify-center'
-      } ${
-        active
-          ? 'bg-brand-50 text-brand-700 ring-1 ring-brand-100 dark:bg-brand-950/40 dark:text-brand-100 dark:ring-brand-700/40'
-          : 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-      }`}
-      title={badgeLabel ? `${label} (${badgeLabel} en attente)` : label}
-    >
-      <span className="relative shrink-0">
-        {icon}
-        {badgeLabel && !expanded && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-warn-500 px-1 text-[9px] font-[650] text-white shadow-sm">
-            {badgeLabel}
-          </span>
-        )}
-      </span>
-      {expanded && <span className="truncate font-medium">{label}</span>}
-      {expanded && badgeLabel && (
-        <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-warn-500 px-1.5 text-[10px] font-[650] text-white">
-          {badgeLabel}
-        </span>
-      )}
-    </Link>
   );
 }

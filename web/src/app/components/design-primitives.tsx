@@ -1,14 +1,7 @@
 import { Fragment, type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Link } from 'react-router';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from './ui/breadcrumb';
+import { ChevronRight } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { cn } from './ui/utils';
 
@@ -68,47 +61,6 @@ export function EmptyState({
   );
 }
 
-export function KpiCard({
-  icon: Icon,
-  label,
-  value,
-  detail,
-  tone = 'neutral',
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: number | string;
-  detail?: string;
-  tone?: 'neutral' | 'brand' | 'success' | 'warn' | 'danger';
-}) {
-  const toneClass = {
-    neutral: 'bg-muted text-muted-foreground',
-    brand: 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-100',
-    success: 'bg-success-50 text-success-700 dark:bg-success-950/40 dark:text-success-100',
-    warn: 'bg-warn-50 text-warn-700 dark:bg-warn-950/40 dark:text-warn-100',
-    danger: 'bg-danger-50 text-danger-700 dark:bg-danger-950/40 dark:text-danger-100',
-  }[tone];
-
-  return (
-    <div className="rounded-card border border-border bg-card p-4 shadow-[var(--shadow-card)] transition-colors duration-150 hover:bg-muted/40">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-[11px] font-[650] uppercase tracking-[0.07em] text-muted-foreground">
-            {label}
-          </div>
-          <div className="mt-1 text-2xl font-[650] tracking-[-0.02em] text-foreground tabular-nums">
-            {value}
-          </div>
-        </div>
-        <div className={cn('flex h-9 w-9 items-center justify-center rounded-[10px]', toneClass)}>
-          <Icon size={18} />
-        </div>
-      </div>
-      {detail && <div className="mt-2 text-xs text-muted-foreground">{detail}</div>}
-    </div>
-  );
-}
-
 export function MiniSparkline({
   values,
   className,
@@ -143,63 +95,89 @@ export function MiniSparkline({
   );
 }
 
-export function PageBreadcrumb({
-  items,
-}: {
-  items: Array<{ label: string; to?: string }>;
-}) {
-  return (
-    <div className="sticky top-0 z-20 border-b border-border/80 bg-card/85 backdrop-blur">
-      <div className="mx-auto max-w-5xl px-6 py-2">
-        <Breadcrumb>
-          <BreadcrumbList className="text-xs">
-            {items.map((item, index) => {
-              const isLast = index === items.length - 1;
-              return (
-                <Fragment key={`${item.label}-${index}`}>
-                  <BreadcrumbItem>
-                    {isLast || !item.to ? (
-                      <BreadcrumbPage className="max-w-[240px] truncate">{item.label}</BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink asChild>
-                        <Link to={item.to}>{item.label}</Link>
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                  {!isLast && <BreadcrumbSeparator />}
-                </Fragment>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-    </div>
-  );
-}
-
+/**
+ * Header de page unifié : fil d'ariane inline (optionnel), titre, description,
+ * actions à droite. Remplace les bandeaux empilés (header custom + breadcrumb
+ * sticky) de l'ancien layout — un seul bloc, une seule hiérarchie.
+ */
 export function PageHeader({
   title,
   description,
   eyebrow,
   actions,
+  crumbs,
+  maxWidth = 'max-w-6xl',
 }: {
-  title: string;
-  description?: string;
+  title: ReactNode;
+  description?: ReactNode;
   eyebrow?: string;
   actions?: ReactNode;
+  crumbs?: Array<{ label: string; to?: string }>;
+  maxWidth?: string;
 }) {
   return (
-    <div className="flex flex-col gap-4 border-b border-border bg-card px-6 py-5 md:flex-row md:items-start">
-      <div className="min-w-0 flex-1">
-        {eyebrow && (
-          <div className="mb-1 text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
-            {eyebrow}
-          </div>
-        )}
-        <h1 className="text-[22px] font-[650] tracking-[-0.015em] text-foreground">{title}</h1>
-        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+    <header className="border-b border-border bg-card">
+      <div className={cn('mx-auto flex flex-wrap items-center gap-x-4 gap-y-3 px-6 py-5', maxWidth)}>
+        <div className="min-w-0 flex-1">
+          {crumbs && crumbs.length > 0 && (
+            <nav aria-label="Fil d'ariane" className="mb-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+              {crumbs.map((crumb, index) => (
+                <Fragment key={`${crumb.label}-${index}`}>
+                  {index > 0 && <ChevronRight size={11} aria-hidden="true" className="text-muted-foreground/50" />}
+                  {crumb.to ? (
+                    <Link to={crumb.to} className="transition-colors hover:text-foreground">
+                      {crumb.label}
+                    </Link>
+                  ) : (
+                    <span>{crumb.label}</span>
+                  )}
+                </Fragment>
+              ))}
+            </nav>
+          )}
+          {eyebrow && (
+            <div className="mb-1 text-[11px] font-[650] uppercase tracking-[0.09em] text-brand-700 dark:text-brand-100">
+              {eyebrow}
+            </div>
+          )}
+          <h1 className="truncate text-[22px] font-[650] tracking-[-0.015em] text-foreground">{title}</h1>
+          {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+        </div>
+        {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2 md:justify-end">{actions}</div>}
+    </header>
+  );
+}
+
+/**
+ * Barre de statistiques compacte : une seule card découpée en cellules,
+ * façon tableau de bord d'outil pro. Remplace les grilles de KpiCard.
+ */
+export function StatBar({
+  items,
+  className,
+}: {
+  items: Array<{ label: string; value: ReactNode; detail?: string }>;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        'grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border shadow-[var(--shadow-card)] lg:grid-cols-4',
+        className,
+      )}
+    >
+      {items.map((item) => (
+        <div key={item.label} className="bg-card px-4 py-3">
+          <div className="text-[11px] font-medium uppercase tracking-[0.09em] text-muted-foreground">
+            {item.label}
+          </div>
+          <div className="mt-0.5 text-lg font-[650] tabular-nums tracking-[-0.01em] text-foreground">
+            {item.value}
+          </div>
+          {item.detail && <div className="mt-0.5 text-xs text-muted-foreground">{item.detail}</div>}
+        </div>
+      ))}
     </div>
   );
 }
