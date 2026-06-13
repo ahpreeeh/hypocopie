@@ -31,6 +31,7 @@ interface AnnaleSummary {
   subject: string;
   year?: number;
   session?: string;
+  studyYear?: string | null;
   questionsCount: number;
 }
 
@@ -44,7 +45,7 @@ interface SessionSummary {
   };
 }
 
-type EditFields = { title: string; subject: string; year: string; session: string; newId: string };
+type EditFields = { title: string; subject: string; year: string; session: string; studyYear: string; newId: string };
 
 function slugifyId(value: string): string {
   return value
@@ -57,7 +58,7 @@ function slugifyId(value: string): string {
 }
 
 export type ExamMode = 'exam' | 'libre';
-type GroupBy = 'subject' | 'year';
+type GroupBy = 'subject' | 'studyYear';
 
 const EXAM_MODE_STORAGE_KEY = 'hypocampus_exam_mode';
 const ANNALES_GROUP_KEY = 'hypocampus_annales_group_by';
@@ -106,6 +107,7 @@ export function AnnalesList() {
       subject: a.subject || '',
       year: a.year ? String(a.year) : '',
       session: a.session || '',
+      studyYear: a.studyYear || '',
       newId: a.id,
     });
     setEditError(null);
@@ -136,6 +138,7 @@ export function AnnalesList() {
         payload.year = null;
       }
       payload.session = editFields.session.trim();
+      payload.studyYear = editFields.studyYear.trim();
       // Si newId est rempli ET different de l'ancien → on demande un rename
       const desiredNewId = slugifyId(editFields.newId.trim());
       if (desiredNewId && desiredNewId !== editingId) {
@@ -157,6 +160,7 @@ export function AnnalesList() {
         subject: (payload.subject as string) ?? a.subject,
         year: payload.year === null ? undefined : (payload.year as number),
         session: (payload.session as string) || undefined,
+        studyYear: (payload.studyYear as string) || null,
       } : a) || prev);
       setEditingId(null);
       toast.success('Annale mise a jour');
@@ -209,7 +213,7 @@ export function AnnalesList() {
 
   // Rangement de la bibliothèque : sections par matière ou par année (persisté).
   const [groupBy, setGroupBy] = useState<GroupBy>(() =>
-    localStorage.getItem(ANNALES_GROUP_KEY) === 'year' ? 'year' : 'subject');
+    localStorage.getItem(ANNALES_GROUP_KEY) === 'studyYear' ? 'studyYear' : 'subject');
   const selectGroupBy = (next: GroupBy) => {
     setGroupBy(next);
     localStorage.setItem(ANNALES_GROUP_KEY, next);
@@ -219,23 +223,25 @@ export function AnnalesList() {
     if (!annales) return [];
     const map = new Map<string, AnnaleSummary[]>();
     for (const a of annales) {
-      const key = groupBy === 'year'
-        ? (a.year ? String(a.year) : 'Sans année')
+      const key = groupBy === 'studyYear'
+        ? (a.studyYear?.trim() || 'Sans niveau')
         : (a.subject || 'Sans matière');
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(a);
     }
-    if (groupBy === 'year') {
-      // Sections de la plus récente à la plus ancienne, « Sans année » en
-      // dernier ; dans chaque année : matière puis titre.
+    if (groupBy === 'studyYear') {
+      // Sections par niveau (A→Z, « Sans niveau » en dernier) ; dans chaque
+      // niveau : matière puis année desc puis titre.
       for (const list of map.values()) {
         list.sort((a, b) =>
-          (a.subject || '').localeCompare(b.subject || '', 'fr') || a.title.localeCompare(b.title, 'fr'));
+          (a.subject || '').localeCompare(b.subject || '', 'fr')
+          || (b.year || 0) - (a.year || 0)
+          || a.title.localeCompare(b.title, 'fr'));
       }
       return Array.from(map.entries()).sort((a, b) => {
-        if (a[0] === 'Sans année') return 1;
-        if (b[0] === 'Sans année') return -1;
-        return Number(b[0]) - Number(a[0]);
+        if (a[0] === 'Sans niveau') return 1;
+        if (b[0] === 'Sans niveau') return -1;
+        return a[0].localeCompare(b[0], 'fr', { numeric: true });
       });
     }
     // Par matière : sections A→Z ; dans chaque matière : année desc puis titre.
@@ -498,8 +504,8 @@ export function AnnalesList() {
               value={groupBy}
               onChange={selectGroupBy}
               options={[
-                { value: 'subject', label: 'Matière', title: 'Sections par matière, années récentes en premier' },
-                { value: 'year', label: 'Année', title: 'Sections par année, de la plus récente à la plus ancienne' },
+                { value: 'subject', label: 'Matière', title: 'Sections par matière' },
+                { value: 'studyYear', label: 'Niveau', title: "Sections par année d'études (MED3, DFGSM3…)" },
               ]}
             />
           </div>
@@ -561,6 +567,15 @@ export function AnnalesList() {
                       </label>
                     </div>
                     <label className="block">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Niveau (année d'études)</span>
+                      <input
+                        value={editFields.studyYear}
+                        onChange={(e) => setEditFields((f) => ({ ...f, studyYear: e.target.value }))}
+                        placeholder="MED3, DFGSM3…"
+                        className="mt-0.5 w-full rounded-input border border-input bg-input-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                      />
+                    </label>
+                    <label className="block">
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1">
                         Identifiant
                         {editFields.newId !== editingId && editFields.newId && (
@@ -621,9 +636,9 @@ export function AnnalesList() {
                           {a.title}
                         </span>
                         <span className="hidden w-28 shrink-0 truncate text-xs text-muted-foreground sm:block">
-                          {groupBy === 'year'
-                            ? [a.subject, a.session].filter(Boolean).join(' · ')
-                            : [a.year, a.session].filter(Boolean).join(' · ')}
+                          {groupBy === 'studyYear'
+                            ? [a.subject, a.year].filter(Boolean).join(' · ')
+                            : [a.year, a.session, a.studyYear].filter(Boolean).join(' · ')}
                         </span>
                         <span className="hidden w-24 shrink-0 text-right text-xs tabular-nums text-muted-foreground md:block">
                           {a.questionsCount} questions

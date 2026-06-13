@@ -122,6 +122,7 @@ class AnnaleMeta:
     subject: str
     year: Optional[int] = None
     session: Optional[str] = None
+    studyYear: Optional[str] = None
     questionsCount: int = 0
 
     @classmethod
@@ -132,6 +133,7 @@ class AnnaleMeta:
             subject=_require_str(data.get("subject"), "AnnaleMeta.subject", max_len=80),
             year=_optional_int(data.get("year")),
             session=_optional_str(data.get("session"), max_len=20),
+            studyYear=_optional_str(data.get("studyYear"), max_len=40),
             questionsCount=_optional_int(data.get("questionsCount")) or 0,
         )
 
@@ -196,6 +198,7 @@ class LocalImportMeta:
     year: int
     session: str
     title: str
+    studyYear: Optional[str] = None
     overwrite: bool = False
 
     @classmethod
@@ -216,6 +219,7 @@ class LocalImportMeta:
             year=year,
             session=_optional_str(data.get("session"), max_len=80) or "",
             title=_require_str(title, "title", max_len=200),
+            studyYear=_optional_str(data.get("studyYear"), max_len=40),
             overwrite=bool(data.get("overwrite")),
         )
 
@@ -340,6 +344,7 @@ class AnnalePatchPayload:
     subject: Optional[str] = None
     year: Optional[int] = None
     session: Optional[str] = None
+    studyYear: Optional[str] = None
     newId: Optional[str] = None
 
     @classmethod
@@ -362,6 +367,7 @@ class AnnalePatchPayload:
             subject=_optional_str(data.get("subject"), max_len=80) if "subject" in data else None,
             year=year if "year" in data else None,
             session=_optional_str(data.get("session"), max_len=20) if "session" in data else None,
+            studyYear=_optional_str(data.get("studyYear"), max_len=40) if "studyYear" in data else None,
             newId=_optional_str(data.get("newId"), max_len=80) if "newId" in data else None,
         )
 
@@ -369,7 +375,7 @@ class AnnalePatchPayload:
         """True si au moins un champ est fourni à modifier."""
         return any(
             getattr(self, attr) is not None
-            for attr in ("title", "subject", "year", "session", "newId")
+            for attr in ("title", "subject", "year", "session", "studyYear", "newId")
         )
 
 

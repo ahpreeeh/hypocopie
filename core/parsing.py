@@ -306,6 +306,7 @@ def parse_qroc_source_pdf(pdf_bytes, meta, draft_id, images_dir, filename=None, 
             "subject": meta["subject"],
             "year": meta["year"],
             "session": meta.get("session") or None,
+            "studyYear": meta.get("studyYear") or None,
             "filename": filename,
         },
         "sourceBlocks": source_blocks,
@@ -804,6 +805,7 @@ def _parse_moodle_correction_text(raw_text, meta, page_count):
         "subject": meta["subject"],
         "year": meta["year"],
         "session": meta.get("session") or None,
+        "studyYear": meta.get("studyYear") or None,
         "questions": questions,
     }
     report = {
@@ -1317,6 +1319,7 @@ def _parse_uness_items_to_annale(items, meta, page_count, raw_text):
         "subject": meta["subject"],
         "year": meta["year"],
         "session": meta.get("session") or None,
+        "studyYear": meta.get("studyYear") or None,
         "questions": questions,
     }
     series_report = [

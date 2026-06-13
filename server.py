@@ -320,6 +320,7 @@ def annale_summary(annale):
         "subject": annale.get("subject"),
         "year": annale.get("year"),
         "session": annale.get("session"),
+        "studyYear": annale.get("studyYear"),
         "questionsCount": len(annale.get("questions") or []),
     }
 
@@ -841,6 +842,7 @@ def validate_imported_annale(raw_annale, meta):
         "subject": meta["subject"],
         "year": meta["year"],
         "session": meta.get("session") or None,
+        "studyYear": meta.get("studyYear") or None,
         "questions": [],
     }
 
@@ -1477,6 +1479,7 @@ def draft_to_publish_annale(draft):
         "subject": meta["subject"],
         "year": meta["year"],
         "session": meta.get("session"),
+        "studyYear": meta.get("studyYear"),
         "questions": questions,
     }
     validation_meta = {
@@ -1485,6 +1488,7 @@ def draft_to_publish_annale(draft):
         "subject": meta["subject"],
         "year": meta["year"],
         "session": meta.get("session"),
+        "studyYear": meta.get("studyYear"),
     }
     normalized, warnings = validate_imported_annale(annale, validation_meta)
     return normalized, warnings
@@ -2345,7 +2349,8 @@ class Handler(BaseHTTPRequestHandler):
                 return
             draft_id = generate_qroc_id("draft")
             profile = "faithful" if str(payload.get("profile") or "").strip().lower() == "faithful" else "qroc"
-            meta = {"id": annale_id, "title": title, "subject": subject, "year": year, "session": session}
+            study_year = str(payload.get("studyYear") or "").strip()[:40] or None
+            meta = {"id": annale_id, "title": title, "subject": subject, "year": year, "session": session, "studyYear": study_year}
             try:
                 draft, raw_text = parse_qroc_source_pdf(pdf_bytes, meta, draft_id, payload.get("filename"), profile=profile)
                 save_qroc_draft(draft)
@@ -2562,6 +2567,7 @@ class Handler(BaseHTTPRequestHandler):
                 "subject": subject,
                 "year": year,
                 "session": session,
+                "studyYear": meta_validated.studyYear,
             }
             try:
                 annale, report, raw_text = parse_uness_correction_local(pdf_bytes, meta)
@@ -3057,6 +3063,9 @@ class Handler(BaseHTTPRequestHandler):
             if "session" in payload:
                 v = str(payload["session"] or "").strip()[:20]
                 updates["session"] = v or None
+            if "studyYear" in payload:
+                v = str(payload["studyYear"] or "").strip()[:40]
+                updates["studyYear"] = v or None
             if "year" in payload:
                 if payload["year"] is None or payload["year"] == "":
                     updates["year"] = None
@@ -3068,7 +3077,7 @@ class Handler(BaseHTTPRequestHandler):
                         return
             has_id_change = "newId" in payload and str(payload.get("newId") or "").strip()
             if not updates and not has_id_change:
-                self._send_error(400, "aucun champ editable fourni (title, subject, year, session, newId)")
+                self._send_error(400, "aucun champ editable fourni (title, subject, year, session, studyYear, newId)")
                 return
             try:
                 with open(file_path, "r", encoding="utf-8") as fh:

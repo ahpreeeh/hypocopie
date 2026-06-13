@@ -238,6 +238,7 @@ export function AnnaleImportPage() {
   const [subject, setSubject] = useState('');
   const [year, setYear] = useState('');
   const [session, setSession] = useState('');
+  const [studyYear, setStudyYear] = useState(() => localStorage.getItem('hypocampus_last_study_year') || '');
   const [title, setTitle] = useState('');
   const [annaleId, setAnnaleId] = useState('');
   const [overwrite, setOverwrite] = useState(false);
@@ -259,6 +260,7 @@ export function AnnaleImportPage() {
     setSubject('');
     setYear('');
     setSession('');
+    // studyYear conservé : on importe souvent plusieurs annales du même niveau
     setTitle('');
     setAnnaleId('');
     // Force le remount du workspace QROC → reset interne (draft, job, etc.) + nettoie le localStorage QROC
@@ -273,6 +275,12 @@ export function AnnaleImportPage() {
     setTitle((current) => current || nextTitle);
     setAnnaleId((current) => current || slugify(nextTitle || (file ? fileBaseName(file) : '') || 'annale'));
   }, [subject, year, session, file]);
+
+  // Mémorise le dernier niveau saisi : on importe souvent plusieurs annales du
+  // même niveau d'affilée, autant le pré-remplir.
+  useEffect(() => {
+    if (studyYear.trim()) localStorage.setItem('hypocampus_last_study_year', studyYear.trim());
+  }, [studyYear]);
 
   const fileLabel = useMemo(() => {
     if (files.length > 1) return `${files.length} PDFs selectionnes`;
@@ -308,6 +316,7 @@ export function AnnaleImportPage() {
     subject: subject.trim(),
     year: Number(year),
     session: session.trim(),
+    studyYear: studyYear.trim(),
     title: title.trim(),
     overwrite,
     idSuffix: idSuffix.trim(),
@@ -388,6 +397,8 @@ export function AnnaleImportPage() {
               setYear={setYear}
               session={session}
               setSession={setSession}
+              studyYear={studyYear}
+              setStudyYear={setStudyYear}
               title={title}
               setTitle={setTitle}
               annaleId={annaleId}
@@ -750,6 +761,7 @@ function QrocConversionWorkspace({
               subject: item.subject,
               year: item.year,
               session: item.session,
+              studyYear: meta.studyYear,
               title: item.title,
               overwrite: false,
               pdfBase64,
@@ -2443,6 +2455,8 @@ function MetaFields(props: {
   setYear: (v: string) => void;
   session: string;
   setSession: (v: string) => void;
+  studyYear: string;
+  setStudyYear: (v: string) => void;
   title: string;
   setTitle: (v: string) => void;
   annaleId: string;
@@ -2463,9 +2477,14 @@ function MetaFields(props: {
           <input value={props.year} onChange={(e) => props.setYear(e.target.value)} className={inputClass} inputMode="numeric" />
         </Field>
       </div>
-      <Field label="Session">
-        <input value={props.session} onChange={(e) => props.setSession(e.target.value)} className={inputClass} placeholder="S1, S2..." />
-      </Field>
+      <div className="grid sm:grid-cols-2 gap-3">
+        <Field label="Session">
+          <input value={props.session} onChange={(e) => props.setSession(e.target.value)} className={inputClass} placeholder="S1, S2..." />
+        </Field>
+        <Field label="Niveau (annee d'etudes)">
+          <input value={props.studyYear} onChange={(e) => props.setStudyYear(e.target.value)} className={inputClass} placeholder="MED3, DFGSM3..." />
+        </Field>
+      </div>
       <Field label="Titre">
         <input value={props.title} onChange={(e) => props.setTitle(e.target.value)} className={inputClass} />
       </Field>
