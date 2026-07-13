@@ -1,0 +1,44 @@
+{
+  "id": "q_sample_dp_partial",
+  "format": "DP",
+  "subject": "Cardiologie",
+  "chapter": "Rythme",
+  "customTitle": "DP anonymise - douleur thoracique",
+  "seriesId": "sample-dp-001",
+  "seriesPosition": 1,
+  "seriesTotal": 2,
+  "vignette": "Patient A, 62 ans, consulte pour douleur thoracique breve. Les constantes sont stables. Aucun antecedent nominatif n'est conserve dans cet exemple.",
+  "addedVignette": null,
+  "questionText": "Quels elements sont compatibles avec une origine cardiaque a discuter ?",
+  "options": [
+    { "id": "A", "text": "Douleur constrictive", "correct": true, "selected": true },
+    { "id": "B", "text": "Douleur strictement cutanee", "correct": false, "selected": false },
+    { "id": "C", "text": "Douleur reproduite par palpation seule", "correct": false, "selected": true },
+    { "id": "D", "text": "Irradiation bras gauche", "correct": true, "selected": false }
+  ],
+  "freeAnswers": [],
+  "selectedAnswers": ["A", "C"],
+  "correctAnswers": ["A", "D"],
+  "correctionText": "Dans cet exemple anonymise, les signes A et D justifient une evaluation cardiaque. C est une coche fausse.",
+  "images": [],
+  "screenshots": [],
+  "status": "partial",
+  "score": 0.5,
+  "source": "audit-sample",
+  "url": null,
+  "pageTitle": "Audit sample",
+  "contextLabel": "audit",
+  "confidence": "sample",
+  "capturedAt": "2026-01-10T09:00:00.000Z",
+  "exportedAt": "2026-01-10T09:01:00.000Z",
+  "seenAgain": [
+    {
+      "at": "2026-01-12T10:00:00.000Z",
+      "url": null,
+      "status": "partial",
+      "selectedAnswers": ["A", "C"],
+      "seriesId": "sample-dp-001",
+      "seriesPosition": 1
+    }
+  ]
+}

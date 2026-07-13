@@ -1,0 +1,35 @@
+{
+  "id": "q_sample_qroc_unknown",
+  "format": "QI",
+  "subject": "Neurologie",
+  "chapter": "Semiologie",
+  "customTitle": "QROC anonymisee",
+  "seriesId": null,
+  "seriesPosition": null,
+  "seriesTotal": null,
+  "vignette": null,
+  "addedVignette": null,
+  "questionText": "Citer un examen de premiere intention dans cette situation clinique anonymisee.",
+  "options": [],
+  "freeAnswers": [
+    {
+      "userAnswer": "examen clinique oriente",
+      "expectedAnswer": "examen clinique oriente et bilan adapte au contexte"
+    }
+  ],
+  "selectedAnswers": [],
+  "correctAnswers": [],
+  "correctionText": "Exemple QROC non compte automatiquement. La correction reste informative.",
+  "images": [],
+  "screenshots": [],
+  "status": "unknown",
+  "score": null,
+  "source": "audit-sample",
+  "url": null,
+  "pageTitle": "Audit sample",
+  "contextLabel": "audit",
+  "confidence": "sample",
+  "capturedAt": "2026-01-10T09:04:00.000Z",
+  "exportedAt": "2026-01-10T09:05:00.000Z",
+  "seenAgain": []
+}

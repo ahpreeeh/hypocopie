@@ -1,0 +1,75 @@
+{
+  "id": "ses_sample_partial",
+  "annaleId": "sample-annale-2026-s1",
+  "annaleTitle": "Annale audit anonymisee 2026 S1",
+  "annaleSubject": "Audit",
+  "annaleYear": 2026,
+  "annaleSession": "S1",
+  "mode": "libre",
+  "startedAt": "2026-01-11T10:00:00.000Z",
+  "submittedAt": "2026-01-11T10:08:00.000Z",
+  "durationSec": 480,
+  "annaleRevision": 1,
+  "answers": {
+    "q1": ["A", "B"],
+    "q2": ["B"],
+    "q3": ""
+  },
+  "finalScore": {
+    "juste": 1,
+    "partiel": 1,
+    "faux": 0,
+    "totalNotees": 2,
+    "nonComptees": 1,
+    "totalQuestions": 3,
+    "points": 1.5,
+    "maxPoints": 2,
+    "percentage": 75
+  },
+  "details": [
+    {
+      "qid": "q1",
+      "questionType": "QRM",
+      "text": "Quels elements sont corrects dans ce cas clinique anonymise ?",
+      "seriesId": "sample-dp-annale-001",
+      "seriesFormat": "DP",
+      "seriesPosition": 1,
+      "userAnswer": ["A", "B"],
+      "result": "partiel",
+      "scoreValue": 0.5,
+      "maxScore": 1,
+      "mistakes": 2,
+      "missedCorrect": ["C"],
+      "wrongSelected": ["B"],
+      "scoreReason": "1 oubli, 1 coche fausse",
+      "options": [
+        { "id": "A", "text": "Element attendu A", "correct": true },
+        { "id": "B", "text": "Element distracteur B", "correct": false },
+        { "id": "C", "text": "Element attendu C", "correct": true },
+        { "id": "D", "text": "Element distracteur D", "correct": false }
+      ],
+      "expectedAnswer": null,
+      "correctionText": "A et C sont les reponses attendues dans cet exemple."
+    },
+    {
+      "qid": "q2",
+      "questionType": "QRU",
+      "text": "Quelle est la meilleure reponse unique ?",
+      "userAnswer": ["B"],
+      "result": "juste",
+      "scoreValue": 1,
+      "maxScore": 1,
+      "mistakes": 0,
+      "missedCorrect": [],
+      "wrongSelected": [],
+      "scoreReason": "bonne option unique",
+      "options": [
+        { "id": "A", "text": "Reponse incorrecte", "correct": false },
+        { "id": "B", "text": "Reponse attendue", "correct": true },
+        { "id": "C", "text": "Autre distracteur", "correct": false }
+      ],
+      "expectedAnswer": null,
+      "correctionText": "La reponse B est attendue."
+    }
+  ]
+}

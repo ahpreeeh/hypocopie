@@ -1,0 +1,94 @@
+{
+  "id": "ses_sample_exact",
+  "annaleId": "sample-annale-2026-s1",
+  "annaleTitle": "Annale audit anonymisee 2026 S1",
+  "annaleSubject": "Audit",
+  "annaleYear": 2026,
+  "annaleSession": "S1",
+  "mode": "exam",
+  "startedAt": "2026-01-10T10:00:00.000Z",
+  "submittedAt": "2026-01-10T10:12:00.000Z",
+  "durationSec": 720,
+  "annaleRevision": 1,
+  "answers": {
+    "q1": ["A", "C"],
+    "q2": ["B"],
+    "q3": "reponse courte attendue"
+  },
+  "finalScore": {
+    "juste": 2,
+    "partiel": 0,
+    "faux": 0,
+    "totalNotees": 2,
+    "nonComptees": 1,
+    "totalQuestions": 3,
+    "points": 2,
+    "maxPoints": 2,
+    "percentage": 100
+  },
+  "details": [
+    {
+      "qid": "q1",
+      "questionType": "QRM",
+      "text": "Quels elements sont corrects dans ce cas clinique anonymise ?",
+      "seriesId": "sample-dp-annale-001",
+      "seriesFormat": "DP",
+      "seriesPosition": 1,
+      "userAnswer": ["A", "C"],
+      "result": "juste",
+      "scoreValue": 1,
+      "maxScore": 1,
+      "mistakes": 0,
+      "missedCorrect": [],
+      "wrongSelected": [],
+      "scoreReason": "reponse exacte",
+      "options": [
+        { "id": "A", "text": "Element attendu A", "correct": true },
+        { "id": "B", "text": "Element distracteur B", "correct": false },
+        { "id": "C", "text": "Element attendu C", "correct": true },
+        { "id": "D", "text": "Element distracteur D", "correct": false }
+      ],
+      "expectedAnswer": null,
+      "correctionText": "A et C sont les reponses attendues dans cet exemple."
+    },
+    {
+      "qid": "q2",
+      "questionType": "QRU",
+      "text": "Quelle est la meilleure reponse unique ?",
+      "seriesId": "sample-dp-annale-001",
+      "seriesFormat": "DP",
+      "seriesPosition": 2,
+      "userAnswer": ["B"],
+      "result": "juste",
+      "scoreValue": 1,
+      "maxScore": 1,
+      "mistakes": 0,
+      "missedCorrect": [],
+      "wrongSelected": [],
+      "scoreReason": "bonne option unique",
+      "options": [
+        { "id": "A", "text": "Reponse incorrecte", "correct": false },
+        { "id": "B", "text": "Reponse attendue", "correct": true },
+        { "id": "C", "text": "Autre distracteur", "correct": false }
+      ],
+      "expectedAnswer": null,
+      "correctionText": "La reponse B est attendue."
+    },
+    {
+      "qid": "q3",
+      "questionType": "QROC",
+      "text": "Donner une reponse courte attendue dans cet exemple.",
+      "userAnswer": "reponse courte attendue",
+      "result": "non-comptee",
+      "scoreValue": null,
+      "maxScore": null,
+      "mistakes": null,
+      "missedCorrect": [],
+      "wrongSelected": [],
+      "scoreReason": "QROC non comptee automatiquement",
+      "options": [],
+      "expectedAnswer": "reponse courte attendue",
+      "correctionText": "Cette question est non comptee automatiquement."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "q_sample_dp_wrong",
+  "format": "DP",
+  "subject": "Cardiologie",
+  "chapter": "Rythme",
+  "customTitle": "DP anonymise - suite",
+  "seriesId": "sample-dp-001",
+  "seriesPosition": 2,
+  "seriesTotal": 2,
+  "vignette": "Patient A, 62 ans, consulte pour douleur thoracique breve. Les constantes sont stables. Aucun antecedent nominatif n'est conserve dans cet exemple.",
+  "addedVignette": "Un trace electrique anonymise est decrit comme regulier dans le texte source.",
+  "questionText": "Quelle conduite immediate est la plus adaptee dans cet exemple ?",
+  "options": [
+    { "id": "A", "text": "Surveillance sans examen complementaire", "correct": false, "selected": true },
+    { "id": "B", "text": "Evaluation clinique et ECG", "correct": true, "selected": false },
+    { "id": "C", "text": "Antibiotherapie probabiliste", "correct": false, "selected": false }
+  ],
+  "freeAnswers": [],
+  "selectedAnswers": ["A"],
+  "correctAnswers": ["B"],
+  "correctionText": "La bonne reponse de cet exemple est B. La reponse A est insuffisante.",
+  "images": [
+    {
+      "id": "img_sample_missing",
+      "dataUrl": null,
+      "dataUrlStatus": "canvas-blocked",
+      "alt": "Image non incluse dans l'echantillon d'audit"
+    }
+  ],
+  "screenshots": [],
+  "status": "wrong",
+  "score": 0,
+  "source": "audit-sample",
+  "url": null,
+  "pageTitle": "Audit sample",
+  "contextLabel": "audit",
+  "confidence": "sample",
+  "capturedAt": "2026-01-10T09:02:00.000Z",
+  "exportedAt": "2026-01-10T09:03:00.000Z",
+  "seenAgain": []
+}

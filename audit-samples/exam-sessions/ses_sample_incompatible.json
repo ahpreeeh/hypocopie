@@ -1,0 +1,48 @@
+{
+  "id": "ses_sample_incompatible",
+  "annaleId": "sample-annale-removed",
+  "annaleTitle": "Annale audit supprimee",
+  "annaleSubject": "Audit",
+  "annaleYear": 2026,
+  "annaleSession": "S2",
+  "mode": "exam",
+  "startedAt": "2026-01-12T10:00:00.000Z",
+  "submittedAt": "2026-01-12T10:05:00.000Z",
+  "durationSec": 300,
+  "annaleRevision": 1,
+  "answers": {
+    "q1": ["A"]
+  },
+  "finalScore": {
+    "juste": 0,
+    "partiel": 0,
+    "faux": 1,
+    "totalNotees": 1,
+    "nonComptees": 0,
+    "totalQuestions": 1,
+    "points": 0,
+    "maxPoints": 1,
+    "percentage": 0
+  },
+  "details": [
+    {
+      "qid": "q1",
+      "questionType": "QRU",
+      "text": "Question de session dont l'annale source n'est pas presente dans les samples.",
+      "userAnswer": ["A"],
+      "result": "faux",
+      "scoreValue": 0,
+      "maxScore": 1,
+      "mistakes": 1,
+      "missedCorrect": ["B"],
+      "wrongSelected": ["A"],
+      "scoreReason": "ancienne session incompatible pour test d'audit",
+      "options": [
+        { "id": "A", "text": "Reponse selectionnee", "correct": false },
+        { "id": "B", "text": "Reponse attendue", "correct": true }
+      ],
+      "expectedAnswer": null,
+      "correctionText": "Sample utile pour verifier les warnings de recalcul historique."
+    }
+  ]
+}
