@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Hypocampus — Mes captures</title>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+
+<!-- ── SIDEBAR ────────────────────────────────────────────────── -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <h1>Hypocampus</h1>
+    <p class="sidebar-sub">Captures locales</p>
+  </div>
+
+  <div class="sidebar-stats">
+    <div class="stat-row">
+      <span class="stat-label">Total</span>
+      <span class="stat-value" id="statTotal">0</span>
+    </div>
+    <div class="stat-row stat-new-row">
+      <span class="stat-label">Nouvelles</span>
+      <span class="stat-value" id="statNew">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Matières</span>
+      <span class="stat-value" id="statSubjects">0</span>
+    </div>
+  </div>
+
+  <!-- View mode tabs -->
+  <div class="sidebar-section-title">Vue</div>
+  <div class="view-modes">
+    <button class="view-btn active" data-view="timeline" title="Chronologique">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.5h12M2 10h8M2 13.5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Chronologique
+    </button>
+    <button class="view-btn" data-view="subject" title="Par matière">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+      Par matière
+    </button>
+  </div>
+
+  <!-- Filter: status -->
+  <div class="sidebar-section-title">Statut</div>
+  <div class="filter-group" id="filterStatus">
+    <button class="filter-btn active" data-filter-status="all">Toutes</button>
+    <button class="filter-btn" data-filter-status="new">Nouvelles</button>
+    <button class="filter-btn" data-filter-status="exported">Exportées</button>
+  </div>
+
+  <!-- Filter: answer status -->
+  <div class="sidebar-section-title">Réponse</div>
+  <div class="filter-group" id="filterAnswer">
+    <button class="filter-btn active" data-filter-answer="all">Toutes</button>
+    <button class="filter-btn" data-filter-answer="wrong">Incorrectes</button>
+    <button class="filter-btn" data-filter-answer="partial">Partielles</button>
+    <button class="filter-btn" data-filter-answer="unknown">Indéterminées</button>
+  </div>
+
+  <!-- Filter: format -->
+  <div class="sidebar-section-title">Format</div>
+  <div class="filter-group" id="filterFormat">
+    <button class="filter-btn active" data-filter-format="all">Tous</button>
+    <button class="filter-btn" data-filter-format="QI">QI</button>
+    <button class="filter-btn" data-filter-format="DP">DP</button>
+    <button class="filter-btn" data-filter-format="KFP">KFP</button>
+  </div>
+
+  <!-- Filter: media -->
+  <div class="sidebar-section-title">Médias</div>
+  <div class="filter-group" id="filterMedia">
+    <button class="filter-btn active" data-filter-media="all">Toutes</button>
+    <button class="filter-btn" data-filter-media="with-image">Avec image</button>
+    <button class="filter-btn" data-filter-media="no-image">Sans image</button>
+  </div>
+
+  <!-- Filter: chapter -->
+  <div class="sidebar-section-title">Chapitre</div>
+  <div class="filter-group-single">
+    <select id="chapterFilter" aria-label="Filtrer par chapitre">
+      <option value="">Tous les chapitres</option>
+    </select>
+  </div>
+
+  <!-- Subject list (populated by JS) -->
+  <div class="sidebar-section-title">Matières <span id="subjectCount" class="section-count"></span></div>
+  <div class="subject-list" id="subjectList"></div>
+
+  <!-- Export -->
+  <div class="sidebar-actions">
+    <button id="exportNewBtn" class="btn btn-accent" disabled>↓ Nouvelles (0)</button>
+    <button id="exportAllBtn" class="btn btn-outline">↓ Tout (JSON)</button>
+  </div>
+</aside>
+
+<!-- ── MAIN CONTENT ───────────────────────────────────────────── -->
+<div id="mainContent">
+  <header id="topBar">
+    <div class="search-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input type="search" id="searchInput" placeholder="Rechercher une question, matière, correction…" aria-label="Rechercher">
+    </div>
+    <div class="sort-group">
+      <span class="sort-label">Tri :</span>
+      <select id="sortSelect">
+        <option value="newest">Plus récentes</option>
+        <option value="oldest">Plus anciennes</option>
+        <option value="subject">Matière A→Z</option>
+      </select>
+    </div>
+    <div id="resultsSummary" class="results-summary"></div>
+    <button id="themeToggle" class="btn-icon" title="Changer de thème">🌙</button>
+  </header>
+
+  <main id="questionList">
+    <p class="empty-state" id="emptyState">Aucune question capturée pour l'instant.</p>
+  </main>
+</div>
+
+<!-- ── LIGHTBOX ───────────────────────────────────────────────── -->
+<div id="lightbox" role="dialog" aria-label="Aperçu image">
+  <img id="lightboxImg" src="" alt="Aperçu">
+</div>
+
+<datalist id="chapterDatalist"></datalist>
+
+<script src="review.js"></script>
+</body>
+</html>

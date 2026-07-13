@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Hypocampus Questions</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <h1>Hypocampus</h1>
+    <p class="small">Capture les questions corrigées visibles dans la page active.</p>
+
+    <section class="buttons">
+      <button id="capture" class="btn-primary">Capturer cette question</button>
+      <button id="screenshot" class="btn-screenshot">Capturer l'écran visible</button>
+      <button id="start">Activer la session</button>
+      <button id="stop">Désactiver la session</button>
+    </section>
+
+    <p id="status" role="status"></p>
+
+    <section class="counter">
+      <strong id="count">0</strong> question(s) locale(s)
+      <span id="newCount" class="badge-new" style="display:none"></span>
+      <span id="pendingCount" class="badge-pending" style="display:none"></span>
+    </section>
+
+    <section class="server-status">
+      <span id="serverDot" class="server-dot server-dot-unknown"></span>
+      <span id="serverLabel">Serveur local : ...</span>
+    </section>
+
+    <section class="buttons">
+      <button id="openSite" class="btn-primary">Ouvrir mon site</button>
+      <button id="review" class="btn-review">👁 Voir les captures (extension)</button>
+    </section>
+
+    <section class="buttons secondary">
+      <button id="exportNew" class="btn-accent">↓ Nouvelles</button>
+      <button id="exportAll">↓ Tout (JSON)</button>
+      <button id="exportCsv">↓ CSV</button>
+    </section>
+
+    <section class="buttons">
+      <button id="migrate" class="btn-migrate">⇪ Migrer vers disque</button>
+      <button id="clear" class="btn-danger">Effacer tout</button>
+    </section>
+
+    <details>
+      <summary>Portée</summary>
+      <ul>
+        <li>Capture seulement le contenu visible après correction.</li>
+        <li>Stockage local dans Chrome.</li>
+        <li>Pas d'appel API Hypocampus.</li>
+        <li>Pas de mot de passe stocké.</li>
+      </ul>
+    </details>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
